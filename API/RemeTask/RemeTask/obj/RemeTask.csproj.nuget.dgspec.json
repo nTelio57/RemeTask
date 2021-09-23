@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\OneDrive - Kaunas University of Technology\\4 kursas I\\Saityno taikomuju programu projektavimas\\API\\RemeTask\\RemeTask\\RemeTask.csproj": {}
+    "D:\\OneDrive - Kaunas University of Technology\\4 kursas I\\Saityno taikomuju programu projektavimas\\Remetask\\API\\RemeTask\\RemeTask\\RemeTask.csproj": {}
   },
   "projects": {
-    "D:\\OneDrive - Kaunas University of Technology\\4 kursas I\\Saityno taikomuju programu projektavimas\\API\\RemeTask\\RemeTask\\RemeTask.csproj": {
+    "D:\\OneDrive - Kaunas University of Technology\\4 kursas I\\Saityno taikomuju programu projektavimas\\Remetask\\API\\RemeTask\\RemeTask\\RemeTask.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\OneDrive - Kaunas University of Technology\\4 kursas I\\Saityno taikomuju programu projektavimas\\API\\RemeTask\\RemeTask\\RemeTask.csproj",
+        "projectUniqueName": "D:\\OneDrive - Kaunas University of Technology\\4 kursas I\\Saityno taikomuju programu projektavimas\\Remetask\\API\\RemeTask\\RemeTask\\RemeTask.csproj",
         "projectName": "RemeTask",
-        "projectPath": "D:\\OneDrive - Kaunas University of Technology\\4 kursas I\\Saityno taikomuju programu projektavimas\\API\\RemeTask\\RemeTask\\RemeTask.csproj",
+        "projectPath": "D:\\OneDrive - Kaunas University of Technology\\4 kursas I\\Saityno taikomuju programu projektavimas\\Remetask\\API\\RemeTask\\RemeTask\\RemeTask.csproj",
         "packagesPath": "C:\\Users\\Mantas\\.nuget\\packages\\",
-        "outputPath": "D:\\OneDrive - Kaunas University of Technology\\4 kursas I\\Saityno taikomuju programu projektavimas\\API\\RemeTask\\RemeTask\\obj\\",
+        "outputPath": "D:\\OneDrive - Kaunas University of Technology\\4 kursas I\\Saityno taikomuju programu projektavimas\\Remetask\\API\\RemeTask\\RemeTask\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",

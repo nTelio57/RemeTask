@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Sb4YI+n8wnz60V0TDunQiWieLPm0xqkLQC2Yko+PxHjP11aPbHzFBArDqeUhyRUg9PnCc0Wi0Cz8uhAuUfJkzA==",
+  "dgSpecHash": "WhRhw95DK9EcbE6Y25UBzUrS52pOxUg4opnhH0CJ+9cRCDk9g8hz8uxKvTd0QIv4aMfqb3AEn72Q45L/ru1nSw==",
   "success": true,
-  "projectFilePath": "D:\\OneDrive - Kaunas University of Technology\\4 kursas I\\Saityno taikomuju programu projektavimas\\API\\RemeTask\\RemeTask\\RemeTask.csproj",
+  "projectFilePath": "D:\\OneDrive - Kaunas University of Technology\\4 kursas I\\Saityno taikomuju programu projektavimas\\Remetask\\API\\RemeTask\\RemeTask\\RemeTask.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Mantas\\.nuget\\packages\\automapper\\10.1.1\\automapper.10.1.1.nupkg.sha512",
     "C:\\Users\\Mantas\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\8.1.1\\automapper.extensions.microsoft.dependencyinjection.8.1.1.nupkg.sha512",
