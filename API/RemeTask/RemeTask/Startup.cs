@@ -67,6 +67,10 @@ namespace RemeTask
                     .AllowAnyHeader();
             }));
 
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            services.AddScoped<ITaskRepository, TaskRepository>();
+
             var jwtSettings = new JwtSettings();
             Configuration.Bind(nameof(jwtSettings), jwtSettings);
             services.AddSingleton(jwtSettings);
