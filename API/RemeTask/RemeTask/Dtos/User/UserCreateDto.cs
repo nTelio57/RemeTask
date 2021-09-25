@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RemeTask.Auth
+namespace RemeTask.Dtos.User
 {
-    public class AuthRequest
+    public class UserCreateDto
     {
         public string Email { get; set; }
         public string Password { get; set; }
