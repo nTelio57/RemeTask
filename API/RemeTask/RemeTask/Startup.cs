@@ -71,6 +71,7 @@ namespace RemeTask
 
             services.AddScoped<ITaskRepository, TaskRepository>();
             services.AddScoped<ITaskGroupRepository, TaskGroupRepository>();
+            services.AddScoped<ITeamRepository, TeamRepository>();
 
             var jwtSettings = new JwtSettings();
             Configuration.Bind(nameof(jwtSettings), jwtSettings);
