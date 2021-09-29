@@ -10,9 +10,9 @@ namespace RemeTask.Data
     public interface ITaskGroupRepository
     {
         Task<bool> SaveChanges();
-        Task CreateTaskGroup(TaskGroup task);
+        Task CreateTaskGroup(TaskGroup taskGroup);
         Task<TaskGroup> GetTaskGroupById(int id);
-        Task UpdateTaskGroup(TaskGroup task);
-        Task DeleteTaskGroup(TaskGroup task);
+        Task UpdateTaskGroup(TaskGroup taskGroup);
+        Task DeleteTaskGroup(TaskGroup taskGroup);
     }
 }
