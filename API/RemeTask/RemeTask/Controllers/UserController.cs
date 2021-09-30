@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.VisualBasic.CompilerServices;
 using RemeTask.Auth;
 using RemeTask.Data;
@@ -12,15 +13,15 @@ using RemeTask.Dtos.User;
 using RemeTask.Models;
 using RemeTask.Utilities;
 
-namespace RemeTask.Auth
+namespace RemeTask.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController : ControllerBase
+    public class UserController : ControllerBase
     {
-        private readonly IAuthRepository _repository;
+        private readonly IUserRepository _repository;
         private readonly IMapper _mapper;
-        public AuthController(IAuthRepository jwtAuthenticationRepo, IMapper mapper)
+        public UserController(IUserRepository jwtAuthenticationRepo, IMapper mapper)
         {
             _repository = jwtAuthenticationRepo;
             _mapper = mapper;
@@ -80,6 +81,20 @@ namespace RemeTask.Auth
                 Token = token,
                 User = _mapper.Map<UserReadDto>(existingUser)
             });
+        }
+
+        [Authorize]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(int id, UserUpdateDto userUpdateDto)
+        {
+            var userModel = await _repository.GetUserById(id);
+            if (userModel == null)
+                return NotFound();
+
+            _mapper.Map(userUpdateDto, userModel);
+            await _repository.UpdateUser(userModel);
+            await _repository.SaveChanges();
+            return NoContent();
         }
 
     }
