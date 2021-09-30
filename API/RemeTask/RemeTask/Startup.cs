@@ -77,7 +77,7 @@ namespace RemeTask
             Configuration.Bind(nameof(jwtSettings), jwtSettings);
             services.AddSingleton(jwtSettings);
 
-            services.AddScoped<IAuthRepository>(sp => new AuthRepository(sp.GetService<RemetaskContext>(), jwtSettings.Secret));
+            services.AddScoped<IUserRepository>(sp => new UserRepository(sp.GetService<RemetaskContext>(), jwtSettings.Secret));
 
             services.AddAuthentication(x =>
                 {

@@ -56,7 +56,19 @@ namespace RemeTask.Controllers
             await _repository.SaveChanges();
 
             return NoContent();
+        }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateTeam(int id, TeamUpdateDto teamUpdateDto)
+        {
+            var teamModel = await _repository.GetTeamById(id);
+            if (teamModel == null)
+                return NotFound();
+
+            _mapper.Map(teamUpdateDto, teamModel);
+            await _repository.UpdateTeam(teamModel);
+            await _repository.SaveChanges();
+            return NoContent();
         }
     }
 }

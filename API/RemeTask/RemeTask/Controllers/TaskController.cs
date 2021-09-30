@@ -57,7 +57,19 @@ namespace RemeTask.Controllers
             await _repository.SaveChanges();
 
             return NoContent();
+        }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateTask(int id, TaskUpdateDto taskUpdateDto)
+        {
+            var taskModel = await _repository.GetTaskById(id);
+            if (taskModel == null)
+                return NotFound();
+
+            _mapper.Map(taskUpdateDto, taskModel);
+            await _repository.UpdateTask(taskModel);
+            await _repository.SaveChanges();
+            return NoContent();
         }
     }
 }

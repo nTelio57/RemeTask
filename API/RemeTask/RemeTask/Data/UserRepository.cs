@@ -13,13 +13,13 @@ using Task = System.Threading.Tasks.Task;
 
 namespace RemeTask.Data
 {
-    public class AuthRepository : IAuthRepository
+    public class UserRepository : IUserRepository
     {
         private readonly RemetaskContext _context;
 
         private readonly string _key;
 
-        public AuthRepository(RemetaskContext context, string key)
+        public UserRepository(RemetaskContext context, string key)
         {
             _context = context;
             _key = key;
@@ -64,6 +64,16 @@ namespace RemeTask.Data
             if (user == null || !user.Password.Equals(Crypto.Hash(password + user.Salt)))
                 return null;
             return user;
+        }
+
+        public async Task<User> GetUserById(int id)
+        {
+            return await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task UpdateUser(User user)
+        {
+            
         }
     }
 }

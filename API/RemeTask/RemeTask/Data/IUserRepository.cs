@@ -7,12 +7,14 @@ using Task = System.Threading.Tasks.Task;
 
 namespace RemeTask.Data
 {
-    public interface IAuthRepository
+    public interface IUserRepository
     {
         Task<bool> SaveChanges();
         Task<User> GetUserByEmail(string email);
         Task<string> GenerateToken(string email);
         Task AddNewUser(User user);
         Task<User> GetUserByLogin(string email, string password);
+        Task<User> GetUserById(int id);
+        Task UpdateUser(User user);
     }
 }
