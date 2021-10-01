@@ -29,7 +29,7 @@ namespace RemeTask.Data
 
         public async Task<TaskGroup> GetTaskGroupById(int id)
         {
-            return await _context.TaskGroups.FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.TaskGroups.Include(x => x.Tasks).FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task UpdateTaskGroup(TaskGroup taskGroup)
@@ -42,6 +42,11 @@ namespace RemeTask.Data
             if (taskGroup == null)
                 throw new ArgumentNullException(nameof(taskGroup));
             _context.TaskGroups.Remove(taskGroup);
+        }
+
+        public async Task<IEnumerable<TaskGroup>> GetTaskGroupsByUserId(int id)
+        {
+            return await _context.TaskGroups.Include(x => x.Tasks).Where(x => x.UserId == id).ToListAsync();
         }
     }
 }
