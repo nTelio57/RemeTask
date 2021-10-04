@@ -27,6 +27,11 @@ namespace RemeTask.Data
             await _context.TaskGroups.AddAsync(taskGroup);
         }
 
+        public async Task<IEnumerable<TaskGroup>> GetAllTaskGroups()
+        {
+            return await _context.TaskGroups.Include(x => x.Tasks).ToListAsync();
+        }
+
         public async Task<TaskGroup> GetTaskGroupById(int id)
         {
             return await _context.TaskGroups.Include(x => x.Tasks).FirstOrDefaultAsync(x => x.Id == id);

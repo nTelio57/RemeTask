@@ -11,6 +11,7 @@ namespace RemeTask.Data
     {
         Task<bool> SaveChanges();
         Task CreateTaskGroup(TaskGroup taskGroup);
+        Task<IEnumerable<TaskGroup>> GetAllTaskGroups();
         Task<TaskGroup> GetTaskGroupById(int id);
         Task UpdateTaskGroup(TaskGroup taskGroup);
         Task DeleteTaskGroup(TaskGroup taskGroup);
