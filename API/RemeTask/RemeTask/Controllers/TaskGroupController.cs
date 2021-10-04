@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using RemeTask.Data;
 using RemeTask.Dtos.Task;
 using RemeTask.Dtos.TaskGroup;
@@ -12,6 +13,7 @@ using RemeTask.Models;
 
 namespace RemeTask.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TaskGroupController : ControllerBase
