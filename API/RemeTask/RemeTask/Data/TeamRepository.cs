@@ -28,6 +28,11 @@ namespace RemeTask.Data
             await _context.Teams.AddAsync(team);
         }
 
+        public async Task<IEnumerable<Team>> GetAllTeams()
+        {
+            return await _context.Teams.ToListAsync();
+        }
+
         public async Task<Team> GetTeamById(int id)
         {
             return await _context.Teams.FirstOrDefaultAsync(x => x.Id == id);
