@@ -52,8 +52,13 @@ namespace RemeTask
                 });
             });
 
-            services.AddDbContext<RemetaskContext>(opt => opt.UseSqlServer
-                (Configuration.GetConnectionString("RemetaskConnection")));
+
+
+            /*services.AddDbContext<RemetaskContext>(opt => opt.UseSqlServer
+                (Configuration.GetConnectionString("RemetaskConnection")));*/
+
+            services.AddDbContext<RemetaskContext>(opt => opt
+                .UseMySQL(Configuration.GetConnectionString("RemetaskConnectionMYSQL")));
 
             services.AddControllers().AddNewtonsoftJson(s =>
             {
