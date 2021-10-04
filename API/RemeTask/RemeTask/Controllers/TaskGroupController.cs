@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using RemeTask.Data;
 using RemeTask.Dtos.Task;
 using RemeTask.Dtos.TaskGroup;
@@ -12,6 +13,7 @@ using RemeTask.Models;
 
 namespace RemeTask.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TaskGroupController : ControllerBase
@@ -34,6 +36,13 @@ namespace RemeTask.Controllers
 
             var taskGroupReadDto = _mapper.Map<TaskGroupReadDto>(taskGroupModel);
             return CreatedAtRoute(nameof(GetTaskGroupById), new { Id = taskGroupReadDto.Id }, taskGroupReadDto);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllTaskGroups()
+        {
+            var taskGroup = await _repository.GetAllTaskGroups();
+            return Ok(_mapper.Map<IEnumerable<TaskGroupReadDto>>(taskGroup));
         }
 
         [HttpGet("{id}", Name = "GetTaskGroupById")]

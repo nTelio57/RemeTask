@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using RemeTask.Data;
 using RemeTask.Dtos.Task;
 using RemeTask.Dtos.Team;
@@ -12,6 +13,7 @@ using RemeTask.Models;
 
 namespace RemeTask.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TeamController : ControllerBase
@@ -34,6 +36,13 @@ namespace RemeTask.Controllers
 
             var teamReadDto = _mapper.Map<TeamReadDto>(teamModel);
             return CreatedAtRoute(nameof(GetTeamById), new { Id = teamReadDto.Id }, teamReadDto);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllTeams()
+        {
+            var team = await _repository.GetAllTeams();
+            return Ok(_mapper.Map<IEnumerable<TeamReadDto>>(team));
         }
 
         [HttpGet("{id}", Name = "GetTeamById")]
