@@ -37,6 +37,13 @@ namespace RemeTask.Controllers
             return CreatedAtRoute(nameof(GetTaskById), new {Id = taskReadDto.Id}, taskReadDto);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllTasks()
+        {
+            var task = await _repository.GetAllTasks();
+            return Ok(_mapper.Map<IEnumerable<TaskReadDto>>(task));
+        }
+
         [HttpGet("{id}", Name = "GetTaskById")]
         public async Task<IActionResult> GetTaskById(int id)
         {

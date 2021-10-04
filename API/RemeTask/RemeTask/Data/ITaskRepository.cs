@@ -10,6 +10,7 @@ namespace RemeTask.Data
     {
         Task<bool> SaveChanges();
         Task CreateTask(RTTask task);
+        Task<IEnumerable<RTTask>> GetAllTasks();
         Task<RTTask> GetTaskById(int id);
         Task UpdateTask(RTTask task);
         Task DeleteTask(RTTask task);

@@ -27,6 +27,11 @@ namespace RemeTask.Data
             await _context.Tasks.AddAsync(task);
         }
 
+        public async Task<IEnumerable<RTTask>> GetAllTasks()
+        {
+            return await _context.Tasks.ToListAsync();
+        }
+
         public async Task<RTTask> GetTaskById(int id)
         {
             return await _context.Tasks.FirstOrDefaultAsync(x => x.Id == id);
