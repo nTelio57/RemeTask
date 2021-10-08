@@ -13,11 +13,7 @@ class LoginView extends StatelessWidget {
            child: Column(
              mainAxisAlignment: MainAxisAlignment.start,
              children: [
-               //SizedBox(height: 250),
-               SizedBox(
-                    child: topBox(),
-                    height: 250,
-               ),
+               topBox(),
                Expanded(
                    child: botBox()
                )
@@ -26,7 +22,7 @@ class LoginView extends StatelessWidget {
          ),
          Padding(
            child: loginBox(),
-           padding: EdgeInsets.only(left: 25, right: 25, top: 200),
+           padding: EdgeInsets.only(left: 25, right: 25, top: 240),
          )
          /*Container(
              child: Column(
@@ -55,8 +51,7 @@ Widget background ()
   return Container(
     height: double.infinity,
     width: double.infinity,
-    color: kPrimaryColor,
-
+    color: kSecondaryColor,
   );
 }
 
@@ -64,15 +59,23 @@ Widget topBox()
 {
   return Container(
     width: double.infinity,
-    child: Align(
-      alignment: Alignment(0,0.1),
-      child: Text(
-        "Login",
-        style: TextStyle(
-            color: Colors.white,
-            fontFamily: 'OpenSans',
-            fontSize: 40.0,
-            fontWeight: FontWeight.bold
+    height: 300,
+    decoration: BoxDecoration(
+        color: kPrimaryColor,
+        borderRadius: BorderRadius.all(Radius.circular(15))
+    ),
+    child: Padding(
+      padding: const EdgeInsets.all(25),
+      child: Align(
+        alignment: Alignment(-1,0.1),
+        child: Text(
+          "Login",
+          style: TextStyle(
+              color: Colors.white,
+              fontFamily: 'OpenSans',
+              fontSize: 40.0,
+              fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     ),
