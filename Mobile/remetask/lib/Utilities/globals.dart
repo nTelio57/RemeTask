@@ -4,9 +4,9 @@ import 'package:remetask/Utilities/constants.dart';
 class LogoImage extends StatelessWidget {
   final double width, height;
   const LogoImage({
-    Key key,
-    this.width,
-    this.height
+    Key? key,
+    this.width = 100,
+    this.height = 100
   }) : super(key: key);
 
   @override

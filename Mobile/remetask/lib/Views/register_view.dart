@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:remetask/Utilities/API_Manager.dart';
 import 'package:remetask/Utilities/constants.dart';
 import 'package:remetask/Utilities/globals.dart';
 
@@ -8,7 +9,9 @@ final TextEditingController _emailText = TextEditingController();
 final TextEditingController _passwordText = TextEditingController();
 final TextEditingController _passwordRepeatText = TextEditingController();
 
-bool _passwordVisible, _passwordRepeatVisible;
+bool _passwordVisible = false, _passwordRepeatVisible = false;
+
+final API_Manager apiManager = API_Manager();
 
 class RegisterView extends StatefulWidget {
   @override
@@ -246,6 +249,7 @@ class _RegisterViewState extends State<RegisterView> {
       child: TextButton(
         onPressed: () {
           print('Register clicked');
+          apiManager.RegisterUser(_emailText.text, _passwordText.text);
         } ,
         style: TextButton.styleFrom(
             primary: Colors.white,

@@ -10,7 +10,7 @@ class LoginView extends StatefulWidget {
   State<LoginView> createState() => _LoginViewState();
 }
 
-bool _passwordVisible;
+bool _passwordVisible = false;
 
 class _LoginViewState extends State<LoginView> {
 
