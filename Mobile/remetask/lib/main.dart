@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:remetask/Views/login_view.dart';
 import 'package:remetask/Views/welcome_view.dart';
 
 void main() {

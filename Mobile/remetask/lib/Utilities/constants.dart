@@ -8,6 +8,10 @@ const kSecondaryLightColor = Colors.white;
 const kTextOnPrimary = Colors.white;
 const kTextOnSecondary = Colors.black;
 
+const kComplementaryColor = Color.fromRGBO(244, 83, 9, 1);
+
+const kIconColor = Color(0xFF757575);
+
 final kHintTextStyle = TextStyle(
   color: Colors.grey[600],
   fontFamily: 'OpenSans',
