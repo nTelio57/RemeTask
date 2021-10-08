@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:remetask/Utilities/constants.dart';
 
+import 'register_view.dart';
+
 class LoginView extends StatefulWidget {
   @override
   State<LoginView> createState() => _LoginViewState();
@@ -260,7 +262,9 @@ class _LoginViewState extends State<LoginView> {
         ),
         GestureDetector(
           onTap: () =>{
-            print('Sign up clicked')
+            Navigator.pushReplacement(context, new MaterialPageRoute(
+                builder: (context) => RegisterView()
+            ))
           },
           child: Text(
             "Sign Up",

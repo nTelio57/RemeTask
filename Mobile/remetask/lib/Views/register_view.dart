@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:remetask/Utilities/constants.dart';
 
+import 'login_view.dart';
+
 final TextEditingController _emailText = TextEditingController();
 final TextEditingController _passwordText = TextEditingController();
 final TextEditingController _passwordRepeatText = TextEditingController();
@@ -260,7 +262,9 @@ class _RegisterViewState extends State<RegisterView> {
         ),
         GestureDetector(
           onTap: () =>{
-            print('Sign in clicked')
+            Navigator.pushReplacement(context, new MaterialPageRoute(
+              builder: (context) => LoginView()
+            ))
           },
           child: Text(
             "Sign In",
