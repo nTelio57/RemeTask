@@ -50,18 +50,6 @@ Widget topBox()
             ),
           )
       ),
-      /*Container(
-        color: Colors.black,
-        child: Align(
-          alignment: Alignment(0,0),
-          child: Column(
-            children: [
-              logo(),
-              logoText()
-            ],
-          ),
-        ),
-      )*/
     ],
   );
 }
@@ -84,7 +72,7 @@ Widget logo(){
               height: 75,
               child: Column(
                 children: [
-                  Image.asset('assets/images/logo.png')
+                  Image.asset('assets/images/logo3.png')
                 ],
               )
           ),
