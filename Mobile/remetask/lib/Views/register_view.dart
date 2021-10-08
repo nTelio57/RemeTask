@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:remetask/Utilities/constants.dart';
+import 'package:remetask/Utilities/globals.dart';
 
 import 'login_view.dart';
 
@@ -31,7 +32,11 @@ class _RegisterViewState extends State<RegisterView> {
           background(),
           topBox(),
           Padding(
-            padding: EdgeInsets.only(left: 25, right: 25, top: 240),
+            padding: const EdgeInsets.all(50.0),
+            child: miniIcon(),
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 25, right: 25, top: 270),
             child: mainBox(),
           )
         ],
@@ -161,7 +166,7 @@ class _RegisterViewState extends State<RegisterView> {
   {
     return Container(
       width: double.infinity,
-      height: 300,
+      height: 320,
       decoration: BoxDecoration(
           color: kPrimaryColor,
           borderRadius: BorderRadius.vertical(bottom: Radius.circular(20))
@@ -169,15 +174,27 @@ class _RegisterViewState extends State<RegisterView> {
       child: Padding(
         padding: const EdgeInsets.all(25),
         child: Align(
-          alignment: Alignment(-1,0.1),
-          child: Text(
-            "Register",
-            style: TextStyle(
-              color: Colors.white,
-              fontFamily: 'OpenSans',
-              fontSize: 40.0,
-              fontWeight: FontWeight.bold,
-            ),
+          alignment: Alignment.centerLeft,
+          child: Column(
+            children: [
+              SizedBox(height: 30),
+              backButton(),
+              SizedBox(height: 15),
+              Container(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Register",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'OpenSans',
+                    fontSize: 30.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              SizedBox(height: 15),
+              topBoxText()
+            ],
           ),
         ),
       ),
@@ -275,6 +292,51 @@ class _RegisterViewState extends State<RegisterView> {
           ),
         )
       ],
+    );
+  }
+
+  Widget backButton()
+  {
+    return Container(
+      alignment: Alignment.centerLeft,
+      child: IconButton(
+        icon: Icon(Icons.west),
+        onPressed: () {Navigator.pop(context);},
+        iconSize: 42,
+        color: kSecondaryLightColor,
+        padding: EdgeInsets.zero,
+        constraints: BoxConstraints(),
+      ),
+    );
+  }
+
+  Widget topBoxText()
+  {
+    return Container(
+      alignment: Alignment.centerLeft,
+      child: Text(
+          'Register to begin creating tasks, organize in team or single and follow your unfinished jobs.',
+          style: TextStyle(
+            color: Colors.white,
+            fontFamily: 'OpenSans',
+            fontSize: 15.0,
+            fontWeight: FontWeight.bold,
+          )
+      ),
+    );
+  }
+
+  Widget miniIcon()
+  {
+    return Container(
+      alignment: Alignment.center,
+      //color: Colors.black,
+      width: double.infinity,
+      height: 50,
+      child: LogoImage(
+          width:50,
+          height: 50
+      ),
     );
   }
 }
