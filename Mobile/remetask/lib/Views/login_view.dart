@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:remetask/Utilities/constants.dart';
+import 'package:remetask/Utilities/globals.dart';
+
+import 'register_view.dart';
 
 class LoginView extends StatefulWidget {
   @override
@@ -35,8 +38,12 @@ class _LoginViewState extends State<LoginView> {
            )
          ),
          Padding(
-           child: loginBox(),
-           padding: EdgeInsets.only(left: 25, right: 25, top: 240),
+           padding: const EdgeInsets.all(50.0),
+           child: miniIcon(),
+         ),
+         Padding(
+           child: mainBox(),
+           padding: EdgeInsets.only(left: 25, right: 25, top: 270),
          )
        ],
      )
@@ -59,23 +66,35 @@ class _LoginViewState extends State<LoginView> {
   {
     return Container(
       width: double.infinity,
-      height: 300,
+      height: 320,
       decoration: BoxDecoration(
           color: kPrimaryColor,
           borderRadius: BorderRadius.vertical(bottom: Radius.circular(20))
       ),
       child: Padding(
-        padding: const EdgeInsets.all(25),
+        padding: const EdgeInsets.only(left: 25, top: 25, right: 25),
         child: Align(
-          alignment: Alignment(-1,0.1),
-          child: Text(
-            "Login",
-            style: TextStyle(
-              color: Colors.white,
-              fontFamily: 'OpenSans',
-              fontSize: 40.0,
-              fontWeight: FontWeight.bold,
-            ),
+          alignment: Alignment.centerLeft,
+          child: Column(
+            children: [
+              SizedBox(height: 30),
+              backButton(),
+              SizedBox(height: 15),
+              Container(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Login",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'OpenSans',
+                    fontSize: 30.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              SizedBox(height: 15),
+              topBoxText()
+            ],
           ),
         ),
       ),
@@ -93,7 +112,7 @@ class _LoginViewState extends State<LoginView> {
     );
   }
 
-  Widget loginBox(){
+  Widget mainBox(){
     return Container(
       height: 300,
       width: double.infinity,
@@ -260,7 +279,9 @@ class _LoginViewState extends State<LoginView> {
         ),
         GestureDetector(
           onTap: () =>{
-            print('Sign up clicked')
+            Navigator.pushReplacement(context, new MaterialPageRoute(
+                builder: (context) => RegisterView()
+            ))
           },
           child: Text(
             "Sign Up",
@@ -271,6 +292,51 @@ class _LoginViewState extends State<LoginView> {
           ),
         )
       ],
+    );
+  }
+
+  Widget backButton()
+  {
+    return Container(
+      alignment: Alignment.centerLeft,
+      child: IconButton(
+        icon: Icon(Icons.west),
+        onPressed: () {Navigator.pop(context);},
+        iconSize: 42,
+        color: kSecondaryLightColor,
+        padding: EdgeInsets.zero,
+        constraints: BoxConstraints(),
+      ),
+    );
+  }
+
+  Widget miniIcon()
+  {
+    return Container(
+      alignment: Alignment.center,
+      //color: Colors.black,
+      width: double.infinity,
+      height: 50,
+      child: LogoImage(
+          width:50,
+          height: 50
+      ),
+    );
+  }
+
+  Widget topBoxText()
+  {
+    return Container(
+      alignment: Alignment.centerLeft,
+      child: Text(
+        'Login to stay on your schedule. Organize your tasks and stop missing your deadlines.',
+          style: TextStyle(
+            color: Colors.white,
+            fontFamily: 'OpenSans',
+            fontSize: 15.0,
+            fontWeight: FontWeight.bold,
+          )
+      ),
     );
   }
 }
