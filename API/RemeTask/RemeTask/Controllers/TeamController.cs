@@ -8,6 +8,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using RemeTask.Data;
 using RemeTask.Dtos.Task;
+using RemeTask.Dtos.TaskGroup;
 using RemeTask.Dtos.Team;
 using RemeTask.Models;
 
@@ -43,6 +44,15 @@ namespace RemeTask.Controllers
         {
             var team = await _repository.GetAllTeams();
             return Ok(_mapper.Map<IEnumerable<TeamReadDto>>(team));
+        }
+
+        [HttpGet("{id}/task-groups", Name = "GetTaskGroupsByTeamId")]
+        public async Task<IActionResult> GetTaskGroupsByTeamId(int id)
+        {
+            var taskGroups = await _repository.GetTaskGroupsByTeamId(id);
+            if (taskGroups == null)
+                return NotFound();
+            return Ok(_mapper.Map<IEnumerable<TaskGroupReadDto>>(taskGroups));
         }
 
         [HttpGet("{id}", Name = "GetTeamById")]
