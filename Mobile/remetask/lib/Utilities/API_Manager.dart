@@ -16,7 +16,7 @@ Map<String, String> defaultJWTHeaders = {
 };
 
 class API_Manager{
-  Future<bool> RegisterUser(String email, String password) async {
+  Future<AuthResult> RegisterUser(String email, String password) async {
     var authRequest = new AuthRequest(email, password);
     
     final response = await http.post(Uri.https(API_URL, registerUrl),
@@ -24,10 +24,10 @@ class API_Manager{
       body: json.encode(authRequest.toJson())
     );
 
-    if(response.statusCode == 200){
+    if(response.statusCode == 200 || response.statusCode == 400){
       print(response.body);
       var responseBody = AuthResult.fromJson(jsonDecode(response.body));
-      return true;
+      return responseBody;
     }else{
       print(response.body);
       throw Exception('Failed to register');
