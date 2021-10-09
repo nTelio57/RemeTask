@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:remetask/Models/AuthResult.dart';
+import 'package:remetask/Utilities/API_Manager.dart';
 import 'package:remetask/Utilities/constants.dart';
 import 'package:remetask/Utilities/globals.dart';
 
@@ -8,7 +10,9 @@ final TextEditingController _emailText = TextEditingController();
 final TextEditingController _passwordText = TextEditingController();
 final TextEditingController _passwordRepeatText = TextEditingController();
 
-bool _passwordVisible, _passwordRepeatVisible;
+bool _passwordVisible = false, _passwordRepeatVisible = false;
+
+final API_Manager apiManager = API_Manager();
 
 class RegisterView extends StatefulWidget {
   @override
@@ -44,6 +48,8 @@ class _RegisterViewState extends State<RegisterView> {
     );
   }
 
+  final _formKey = GlobalKey<FormState>();
+
   Widget mainBox(){
     return Container(
       height: 370,
@@ -54,20 +60,23 @@ class _RegisterViewState extends State<RegisterView> {
       ),
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-        child: Column(
-          children: [
-            emailField(),
-            SizedBox(height: 20),
-            passwordField(),
-            SizedBox(height: 20),
-            passwordRepeatField(),
-            SizedBox(height: 20),
-            registerButton(),
-            SizedBox(height: 20),
-            alreadyHaveAnAccountCheck()
-            //alreadyHaveAnAccountCheck()
-            //_forgotPasswordButton()
-          ],
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              emailField(),
+              SizedBox(height: 20),
+              passwordField(),
+              SizedBox(height: 20),
+              passwordRepeatField(),
+              SizedBox(height: 20),
+              registerButton(),
+              SizedBox(height: 20),
+              alreadyHaveAnAccountCheck()
+              //alreadyHaveAnAccountCheck()
+              //_forgotPasswordButton()
+            ],
+          ),
         ),
       ),
     );
@@ -75,81 +84,92 @@ class _RegisterViewState extends State<RegisterView> {
 
   Widget passwordField()
   {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Container(
-        alignment: Alignment.centerLeft,
-        decoration: kBoxDecorationStyle,
-        height: 60.0,
-        child: TextField(
-          controller: _passwordText,
-          obscureText: !_passwordVisible,
-          style: TextStyle(
-              color: Colors.black,
-              fontFamily: 'OpenSans'),
-          decoration: InputDecoration(
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.only(top: 14.0),
-              prefixIcon: Icon(
-                Icons.lock,
+    return Container(
+      alignment: Alignment.centerLeft,
+      decoration: kBoxDecorationStyle,
+      height: 60.0,
+      child: TextFormField(
+        controller: _passwordText,
+        obscureText: !_passwordVisible,
+        validator: (value) {
+          if(value == null || value.isEmpty)
+          {
+            return 'Enter password';
+          }
+          return null;
+        },
+        style: TextStyle(
+            color: Colors.black,
+            fontFamily: 'OpenSans'),
+        decoration: InputDecoration(
+            border: InputBorder.none,
+            contentPadding: EdgeInsets.only(top: 14.0),
+            prefixIcon: Icon(
+              Icons.lock,
+              color: kIconColor,
+            ),
+            suffixIcon: IconButton(
+              icon: Icon(
+                _passwordVisible ? Icons.visibility : Icons.visibility_off,
                 color: kIconColor,
               ),
-              suffixIcon: IconButton(
-                icon: Icon(
-                  _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                  color: kIconColor,
-                ),
-                onPressed: () {
-                  setState(() {
-                    _passwordVisible = !_passwordVisible;
-                  });
-                },
-              ),
-              hintText: "Password",
-              hintStyle: kHintTextStyle
-          ),
+              onPressed: () {
+                setState(() {
+                  _passwordVisible = !_passwordVisible;
+                });
+              },
+            ),
+            hintText: "Password",
+            hintStyle: kHintTextStyle
         ),
-      )
-    ],
+      ),
     );
   }
 
   Widget passwordRepeatField()
   {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Container(
-        alignment: Alignment.centerLeft,
-        decoration: kBoxDecorationStyle,
-        height: 60.0,
-        child: TextField(
-          controller: _passwordRepeatText,
-          obscureText: !_passwordRepeatVisible,
-          style: TextStyle(
-              color: Colors.black,
-              fontFamily: 'OpenSans'),
-          decoration: InputDecoration(
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.only(top: 14.0),
-              prefixIcon: Icon(
-                Icons.lock,
+    return Container(
+      alignment: Alignment.centerLeft,
+      decoration: kBoxDecorationStyle,
+      height: 60.0,
+      child: TextFormField(
+        controller: _passwordRepeatText,
+        obscureText: !_passwordRepeatVisible,
+        validator: (value) {
+          if(value == null || value.isEmpty)
+          {
+            return 'Enter matching password';
+          }else if(value != _passwordText.text)
+            {
+              return 'Password does not match';
+            }
+          return null;
+        },
+        style: TextStyle(
+            color: Colors.black,
+            fontFamily: 'OpenSans'),
+        decoration: InputDecoration(
+            border: InputBorder.none,
+            contentPadding: EdgeInsets.only(top: 14.0),
+            prefixIcon: Icon(
+              Icons.lock,
+              color: kIconColor,
+            ),
+            suffixIcon: IconButton(
+              icon: Icon(
+                _passwordRepeatVisible ? Icons.visibility : Icons.visibility_off,
                 color: kIconColor,
               ),
-              suffixIcon: IconButton(
-                icon: Icon(
-                  _passwordRepeatVisible ? Icons.visibility : Icons.visibility_off,
-                  color: kIconColor,
-                ),
-                onPressed: () {
-                  setState(() {
-                    _passwordRepeatVisible = !_passwordRepeatVisible;
-                  });
-                },
-              ),
-              hintText: "Confirm password",
-              hintStyle: kHintTextStyle
-          ),
+              onPressed: () {
+                setState(() {
+                  _passwordRepeatVisible = !_passwordRepeatVisible;
+                });
+              },
+            ),
+            hintText: "Confirm password",
+            hintStyle: kHintTextStyle
         ),
-      )
-    ],
+      ),
     );
   }
 
@@ -201,34 +221,39 @@ class _RegisterViewState extends State<RegisterView> {
     );
   }
 
-
+  String _emailErrorText = '';
 
   Widget emailField() {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Container(
-        alignment: Alignment.centerLeft,
-        decoration: kBoxDecorationStyle,
-        height: 60.0,
-        child: TextField(
-          controller: _emailText,
-          keyboardType: TextInputType.emailAddress,
-          style: TextStyle(
-              color: Colors.black,
-              fontFamily: 'OpenSans'
-          ),
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            contentPadding: EdgeInsets.only(top: 14.0),
-            prefixIcon: Icon(
-              Icons.email,
-              color: Colors.grey[600],
-            ),
-            hintText: "Email",
-            hintStyle: kHintTextStyle,
-          ),
+    return Container(
+      alignment: Alignment.centerLeft,
+      decoration: kBoxDecorationStyle,
+      height: 60,
+      child: TextFormField(
+        controller: _emailText,
+        validator: (value) {
+          if(value == null || value.isEmpty)
+            {
+              return 'Enter email';
+            }
+          return null;
+        },
+        keyboardType: TextInputType.emailAddress,
+        style: TextStyle(
+            color: Colors.black,
+            fontFamily: 'OpenSans'
         ),
-      )
-    ],
+        decoration: InputDecoration(
+          errorText: _emailErrorText.isEmpty ? null : _emailErrorText,
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.only(top: 14.0),
+          prefixIcon: Icon(
+            Icons.email,
+            color: Colors.grey[600],
+          ),
+          hintText: "Email",
+          hintStyle: kHintTextStyle,
+        ),
+      ),
     );
   }
 
@@ -244,8 +269,22 @@ class _RegisterViewState extends State<RegisterView> {
       width: double.infinity,
       height: 50,
       child: TextButton(
-        onPressed: () {
+        onPressed: () async {
+          setState(() {
+            _emailErrorText = '';
+          });
           print('Register clicked');
+          if(_formKey.currentState!.validate())
+            {
+              AuthResult authResult = await apiManager.RegisterUser(_emailText.text, _passwordText.text);
+              if(!authResult.success!){//failed
+                setState(() {
+                  _emailErrorText = authResult.errors![0];
+                });
+              }else{//succeeded
+
+              }
+            }
         } ,
         style: TextButton.styleFrom(
             primary: Colors.white,
@@ -315,7 +354,7 @@ class _RegisterViewState extends State<RegisterView> {
     return Container(
       alignment: Alignment.centerLeft,
       child: Text(
-          'Register to begin creating tasks, organize in team or single and follow your unfinished jobs.',
+          'Register to begin creating tasks, organize in team or solo and follow your unfinished jobs.',
           style: TextStyle(
             color: Colors.white,
             fontFamily: 'OpenSans',
