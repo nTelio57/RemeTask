@@ -54,6 +54,15 @@ namespace RemeTask.Controllers
             return Ok(_mapper.Map<TaskGroupReadDto>(taskGroup));
         }
 
+        [HttpGet("{id}/tasks", Name = "GetTasksByTaskGroupId")]
+        public async Task<IActionResult> GetTasksByTaskGroupId(int id)
+        {
+            var taskGroup = await _repository.GetTaskGroupById(id);
+            if (taskGroup == null)
+                return NotFound();
+            return Ok(_mapper.Map<IEnumerable<TaskReadDto>>(taskGroup.Tasks));
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTaskGroup(int id)
         {
@@ -87,11 +96,11 @@ namespace RemeTask.Controllers
             return Ok(_mapper.Map<IEnumerable<TaskGroupReadDto>>(taskGroups));
         }
 
-        [HttpGet("by-team-id/{id}", Name = "GetTaskGroupsByTeamId")]
+        /*[HttpGet("by-team-id/{id}", Name = "GetTaskGroupsByTeamId")]
         public async Task<IActionResult> GetTaskGroupsByTeamId(int id)
         {
             var taskGroups = await _repository.GetTaskGroupsByTeamId(id);
             return Ok(_mapper.Map<IEnumerable<TaskGroupReadDto>>(taskGroups));
-        }
+        }*/
     }
 }

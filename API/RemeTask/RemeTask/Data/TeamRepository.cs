@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using RemeTask.Models;
@@ -35,7 +36,12 @@ namespace RemeTask.Data
 
         public async Task<Team> GetTeamById(int id)
         {
-            return await _context.Teams.FirstOrDefaultAsync(x => x.Id == id);
+            return await _context.Teams.Include(x=> x.TaskGroups).FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<IEnumerable<TaskGroup>> GetTaskGroupsByTeamId(int id)
+        {
+            return await _context.TaskGroups.Include(x => x.Tasks).Where(x => x.TeamId == id).ToListAsync();
         }
 
         public async Task UpdateTeam(Team team)

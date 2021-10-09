@@ -11,6 +11,8 @@ namespace RemeTask.Dtos.TaskGroup
         public int Id { get; set; }
         public string Name { get; set; }
         public string Tag { get; set; }
+        public string UserId { get; set; }
+        public string TeamId { get; set; }
         public IEnumerable<TaskReadDto> Tasks { get; set; }
     }
 }

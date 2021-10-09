@@ -12,6 +12,7 @@ namespace RemeTask.Data
         Task<bool> SaveChanges();
         Task CreateTeam(Team team);
         Task<IEnumerable<Team>> GetAllTeams();
+        Task<IEnumerable<TaskGroup>> GetTaskGroupsByTeamId(int id);
         Task<Team> GetTeamById(int id);
         Task UpdateTeam(Team team);
         Task DeleteTeam(Team team);
