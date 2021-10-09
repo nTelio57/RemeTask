@@ -2,6 +2,8 @@ import 'package:remetask/Models/AuthRequest.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:remetask/Models/AuthResult.dart';
+
 String API_URL = 'remetask.herokuapp.com';
 String registerUrl = '/api/User/register';
 
@@ -24,7 +26,7 @@ class API_Manager{
 
     if(response.statusCode == 200){
       print(response.body);
-      var responseBody = AuthRequest.fromJson(jsonDecode(response.body));
+      var responseBody = AuthResult.fromJson(jsonDecode(response.body));
       return true;
     }else{
       print(response.body);
