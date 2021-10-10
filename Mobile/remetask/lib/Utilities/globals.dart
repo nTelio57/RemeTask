@@ -42,3 +42,27 @@ class LogoImage extends StatelessWidget {
     );
   }
 }
+
+class Background extends StatelessWidget{
+  final Color color;
+
+  const Background({
+    Key? key,
+    this.color = kPrimaryColor
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return background();
+  }
+
+  Widget background()
+  {
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      color: color
+    );
+  }
+
+}
