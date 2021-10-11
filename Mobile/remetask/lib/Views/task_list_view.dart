@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:remetask/Components/TaskCard.dart';
+import 'package:remetask/Models/CurrentLogin.dart';
 import 'package:remetask/Models/Task.dart';
 import 'package:remetask/Models/TaskGroup.dart';
 import 'package:remetask/Utilities/API_Manager.dart';
@@ -36,7 +37,7 @@ class TaskListView extends StatelessWidget {
       width: double.infinity,
       height: double.infinity,
       child: FutureBuilder<List<TaskGroup>>(
-        future: apiManager.TaskGroupsByUserId(1),
+        future: apiManager.TaskGroupsByUserId(CurrentLogin().user!.id),
         builder: (context, snapshot) {
           if(snapshot.connectionState == ConnectionState.done)
             {
