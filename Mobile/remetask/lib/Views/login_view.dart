@@ -1,7 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:remetask/Models/AuthRequest.dart';
+import 'package:remetask/Models/AuthResult.dart';
+import 'package:remetask/Models/CurrentLogin.dart';
+import 'package:remetask/Models/User.dart';
+import 'package:remetask/Utilities/API_Manager.dart';
 import 'package:remetask/Utilities/constants.dart';
 import 'package:remetask/Utilities/globals.dart';
+import 'package:remetask/Views/task_list_view.dart';
 
 import 'register_view.dart';
 
@@ -11,6 +17,7 @@ class LoginView extends StatefulWidget {
 }
 
 bool _passwordVisible = false;
+API_Manager _apiManager = API_Manager();
 
 class _LoginViewState extends State<LoginView> {
 
@@ -211,13 +218,20 @@ class _LoginViewState extends State<LoginView> {
   Widget loginButton()
   {
     return Container(
-      //padding: EdgeInsets.symmetric(vertical: 25.0),
-
       width: double.infinity,
       height: 50,
       child: TextButton(
-        onPressed: () {
+        onPressed: () async {
           print('Login clicked');
+          AuthResult authResult = await _apiManager.Login(_emailText.text, _passwordText.text);
+          if(authResult.success!){
+            CurrentLogin().setCurrentLogin(authResult.user!, authResult.token!);
+            Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
+                builder: (context) => TaskListView()
+            ), (Route<dynamic> route) => false);
+          }else{
+            ScaffoldMessenger.of(context).showSnackBar(new SnackBar(content: Text('Login failed. ' + authResult.errors![0])));
+          }
         } ,
         style: TextButton.styleFrom(
             primary: Colors.white,
