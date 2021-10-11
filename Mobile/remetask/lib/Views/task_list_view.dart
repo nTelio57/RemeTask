@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:remetask/Components/BottomNavigation.dart';
 import 'package:remetask/Components/TaskCard.dart';
 import 'package:remetask/Models/CurrentLogin.dart';
 import 'package:remetask/Models/Task.dart';
@@ -28,6 +29,9 @@ class TaskListView extends StatelessWidget {
           taskList()
         ],
       ),
+      bottomNavigationBar: BottomNavigationMenus(),
+      floatingActionButton: BottomNavigationButton(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 
