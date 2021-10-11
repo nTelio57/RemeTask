@@ -1,30 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:remetask/Models/CurrentLogin.dart';
+import 'package:remetask/Models/User.dart';
+import 'package:remetask/Views/task_list_view.dart';
 import 'package:remetask/Views/welcome_view.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+Widget _defaultHome = new WelcomeView();
+
+void main() async {
+
+  WidgetsFlutterBinding.ensureInitialized();
+  bool isLoggedInResult = await isLoggedIn();
+  if(isLoggedInResult){
+    _defaultHome = new TaskListView();
+  }
+
   runApp(MyApp());
 }
 
+Future<bool> isLoggedIn() async{
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  var token = prefs.getString("token");
+
+  if(token == null || token.isEmpty) return false;
+
+  var id = prefs.getInt("id");
+  var email = prefs.getString("email");
+  CurrentLogin().setCurrentLogin(new User(id!, email!), token);
+
+  return true;
+}
+
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
+
+
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: WelcomeView(),
-      //MyHomePage(title: 'Flutter Demo Home Page'),
+      home: _defaultHome,
     );
   }
 }
