@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:remetask/Models/AuthResult.dart';
+import 'package:remetask/Models/CurrentLogin.dart';
 import 'package:remetask/Utilities/API_Manager.dart';
 import 'package:remetask/Utilities/constants.dart';
 import 'package:remetask/Utilities/globals.dart';
+import 'package:remetask/Views/task_list_view.dart';
 
 import 'login_view.dart';
 
@@ -282,7 +284,10 @@ class _RegisterViewState extends State<RegisterView> {
                   _emailErrorText = authResult.errors![0];
                 });
               }else{//succeeded
-
+                CurrentLogin().setCurrentLogin(authResult.user!, authResult.token!);
+                Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
+                    builder: (context) => TaskListView()
+                ), (Route<dynamic> route) => false);
               }
             }
         } ,

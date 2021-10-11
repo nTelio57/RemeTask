@@ -7,6 +7,7 @@ import 'package:remetask/Models/TaskGroup.dart';
 
 String API_URL = 'remetask.herokuapp.com';
 String registerUrl = '/api/User/register';
+String loginUrl = '/api/User/login';
 String taskGroupsByUserId = '/api/TaskGroup/by-user-id/';
 
 Map<String, String> defaultHeaders = {
@@ -33,6 +34,22 @@ class API_Manager{
       return responseBody;
     }else{
       throw Exception('Failed to register');
+    }
+  }
+
+  Future<AuthResult> Login(String email, String password) async {
+    var authRequest = new AuthRequest(email, password);
+
+    final response = await http.post(Uri.https(API_URL, loginUrl),
+        headers: defaultHeaders,
+        body: json.encode(authRequest.toJson())
+    );
+
+    print(response.body);
+    if(response.statusCode == 200 || response.statusCode == 400){
+      return AuthResult.fromJson(jsonDecode(response.body));
+    }else{
+      throw Exception('Failed to login');
     }
   }
 
