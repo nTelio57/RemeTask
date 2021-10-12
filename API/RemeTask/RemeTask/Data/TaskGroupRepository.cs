@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using RemeTask.Models;
 using Task = System.Threading.Tasks.Task;
+using RTTask = RemeTask.Models.Task;
 
 namespace RemeTask.Data
 {
@@ -57,6 +58,12 @@ namespace RemeTask.Data
         public async Task<IEnumerable<TaskGroup>> GetTaskGroupsByTeamId(int id)
         {
             return await _context.TaskGroups.Include(x => x.Tasks).Where(x => x.TeamId == id).ToListAsync();
+        }
+
+        public async Task<RTTask> GetTaskByGroup(int groupId, int taskId)
+        {
+            var group = await GetTaskGroupById(groupId);
+            return group.Tasks.FirstOrDefault(x => x.Id == taskId);
         }
     }
 }
