@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using RemeTask.Models;
 using Task = System.Threading.Tasks.Task;
+using RTTask = RemeTask.Models.Task;
 
 namespace RemeTask.Data
 {
@@ -17,5 +18,6 @@ namespace RemeTask.Data
         Task DeleteTaskGroup(TaskGroup taskGroup);
         Task<IEnumerable<TaskGroup>> GetTaskGroupsByUserId(int id);
         Task<IEnumerable<TaskGroup>> GetTaskGroupsByTeamId(int id);
+        Task<RTTask> GetTaskByGroup(int groupId, int taskId);
     }
 }
