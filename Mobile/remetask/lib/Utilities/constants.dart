@@ -11,11 +11,11 @@ const kPrimaryLightColor = Color(0xFFD1C4E9);
 const kPrimaryDarkColor = Color(0xFF512DA8);*/
 
 //light blue theme
-const kPrimaryColor = Color(0xFF03A9F4);
+const kPrimaryColor = Color(0xFF0476bd);
 const kPrimaryLightColor = Color(0xFFB3E5FC);
 const kPrimaryDarkColor = Color(0xFF0288D1);
 
-const kSecondaryColor = Color.fromRGBO(210, 210, 210, 1);//Color(0xFFdcdcdc);
+const kSecondaryColor = Color.fromRGBO(235, 235, 235, 1);//Color(0xFFdcdcdc);
 const kSecondaryLightColor = Colors.white;
 
 const kTextOnPrimary = Colors.white;
@@ -23,18 +23,39 @@ const kTextOnSecondary = Color(0xFF212121);
 
 //const kComplementaryColor = Color.fromRGBO(244, 83, 9, 1);
 //const kComplementaryColor = Color(0xFFf44f03);
-const kComplementaryColor = Color(0xFF4CAF50);
+const kComplementaryColor = Color(0xFFbd4b04);
 
 const kIconColor = Color(0xFF757575);
+const kHintColor = Color(0xFF757575);
 
-const kTaskGood = Color(0xFF00BF3D);
-const kTaskMedium = Color(0xFFFF910A);
-const kTaskBad = Color(0xFFC23455);
-const kTaskVeryBad = Color(0xFF6F051D);
+const kTaskGood = Color(0xFF00BF3D);//Color(0xFF00BF3D);
+const kTaskMedium = Color(0xFFFF910A);//Color(0xFFFF910A);
+const kTaskBad = Color(0xFFC23455);//Color(0xFFC23455);
+const kTaskVeryBad = Color(0xFFC23455);//Color(0xFF6F051D);
+
+const kSuccessToast = Color(0xFF00BF3D);
+const kFailureToast = Color(0xFFC23455);
 
 final kHintTextStyle = TextStyle(
   color: Colors.grey[600],
-  fontFamily: 'OpenSans',
+  fontFamily: 'Nunito',
+);
+
+final kToastStyle = GoogleFonts.nunito(
+    textStyle: TextStyle(
+        color: kTextOnPrimary,
+        fontFamily: 'Nunito',
+        overflow: TextOverflow.ellipsis,
+        fontWeight: FontWeight.w500
+    )
+);
+
+final kBottomConfirmationButtonStyle = GoogleFonts.nunito(
+    textStyle: TextStyle(
+        color: kTextOnSecondary,
+        fontFamily: 'Nunito',
+        fontSize: 20,
+    )
 );
 
 final kLabelStyle = TextStyle(
@@ -43,9 +64,36 @@ final kLabelStyle = TextStyle(
   fontFamily: 'OpenSans',
 );
 
+final kTaskCreateHintFullColor = GoogleFonts.nunito(
+    textStyle: TextStyle(
+        color: kTextOnSecondary,
+        fontFamily: 'Nunito',
+        fontSize: 18,
+        overflow: TextOverflow.ellipsis
+    )
+);
+
+final kTaskCreateHintNoSize = GoogleFonts.nunito(
+    textStyle: TextStyle(
+        color: kHintColor,
+        fontFamily: 'Nunito',
+        //fontSize: 18,
+        overflow: TextOverflow.ellipsis
+    )
+);
+
+final kTaskCreateHintWithSize = GoogleFonts.nunito(
+    textStyle: TextStyle(
+        color: kHintColor,
+        fontFamily: 'Nunito',
+        fontSize: 18,
+        overflow: TextOverflow.ellipsis
+    )
+);
+
 final kTaskCardTitle = GoogleFonts.nunito(
     textStyle: TextStyle(
-      color: kTextOnPrimary,
+      color: kTextOnSecondary,
       fontWeight: FontWeight.w700,
       fontFamily: 'Nunito',
       fontSize: 18,
