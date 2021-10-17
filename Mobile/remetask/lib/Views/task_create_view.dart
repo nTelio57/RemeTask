@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:remetask/Components/TaskCreateFormComponents.dart';
+import 'package:remetask/Enums/PriorityType.dart';
 import 'package:remetask/Models/CurrentLogin.dart';
 import 'package:remetask/Models/Task.dart';
 import 'package:remetask/Models/TaskGroup.dart';
@@ -73,7 +74,7 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
   Widget topTab(Widget child)
   {
     return Container(
-      height: 150,
+      height: 125,
       width: double.infinity,
       decoration: BoxDecoration(
         color: kSecondaryLightColor,
@@ -298,7 +299,7 @@ class _FormDatePickerState extends State<FormDatePicker> {
         child: Center(
           child: Text(
               dateFormat.format(_selectedDate),
-              style: kTaskCreateHintFullColor
+              style: kTaskLabelFullColor
           ),
         ),
       ),
@@ -334,7 +335,7 @@ class _FormDatePickerState extends State<FormDatePicker> {
     return Container(
       child: Text(
         'Deadline',
-        style: kTaskCreateHintFullColor,
+        style: kTaskLabelFullColor,
       ),
     );
   }
@@ -424,7 +425,7 @@ class _FormSliderState extends State<FormSlider> {
           Expanded(
               child: Text(
                 'Priority',
-                style: kTaskCreateHintFullColor,
+                style: kTaskLabelFullColor,
               )),
           Expanded(child: slider(), flex: 2)
         ],
@@ -441,7 +442,8 @@ class _FormSliderState extends State<FormSlider> {
         min: widget.min,
         divisions: widget.max.toInt()-1,
         activeColor: kPrimaryColor,
-        label: _selectedPriority.toInt().toString(),
+        //label: _selectedPriority.toInt().toString(),
+        label: Priority.parseToString(_selectedPriority.toInt()),
         onChanged: (value) {
           setState(() {
             _selectedPriority = value;
