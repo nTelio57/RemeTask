@@ -136,13 +136,24 @@ class _TaskListViewState extends State<TaskListView> {
                               );
                             });
                       }
+                    if(direction == DismissDirection.startToEnd)
+                      {
+                        return true;
+                      }
                   },
                   background: Container(
-                    padding: EdgeInsets.only(bottom: 8),
+                    alignment: Alignment.centerLeft,
                     decoration: BoxDecoration(
+                      color: Colors.green,
                       borderRadius: BorderRadius.circular(8)
                     ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(18),
+                      child: Icon(Icons.check, color: Colors.white),
+                    ),
                   ),
+
+
                   secondaryBackground: Container(
                     decoration: BoxDecoration(
                       color: Colors.red, borderRadius: BorderRadius.circular(8)
@@ -153,8 +164,10 @@ class _TaskListViewState extends State<TaskListView> {
                     ),
                     alignment: Alignment.centerRight,
                   ),
+
+
                   child: TaskCard(task: tasks[index]),
-                  key: Key(tasks[index].id.toString()),
+                  key: UniqueKey(),
                   onDismissed: (direction)
                   {
                     if(direction == DismissDirection.endToStart)
@@ -166,6 +179,12 @@ class _TaskListViewState extends State<TaskListView> {
                         deleteTask(taskId);
                       });
                     }
+                    if(direction == DismissDirection.startToEnd)
+                      {
+                        setState(() {
+                          completeTask(tasks[index]);
+                        });
+                      }
                   },
                 ),
               ),
@@ -226,5 +245,14 @@ class _TaskListViewState extends State<TaskListView> {
   void deleteTask(int taskId) async
   {
     await API_Manager.DeleteTask(taskId);
+  }
+
+  Future completeTask(Task task) async
+  {
+    task.isCompleted = true;
+    task.completionDate = DateTime.now();
+
+    await API_Manager.UpdateTask(task.id!, task);
+    await CurrentLogin().loadTaskGroups();
   }
 }
