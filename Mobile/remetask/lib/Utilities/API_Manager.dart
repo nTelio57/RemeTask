@@ -3,12 +3,14 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:remetask/Models/AuthResult.dart';
+import 'package:remetask/Models/Task.dart';
 import 'package:remetask/Models/TaskGroup.dart';
 
 String API_URL = 'remetask.herokuapp.com';
 String registerUrl = '/api/User/register';
 String loginUrl = '/api/User/login';
 String taskGroupsByUserId = '/api/TaskGroup/by-user-id/';
+String postTask = '/api/Task';
 
 Map<String, String> defaultHeaders = {
   'Content-Type': 'application/json; charset=UTF-8',
@@ -67,6 +69,19 @@ class API_Manager{
       }
     else{
       throw Exception('Failed to get task groups by user id');
+    }
+  }
+
+  static Future<Task> PostTask(Task task) async {
+    final response = await http.post(Uri.https(API_URL, postTask),
+        headers: defaultJWTHeaders,
+        body: json.encode(task.toJson())
+    );
+
+    if(response.statusCode == 201){
+      return Task.fromJson(jsonDecode(response.body));
+    }else{
+      throw Exception('Failed to post task');
     }
   }
 }
