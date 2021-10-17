@@ -5,7 +5,7 @@ import 'Team.dart';
 import 'User.dart';
 part 'TaskGroup.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class TaskGroup {
   TaskGroup(this.id, this.name, this.tag, this.user, this.team, this.tasks);
 

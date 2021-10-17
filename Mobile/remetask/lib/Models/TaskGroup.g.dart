@@ -25,7 +25,7 @@ Map<String, dynamic> _$TaskGroupToJson(TaskGroup instance) => <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
       'tag': instance.tag,
-      'user': instance.user,
-      'team': instance.team,
-      'tasks': instance.tasks,
+      'user': instance.user?.toJson(),
+      'team': instance.team?.toJson(),
+      'tasks': instance.tasks.map((e) => e.toJson()).toList(),
     };

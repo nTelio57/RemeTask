@@ -15,7 +15,7 @@ class TaskCard extends StatelessWidget {
     this.fontColor = kTextOnPrimary
   }) : super(key: key);
 
-  final double _borderRadius = 6;
+  final double _borderRadius = 8;
 
   @override
   Widget build(BuildContext context) {
@@ -26,15 +26,12 @@ class TaskCard extends StatelessWidget {
   {
     return Container(
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 3.0),
+        padding: const EdgeInsets.symmetric(vertical: 0.0),
         child: Card(
-          color: kSecondaryLightColor,
+          elevation: 0,
+          color: Colors.white,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(_borderRadius),
-              side: BorderSide(
-                color: color,
-                width: 5,
-              )
           ),
           child: InkWell(
             splashColor: kPrimaryDarkColor.withAlpha(50),
@@ -53,12 +50,8 @@ class TaskCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                          width: 240,
+                          width: double.infinity,
                           alignment: Alignment.centerLeft,
-                          decoration: BoxDecoration(
-                            color: color,
-                            borderRadius: BorderRadius.only(topLeft: Radius.circular(_borderRadius), bottomRight: Radius.circular(_borderRadius), bottomLeft: Radius.circular(_borderRadius)),
-                          ),
                           child: Padding(
                             padding: const EdgeInsets.only(left: 10, top: 7, right: 2),
                             child: Container(
@@ -69,7 +62,6 @@ class TaskCard extends StatelessWidget {
                               ),
                               alignment: Alignment.centerLeft,
                               height: 25,
-                              //color: Colors.red,
                             ),
                           ),
                         ),
@@ -79,7 +71,6 @@ class TaskCard extends StatelessWidget {
                             child: Container(
                               alignment: Alignment.bottomLeft,
                               height: 25,
-                              //color: Colors.red,
                               child: Text(
                                 tag,
                                 style: kTaskCardTag,
