@@ -28,6 +28,8 @@ Future<bool> isLoggedIn() async{
   var email = prefs.getString("email");
   CurrentLogin().setCurrentLogin(new User(id!, email!), token);
 
+  await CurrentLogin().load();
+
   return true;
 }
 
