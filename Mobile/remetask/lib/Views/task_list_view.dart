@@ -23,6 +23,13 @@ class TaskListView extends StatefulWidget {
 class _TaskListViewState extends State<TaskListView> {
   @override
   Widget build(BuildContext context) {
+
+    int daysForDeadline = 5;
+    CurrentLogin user = CurrentLogin();
+    var allTasks = sortTaskList(user.taskGroups!);
+    var deadlines = sortTaskList(user.taskGroups!).where((task) => isDeadline(task, daysForDeadline)).toList();
+    var completed = sortTaskList(user.taskGroups!).where((task) => task.isCompleted!).toList();
+
     return DefaultTabController(
       length: 3,
       initialIndex: 1,
@@ -53,19 +60,19 @@ class _TaskListViewState extends State<TaskListView> {
             Stack(
               children: [
                 Background(color: kSecondaryColor),
-                TaskCreateForm()
+                taskList(allTasks)
               ],
             ),
             Stack(
               children: [
                 Background(color: kSecondaryColor),
-                taskListView()
+                taskList(deadlines)
               ],
             ),
             Stack(
               children: [
                 Background(color: kSecondaryColor),
-                taskListView()
+                taskList(completed)
               ],
             ),
           ],
@@ -88,41 +95,24 @@ class _TaskListViewState extends State<TaskListView> {
     );
   }
 
-  Widget taskListView()
+  Widget taskList(List<Task> tasks)
   {
-    CurrentLogin user = CurrentLogin();
-    var sortedTasks = sortedTaskList(user.taskGroups!);
-
     return Padding(
       padding: const EdgeInsets.only(bottom: 40.0),
       child: Container(
-        width: double.infinity,
-        height: double.infinity,
-        child: Container(
-          child: taskList(sortedTasks),
-        )
+        child: ListView.builder(
+          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+          itemCount: tasks.length,
+          itemBuilder: (context, index)
+          {
+            return TaskCard(task: tasks[index]);
+          },
+        ),
       ),
     );
   }
 
-  Widget taskList(List<Task> tasks)
-  {
-    return Container(
-      child: ListView.builder(
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-        itemCount: tasks.length,
-        itemBuilder: (context, index)
-        {
-          var time = timeLeft(tasks[index].deadline);
-          var colors = cardColors(tasks[index].deadline.difference(DateTime.now()).inDays);
-          return TaskCard(title: tasks[index].title, tag: tasks[index].taskGroup!.tag, time: time[0], timeType: time[1], color: colors[0], fontColor: colors[1]);
-
-        },
-      ),
-    );
-  }
-
-  List<Task> sortedTaskList(List<TaskGroup> taskGroups)
+  List<Task> sortTaskList(List<TaskGroup> taskGroups)
   {
     var tasks = <Task>[];
     for(var i = 0; i < taskGroups.length; i++){
@@ -135,37 +125,11 @@ class _TaskListViewState extends State<TaskListView> {
     return tasks;
   }
 
-  List<String> timeLeft(DateTime deadline)
+  bool isDeadline(Task task, int deadlineDaysThreshold)
   {
-    var list = <String>['',''];
-    var diff =  deadline.difference(DateTime.now());
-    if(diff.inDays > 1){
-      list[0] = diff.inDays.toString();
-      list[1] = 'days';
-    }else{
-      list[0] = diff.inHours.toString();
-      list[1] = 'hours';
-    }
-    return list;
-  }
-
-  List<Color> cardColors(int daysLeft)
-  {
-    var list = <Color>[kTaskGood, kTextOnPrimary];
-
-    if(daysLeft > 9){//good
-      list[0] = kTaskGood;
-      list[1] = kTextOnPrimary;
-    }else if(daysLeft > 5){//medium
-      list[0] = kTaskMedium;
-      list[1] = kTextOnPrimary;
-    }else if(daysLeft > 2){//bad
-      list[0] = kTaskBad;
-      list[1] = kTextOnPrimary;
-    }else{//very bad
-      list[0] = kTaskVeryBad;
-      list[1] = kTextOnPrimary;
-    }
-    return list;
+    var timeLeft =  task.deadline.difference(DateTime.now());
+    if(timeLeft.inDays <= deadlineDaysThreshold && !task.isCompleted!)
+      return true;
+    return false;
   }
 }
