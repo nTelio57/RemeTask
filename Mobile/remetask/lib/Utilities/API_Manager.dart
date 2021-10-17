@@ -7,10 +7,17 @@ import 'package:remetask/Models/Task.dart';
 import 'package:remetask/Models/TaskGroup.dart';
 
 String API_URL = 'remetask.herokuapp.com';
+
+//Auth
 String registerUrl = '/api/User/register';
 String loginUrl = '/api/User/login';
+
+//Task groups
 String taskGroupsByUserId = '/api/TaskGroup/by-user-id/';
+
+//Tasks
 String postTask = '/api/Task';
+String deleteTask = '/api/Task/';
 
 Map<String, String> defaultHeaders = {
   'Content-Type': 'application/json; charset=UTF-8',
@@ -82,6 +89,18 @@ class API_Manager{
       return Task.fromJson(jsonDecode(response.body));
     }else{
       throw Exception('Failed to post task');
+    }
+  }
+
+  static Future<bool> DeleteTask(int taskId) async {
+    final response = await http.delete(Uri.https(API_URL, (deleteTask + taskId.toString())),
+        headers: defaultJWTHeaders
+    );
+
+    if(response.statusCode == 204){
+      return true;
+    }else{
+      throw Exception('Failed to delete task');
     }
   }
 }
