@@ -7,11 +7,10 @@ part of 'Task.dart';
 // **************************************************************************
 
 Task _$TaskFromJson(Map<String, dynamic> json) => Task(
-      json['id'] as int,
       json['title'] as String,
       json['description'] as String,
       DateTime.parse(json['deadline'] as String),
-      json['isCompleted'] as bool,
+      json['isCompleted'] as bool?,
       json['completionDate'] == null
           ? null
           : DateTime.parse(json['completionDate'] as String),
@@ -19,7 +18,8 @@ Task _$TaskFromJson(Map<String, dynamic> json) => Task(
       json['taskGroup'] == null
           ? null
           : TaskGroup.fromJson(json['taskGroup'] as Map<String, dynamic>),
-    );
+      json['taskGroupId'] as int?,
+    )..id = json['id'] as int?;
 
 Map<String, dynamic> _$TaskToJson(Task instance) => <String, dynamic>{
       'id': instance.id,
@@ -29,5 +29,6 @@ Map<String, dynamic> _$TaskToJson(Task instance) => <String, dynamic>{
       'isCompleted': instance.isCompleted,
       'completionDate': instance.completionDate?.toIso8601String(),
       'priority': instance.priority,
-      'taskGroup': instance.taskGroup,
+      'taskGroup': instance.taskGroup?.toJson(),
+      'taskGroupId': instance.taskGroupId,
     };
