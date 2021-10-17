@@ -21,14 +21,24 @@ Task _$TaskFromJson(Map<String, dynamic> json) => Task(
       json['taskGroupId'] as int?,
     )..id = json['id'] as int?;
 
-Map<String, dynamic> _$TaskToJson(Task instance) => <String, dynamic>{
-      'id': instance.id,
-      'title': instance.title,
-      'description': instance.description,
-      'deadline': instance.deadline.toIso8601String(),
-      'isCompleted': instance.isCompleted,
-      'completionDate': instance.completionDate?.toIso8601String(),
-      'priority': instance.priority,
-      'taskGroup': instance.taskGroup?.toJson(),
-      'taskGroupId': instance.taskGroupId,
-    };
+Map<String, dynamic> _$TaskToJson(Task instance) {
+  final val = <String, dynamic>{
+    'id': instance.id,
+    'title': instance.title,
+    'description': instance.description,
+    'deadline': instance.deadline.toIso8601String(),
+    'isCompleted': instance.isCompleted,
+    'completionDate': instance.completionDate?.toIso8601String(),
+    'priority': instance.priority,
+  };
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('taskGroup', instance.taskGroup?.toJson());
+  val['taskGroupId'] = instance.taskGroupId;
+  return val;
+}
