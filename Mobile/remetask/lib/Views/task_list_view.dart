@@ -9,74 +9,114 @@ import 'package:remetask/Models/TaskGroup.dart';
 import 'package:remetask/Utilities/API_Manager.dart';
 import 'package:remetask/Utilities/constants.dart';
 import 'package:remetask/Utilities/globals.dart';
+import 'package:remetask/Views/task_create_view.dart';
 
 final API_Manager apiManager = API_Manager();
 
-class TaskListView extends StatelessWidget {
+class TaskListView extends StatefulWidget {
   const TaskListView({Key? key}) : super(key: key);
 
   @override
+  State<TaskListView> createState() => _TaskListViewState();
+}
+
+class _TaskListViewState extends State<TaskListView> {
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Task list'),
-        backgroundColor: kPrimaryColor,
-        centerTitle: true,
+    return DefaultTabController(
+      length: 3,
+      initialIndex: 1,
+      child: Scaffold(
+        extendBody: true,
+        appBar: AppBar(
+          //title: Text('Task list'),
+          backgroundColor: kSecondaryLightColor,
+          foregroundColor: kPrimaryColor,
+          centerTitle: true,
+          bottom: TabBar(
+            labelColor: kPrimaryColor,
+            tabs: [
+              Tab(
+                text: 'ALL TASKS' ,
+              ),
+              Tab(
+                text: 'DEADLINES',
+              ),
+              Tab(
+                text: 'COMPLETED',
+              ),
+            ],
+          ),
+        ),
+        body: TabBarView(
+          children: [
+            Stack(
+              children: [
+                Background(color: kSecondaryColor),
+                TaskCreateForm()
+              ],
+            ),
+            Stack(
+              children: [
+                Background(color: kSecondaryColor),
+                taskListView()
+              ],
+            ),
+            Stack(
+              children: [
+                Background(color: kSecondaryColor),
+                taskListView()
+              ],
+            ),
+          ],
+        ),
+        bottomNavigationBar: BottomNavigationMenus(),
+        floatingActionButton: fabButton(),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       ),
-      body: Stack(
-        children: [
-          Background(color: kSecondaryColor),
-          taskList()
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationMenus(),
-      floatingActionButton: BottomNavigationButton(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 
-  Widget taskList()
+  Widget fabButton(){
+    return FloatingActionButton(
+      onPressed: (){
+        Navigator.push(context, new MaterialPageRoute(
+            builder: (context) => TaskCreateForm())).then((value) => setState(() {}));
+      },
+      child: Icon(Icons.add, color: Colors.white),
+      backgroundColor: kComplementaryColor,
+    );
+  }
+
+  Widget taskListView()
+  {
+    CurrentLogin user = CurrentLogin();
+    var sortedTasks = sortedTaskList(user.taskGroups!);
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 40.0),
+      child: Container(
+        width: double.infinity,
+        height: double.infinity,
+        child: Container(
+          child: taskList(sortedTasks),
+        )
+      ),
+    );
+  }
+
+  Widget taskList(List<Task> tasks)
   {
     return Container(
-      width: double.infinity,
-      height: double.infinity,
-      child: FutureBuilder<List<TaskGroup>>(
-        future: apiManager.TaskGroupsByUserId(CurrentLogin().user!.id),
-        builder: (context, snapshot) {
-          if(snapshot.connectionState == ConnectionState.done)
-            {
-              if(snapshot.hasError)
-                {
-                  print('kazkas blogai ');
-                }
+      child: ListView.builder(
+        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+        itemCount: tasks.length,
+        itemBuilder: (context, index)
+        {
+          var time = timeLeft(tasks[index].deadline);
+          var colors = cardColors(tasks[index].deadline.difference(DateTime.now()).inDays);
+          return TaskCard(title: tasks[index].title, tag: tasks[index].taskGroup!.tag, time: time[0], timeType: time[1], color: colors[0], fontColor: colors[1]);
 
-              List<TaskGroup> taskGroups = snapshot.data!;
-              var sortedTasks = sortedTaskList(taskGroups);
-
-              return Container(
-                child: ListView.builder(
-                  padding: EdgeInsets.all(20),
-                  itemCount: sortedTasks.length,
-                  itemBuilder: (context, index)
-                  {
-                    var time = timeLeft(sortedTasks[index].deadline);
-                    var colors = cardColors(sortedTasks[index].deadline.difference(DateTime.now()).inDays);
-                    return TaskCard(title: sortedTasks[index].title, tag: sortedTasks[index].taskGroup!.tag, time: time[0], timeType: time[1], color: colors[0], fontColor: colors[1]);
-                  },
-                ),
-              );
-            }
-          else
-            {
-              return Center(
-                child: Container(
-                  width: 50,
-                  height: 50,
-                  child: CircularProgressIndicator(
-                  )
-                ),
-              );
-            }
         },
       ),
     );
@@ -113,20 +153,19 @@ class TaskListView extends StatelessWidget {
   {
     var list = <Color>[kTaskGood, kTextOnPrimary];
 
-    if(daysLeft > 10){//green
+    if(daysLeft > 9){//good
       list[0] = kTaskGood;
       list[1] = kTextOnPrimary;
-    }else if(daysLeft > 6){//yellow
+    }else if(daysLeft > 5){//medium
       list[0] = kTaskMedium;
       list[1] = kTextOnPrimary;
-    }else if(daysLeft > 2){//orange
+    }else if(daysLeft > 2){//bad
       list[0] = kTaskBad;
       list[1] = kTextOnPrimary;
-    }else{//red
+    }else{//very bad
       list[0] = kTaskVeryBad;
       list[1] = kTextOnPrimary;
     }
     return list;
   }
-
 }
