@@ -18,6 +18,7 @@ String taskGroupsByUserId = '/api/TaskGroup/by-user-id/';
 //Tasks
 String postTask = '/api/Task';
 String deleteTask = '/api/Task/';
+String updateTask = '/api/Task/';
 
 Map<String, String> defaultHeaders = {
   'Content-Type': 'application/json; charset=UTF-8',
@@ -101,6 +102,22 @@ class API_Manager{
       return true;
     }else{
       throw Exception('Failed to delete task');
+    }
+  }
+
+  static Future<bool> UpdateTask(int taskId, Task task) async {
+
+    task.taskGroup = null;
+
+    final response = await http.put(Uri.https(API_URL, (updateTask + taskId.toString())),
+        headers: defaultJWTHeaders,
+        body: json.encode(task.toJson())
+    );
+
+    if(response.statusCode == 204){
+      return true;
+    }else{
+      throw Exception('Failed to update task');
     }
   }
 }
