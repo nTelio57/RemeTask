@@ -64,7 +64,7 @@ final kLabelStyle = TextStyle(
   fontFamily: 'OpenSans',
 );
 
-final kTaskCreateHintFullColor = GoogleFonts.nunito(
+final kTaskLabelFullColor = GoogleFonts.nunito(
     textStyle: TextStyle(
         color: kTextOnSecondary,
         fontFamily: 'Nunito',

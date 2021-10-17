@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:remetask/Models/Task.dart';
 import 'package:remetask/Utilities/constants.dart';
+import 'package:remetask/Views/task_read_view.dart';
 
 class TaskCard extends StatelessWidget {
 
@@ -24,10 +25,10 @@ class TaskCard extends StatelessWidget {
     color = colors[0];
     fontColor = colors[1];
 
-    return taskCard();
+    return taskCard(context);
   }
 
-  Widget taskCard()
+  Widget taskCard(BuildContext context)
   {
     return Container(
       child: Padding(
@@ -42,6 +43,8 @@ class TaskCard extends StatelessWidget {
             splashColor: kPrimaryDarkColor.withAlpha(50),
             onTap: () {
               print('Card tapped');
+              Navigator.push(context, new MaterialPageRoute(
+                  builder: (context) => TaskReadForm(task: task)));
             },
             borderRadius: BorderRadius.circular(_borderRadius),
             child: Container(
