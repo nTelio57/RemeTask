@@ -55,18 +55,21 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
       children: [
         Background(color: kSecondaryColor),
         confirmationButtons(),
-        Column(
-          children: [
-            topTab(FormTextfield(hintText: 'Title', fontSize: 22, controller: _titleController)),
-            SizedBox(height: 20),
-            buttonTab(FormDatePicker()),
-            SizedBox(height: 20),
-            middleTab(FormDropdownList(items: CurrentLogin().taskGroups)),
-            SizedBox(height: 20),
-            middleTab(FormSlider()),
-            SizedBox(height: 20),
-            middleTab(FormTextfield(hintText: 'Description', expands: true, maxHeight: 150, minHeight: 50, controller: _descriptionController)),
-          ],)
+        SingleChildScrollView(
+          child: Column(
+            children: [
+              topTab(FormTextfield(hintText: 'Title', fontSize: 22, controller: _titleController)),
+              SizedBox(height: 20),
+              buttonTab(FormDatePicker()),
+              SizedBox(height: 20),
+              middleTab(FormDropdownList(items: CurrentLogin().taskGroups)),
+              SizedBox(height: 20),
+              middleTab(FormSlider()),
+              SizedBox(height: 20),
+              middleTab(FormTextfield(hintText: 'Description', expands: true, maxHeight: 150, minHeight: 50, controller: _descriptionController)),
+              SizedBox(height: 80),
+            ],),
+        )
       ],
     );
   }
