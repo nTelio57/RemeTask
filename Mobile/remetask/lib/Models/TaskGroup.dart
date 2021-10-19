@@ -7,12 +7,11 @@ part 'TaskGroup.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class TaskGroup {
-  TaskGroup(this.id, this.name, this.tag, this.user, this.workspace, this.tasks);
+  TaskGroup(this.id, this.name, this.tag, this.workspace, this.tasks);
 
   int id;
   String name;
   String tag;
-  User? user;
   Workspace? workspace;
   List<Task> tasks;
 

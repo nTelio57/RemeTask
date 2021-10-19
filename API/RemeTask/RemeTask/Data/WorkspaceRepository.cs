@@ -46,7 +46,7 @@ namespace RemeTask.Data
 
         public async Task<IEnumerable<Workspace>> GetWorkspacesByUserId(int id)
         {
-            return await _context.UserWorkspaces.Include(x => x.Workspace).Where(x => x.UserId == id).Select(x => x.Workspace).ToListAsync();
+            return await _context.UserWorkspaces.Include(x => x.Workspace).Include(x => x.Workspace.TaskGroups).ThenInclude(x => x.Tasks).Where(x => x.UserId == id).Select(x => x.Workspace).ToListAsync();
         }
 
         public async Task UpdateWorkspace(Workspace workspace)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using RemeTask.Dtos.TaskGroup;
 
 namespace RemeTask.Dtos.Workspace
 {
@@ -9,5 +10,7 @@ namespace RemeTask.Dtos.Workspace
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public int Owner { get; set; }
+        public IEnumerable<TaskGroupReadDto> TaskGroups { get; set; }
     }
 }
