@@ -28,6 +28,8 @@ class _TaskReadFormState extends State<TaskReadForm> {
     );
   }
 
+  //#region Form
+
   Widget readForm()
   {
     return Stack(
@@ -61,7 +63,7 @@ class _TaskReadFormState extends State<TaskReadForm> {
           titleRow(),
           SizedBox(height: 40),
           tabRow(label(dateFormat.format(widget.task.deadline)), 'Deadline'),
-          tabRow(label(widget.task.taskGroup!.name), 'Group'),
+          tabRow(longText(widget.task.taskGroup!.name, textAlign: TextAlign.right), 'Group'),
           tabRow(label(Priority.parseToString(widget.task.priority)), 'Priority')
         ],
       ),
@@ -128,11 +130,12 @@ class _TaskReadFormState extends State<TaskReadForm> {
     );
   }
 
-  Widget longText(String text)
+  Widget longText(String text, {TextAlign textAlign = TextAlign.left})
   {
     return Container(
       child: Text(
         text,
+        textAlign: textAlign,
         style: GoogleFonts.nunito(
             textStyle: TextStyle(
               color: kTextOnSecondary,
@@ -143,5 +146,8 @@ class _TaskReadFormState extends State<TaskReadForm> {
       ),
     );
   }
+
+//#endregion
+
 
 }

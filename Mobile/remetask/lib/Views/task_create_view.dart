@@ -54,7 +54,7 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
     return Stack(
       children: [
         Background(color: kSecondaryColor),
-        confirmationButtons(),
+
         SingleChildScrollView(
           child: Column(
             children: [
@@ -68,8 +68,10 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
               SizedBox(height: 20),
               middleTab(FormTextfield(hintText: 'Description', expands: true, maxHeight: 150, minHeight: 50, controller: _descriptionController)),
               SizedBox(height: 80),
-            ],),
-        )
+            ],
+          ),
+        ),
+        confirmationButtons(),
       ],
     );
   }
