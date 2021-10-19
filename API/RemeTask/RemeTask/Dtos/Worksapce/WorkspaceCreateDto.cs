@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace RemeTask.Dtos.Team
+namespace RemeTask.Dtos.Workspace
 {
-    public class TeamUpdateDto
+    public class WorkspaceCreateDto
     {
         public string Name { get; set; }
+        public int? OwnerId { get; set; }
     }
 }

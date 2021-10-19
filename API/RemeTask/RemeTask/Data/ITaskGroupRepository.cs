@@ -17,7 +17,7 @@ namespace RemeTask.Data
         Task UpdateTaskGroup(TaskGroup taskGroup);
         Task DeleteTaskGroup(TaskGroup taskGroup);
         Task<IEnumerable<TaskGroup>> GetTaskGroupsByUserId(int id);
-        Task<IEnumerable<TaskGroup>> GetTaskGroupsByTeamId(int id);
+        Task<IEnumerable<TaskGroup>> GetTaskGroupsByWorkspaceId(int id);
         Task<RTTask> GetTaskByGroup(int groupId, int taskId);
     }
 }

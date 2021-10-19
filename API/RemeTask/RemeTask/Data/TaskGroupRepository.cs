@@ -55,9 +55,9 @@ namespace RemeTask.Data
             return await _context.TaskGroups.Include(x => x.Tasks).Where(x => x.UserId == id).ToListAsync();
         }
 
-        public async Task<IEnumerable<TaskGroup>> GetTaskGroupsByTeamId(int id)
+        public async Task<IEnumerable<TaskGroup>> GetTaskGroupsByWorkspaceId(int id)
         {
-            return await _context.TaskGroups.Include(x => x.Tasks).Where(x => x.TeamId == id).ToListAsync();
+            return await _context.TaskGroups.Include(x => x.Tasks).Where(x => x.WorkspaceId == id).ToListAsync();
         }
 
         public async Task<RTTask> GetTaskByGroup(int groupId, int taskId)

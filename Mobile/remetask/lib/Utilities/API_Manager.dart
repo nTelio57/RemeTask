@@ -68,6 +68,7 @@ class API_Manager{
         headers: defaultJWTHeaders
     );
 
+    print(response.statusCode);
     if(response.statusCode == 200)
       {
         List<dynamic> jsonData = json.decode(response.body);

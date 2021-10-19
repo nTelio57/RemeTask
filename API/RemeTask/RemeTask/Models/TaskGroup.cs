@@ -15,8 +15,8 @@ namespace RemeTask.Models
 
         public int? UserId { get; set; }
         public User User { get; set; }
-        public int? TeamId { get; set; }
-        public Team Team { get; set; }
+        public int? WorkspaceId { get; set; }
+        public Workspace Workspace { get; set; }
         public ICollection<Task> Tasks { get; set; }
     }
 }

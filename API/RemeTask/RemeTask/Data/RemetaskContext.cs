@@ -11,49 +11,49 @@ namespace RemeTask.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Task> Tasks { get; set; }
         public DbSet<TaskGroup> TaskGroups { get; set; }
-        public DbSet<Team> Teams { get; set; }
-        public DbSet<UserTeam> UserTeams { get; set; }
+        public DbSet<Workspace> Workspaces { get; set; }
+        public DbSet<UserWorkspace> UserWorkspaces { get; set; }
         public RemetaskContext(DbContextOptions<RemetaskContext> opt) : base(opt)
         {
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<UserTeam>().HasKey(ut => new {ut.UserId, ut.TeamId});
+            modelBuilder.Entity<UserWorkspace>().HasKey(ut => new {ut.UserId, WorkspaceId = ut.WorkspaceId});
             SeedDatabase(modelBuilder);
         }
 
         void SeedDatabase(ModelBuilder modelBuilder)
         {
             SeedUsers(modelBuilder);
-            SeedTeams(modelBuilder);
-            SeedUserTeams(modelBuilder);
+            SeedWorkspaces(modelBuilder);
+            SeedUserWorksapces(modelBuilder);
             SeedTaskGroups(modelBuilder);
-            SeedTasks(modelBuilder);
+            SeedTasks(modelBuilder); 
         }
 
         void SeedUsers(ModelBuilder modelBuilder)
         {
-            var user1 = new User { Id = 1, Email = "vienas@test.com", Password = "r08fhHamhLI9qMfjLWZqMduOPvKfIJhCmmxIy53RMUI=", Salt = "/CAuKyuKhVVR5B6oLjfQwAzC9eJIhju0xubUPMPiyWQ="};
+            var user1 = new User { Id = 1, Email = "test@gmail.com", Password = "r08fhHamhLI9qMfjLWZqMduOPvKfIJhCmmxIy53RMUI=", Salt = "/CAuKyuKhVVR5B6oLjfQwAzC9eJIhju0xubUPMPiyWQ="};
             var user2 = new User { Id = 2, Email = "du@test.com", Password = "G9Jr7PFw0PecDsLlJhCM2LyxzWtKD40a/GmzAOqn77Y=", Salt = "p7JlJExiWZo/cR1sHBm2j1DPsTE8MXO3NAEWya9/Alo=" };
             var user3 = new User { Id = 3, Email = "vitrysenas@test.com", Password = "s+PMYaajIcGUnVFcGWaRIRxV3nPUGL4i4aa2MWN2Gdc=", Salt = "qf9CdzHJz2V323ul6v/qbg87Enbqa84RyRcQhHpV4/A=" };
 
             modelBuilder.Entity<User>().HasData(user1, user2, user3);
         }
 
-        void SeedTeams(ModelBuilder modelBuilder)
+        void SeedWorkspaces(ModelBuilder modelBuilder)
         {
-            var team1 = new Team {Id = 1, Name = "Team1", OwnerId = 1};
+            var workspace1 = new Workspace {Id = 1, Name = "Workspace1", OwnerId = 1};
 
-            modelBuilder.Entity<Team>().HasData(team1);
+            modelBuilder.Entity<Workspace>().HasData(workspace1);
         }
 
-        void SeedUserTeams(ModelBuilder modelBuilder)
+        void SeedUserWorksapces(ModelBuilder modelBuilder)
         {
-            var userTeam1 = new UserTeam {TeamId = 1, UserId = 1};
-            var userTeam2 = new UserTeam { TeamId = 1, UserId = 2 };
+            var userWorkspace1 = new UserWorkspace {WorkspaceId = 1, UserId = 1};
+            var userWorkspace2 = new UserWorkspace { WorkspaceId = 1, UserId = 2 };
 
-            modelBuilder.Entity<UserTeam>().HasData(userTeam1, userTeam2);
+            modelBuilder.Entity<UserWorkspace>().HasData(userWorkspace1, userWorkspace2);
         }
 
         void SeedTaskGroups(ModelBuilder modelBuilder)
@@ -61,8 +61,8 @@ namespace RemeTask.Data
             var taskGroup1 = new TaskGroup {Id = 1, Name = "Matematika", Tag = "MAT", UserId = 1};
             var taskGroup2 = new TaskGroup { Id = 2, Name = "Informatika", Tag = "INFO", UserId = 1 };
             var taskGroup3 = new TaskGroup { Id = 3, Name = "Anglu", Tag = "ENG", UserId = 2 };
-            var taskGroup4 = new TaskGroup { Id = 4, Name = "Fizika", Tag = "FIZ", TeamId = 1 };
-            var taskGroup5 = new TaskGroup { Id = 5, Name = "Objektinis programavimas", Tag = "OOP", TeamId = 1 };
+            var taskGroup4 = new TaskGroup { Id = 4, Name = "Fizika", Tag = "FIZ", WorkspaceId = 1 };
+            var taskGroup5 = new TaskGroup { Id = 5, Name = "Objektinis programavimas", Tag = "OOP", WorkspaceId = 1 };
 
             modelBuilder.Entity<TaskGroup>().HasData(taskGroup1, taskGroup2, taskGroup3, taskGroup4, taskGroup5);
         }

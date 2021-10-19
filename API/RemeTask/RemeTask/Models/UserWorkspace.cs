@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 
 namespace RemeTask.Models
 {
-    public class UserTeam
+    public class UserWorkspace
     {
         public int UserId { get; set; }
         public User User { get; set; }
 
-        public int TeamId { get; set; }
-        public Team Team { get; set; }
+        public int WorkspaceId { get; set; }
+        public Workspace Workspace { get; set; }
     }
 }

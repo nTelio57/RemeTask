@@ -10,7 +10,7 @@ Widget _defaultHome = new WelcomeView();
 void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
-  bool isLoggedInResult = await isLoggedIn();
+  bool isLoggedInResult = false;await isLoggedIn();
   if(isLoggedInResult){
     _defaultHome = new TaskListView();
   }

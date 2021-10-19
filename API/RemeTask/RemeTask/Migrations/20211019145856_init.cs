@@ -4,7 +4,7 @@ using MySql.EntityFrameworkCore.Metadata;
 
 namespace RemeTask.Migrations
 {
-    public partial class mysql : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -24,7 +24,7 @@ namespace RemeTask.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Teams",
+                name: "Workspaces",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -34,9 +34,9 @@ namespace RemeTask.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Teams", x => x.Id);
+                    table.PrimaryKey("PK_Workspaces", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Teams_Users_OwnerId",
+                        name: "FK_Workspaces_Users_OwnerId",
                         column: x => x.OwnerId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -52,45 +52,45 @@ namespace RemeTask.Migrations
                     Name = table.Column<string>(type: "text", nullable: true),
                     Tag = table.Column<string>(type: "text", nullable: true),
                     UserId = table.Column<int>(type: "int", nullable: true),
-                    TeamId = table.Column<int>(type: "int", nullable: true)
+                    WorkspaceId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TaskGroups", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_TaskGroups_Teams_TeamId",
-                        column: x => x.TeamId,
-                        principalTable: "Teams",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_TaskGroups_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_TaskGroups_Workspaces_WorkspaceId",
+                        column: x => x.WorkspaceId,
+                        principalTable: "Workspaces",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserTeams",
+                name: "UserWorkspaces",
                 columns: table => new
                 {
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    TeamId = table.Column<int>(type: "int", nullable: false)
+                    WorkspaceId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserTeams", x => new { x.UserId, x.TeamId });
+                    table.PrimaryKey("PK_UserWorkspaces", x => new { x.UserId, x.WorkspaceId });
                     table.ForeignKey(
-                        name: "FK_UserTeams_Teams_TeamId",
-                        column: x => x.TeamId,
-                        principalTable: "Teams",
+                        name: "FK_UserWorkspaces_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserTeams_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
+                        name: "FK_UserWorkspaces_Workspaces_WorkspaceId",
+                        column: x => x.WorkspaceId,
+                        principalTable: "Workspaces",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -137,26 +137,26 @@ namespace RemeTask.Migrations
 
             migrationBuilder.InsertData(
                 table: "TaskGroups",
-                columns: new[] { "Id", "Name", "Tag", "TeamId", "UserId" },
+                columns: new[] { "Id", "Name", "Tag", "UserId", "WorkspaceId" },
                 values: new object[,]
                 {
-                    { 1, "Matematika", "MAT", null, 1 },
-                    { 2, "Informatika", "INFO", null, 1 },
-                    { 3, "Anglu", "ENG", null, 2 }
+                    { 1, "Matematika", "MAT", 1, null },
+                    { 2, "Informatika", "INFO", 1, null },
+                    { 3, "Anglu", "ENG", 2, null }
                 });
 
             migrationBuilder.InsertData(
-                table: "Teams",
+                table: "Workspaces",
                 columns: new[] { "Id", "Name", "OwnerId" },
-                values: new object[] { 1, "Team1", 1 });
+                values: new object[] { 1, "Workspace1", 1 });
 
             migrationBuilder.InsertData(
                 table: "TaskGroups",
-                columns: new[] { "Id", "Name", "Tag", "TeamId", "UserId" },
+                columns: new[] { "Id", "Name", "Tag", "UserId", "WorkspaceId" },
                 values: new object[,]
                 {
-                    { 4, "Fizika", "FIZ", 1, null },
-                    { 5, "Objektinis programavimas", "OOP", 1, null }
+                    { 4, "Fizika", "FIZ", null, 1 },
+                    { 5, "Objektinis programavimas", "OOP", null, 1 }
                 });
 
             migrationBuilder.InsertData(
@@ -174,12 +174,12 @@ namespace RemeTask.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "UserTeams",
-                columns: new[] { "TeamId", "UserId" },
+                table: "UserWorkspaces",
+                columns: new[] { "UserId", "WorkspaceId" },
                 values: new object[,]
                 {
                     { 1, 1 },
-                    { 1, 2 }
+                    { 2, 1 }
                 });
 
             migrationBuilder.InsertData(
@@ -198,14 +198,14 @@ namespace RemeTask.Migrations
                 values: new object[] { 9, new DateTime(2021, 11, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2021, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "Labai didelis aprasymas", true, 4, 4, "Lab6" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_TaskGroups_TeamId",
-                table: "TaskGroups",
-                column: "TeamId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_TaskGroups_UserId",
                 table: "TaskGroups",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TaskGroups_WorkspaceId",
+                table: "TaskGroups",
+                column: "WorkspaceId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tasks_TaskGroupId",
@@ -213,14 +213,14 @@ namespace RemeTask.Migrations
                 column: "TaskGroupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Teams_OwnerId",
-                table: "Teams",
-                column: "OwnerId");
+                name: "IX_UserWorkspaces_WorkspaceId",
+                table: "UserWorkspaces",
+                column: "WorkspaceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserTeams_TeamId",
-                table: "UserTeams",
-                column: "TeamId");
+                name: "IX_Workspaces_OwnerId",
+                table: "Workspaces",
+                column: "OwnerId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -229,13 +229,13 @@ namespace RemeTask.Migrations
                 name: "Tasks");
 
             migrationBuilder.DropTable(
-                name: "UserTeams");
+                name: "UserWorkspaces");
 
             migrationBuilder.DropTable(
                 name: "TaskGroups");
 
             migrationBuilder.DropTable(
-                name: "Teams");
+                name: "Workspaces");
 
             migrationBuilder.DropTable(
                 name: "Users");

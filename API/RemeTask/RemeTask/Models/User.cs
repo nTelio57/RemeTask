@@ -15,6 +15,6 @@ namespace RemeTask.Models
         public string Salt { get; set; }
 
         public ICollection<TaskGroup> TaskGroups { get; set; }
-        public ICollection<UserTeam> Teams { get; set; }
+        public ICollection<UserWorkspace> Workspaces { get; set; }
     }
 }
