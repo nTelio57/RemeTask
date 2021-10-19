@@ -44,9 +44,9 @@ namespace RemeTask.Data
 
         void SeedWorkspaces(ModelBuilder modelBuilder)
         {
-            var workspace1 = new Workspace {Id = 1, Name = "Workspace1", OwnerId = 1};
-            var workspace2 = new Workspace { Id = 2, Name = "Workspace2", OwnerId = 1 };
-            var workspace3 = new Workspace { Id = 3, Name = "Workspace3", OwnerId = 2 };
+            var workspace1 = new Workspace {Id = 1, Name = "Workspace1", Owner = 1};
+            var workspace2 = new Workspace { Id = 2, Name = "Workspace2", Owner = 1 };
+            var workspace3 = new Workspace { Id = 3, Name = "Workspace3", Owner = 2 };
 
             modelBuilder.Entity<Workspace>().HasData(workspace1, workspace2, workspace3);
         }

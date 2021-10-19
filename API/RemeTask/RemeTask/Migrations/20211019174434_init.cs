@@ -30,17 +30,11 @@ namespace RemeTask.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "text", nullable: true),
-                    OwnerId = table.Column<int>(type: "int", nullable: true)
+                    Owner = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Workspaces", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Workspaces_Users_OwnerId",
-                        column: x => x.OwnerId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -144,32 +138,22 @@ namespace RemeTask.Migrations
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "Email", "Password", "Salt" },
-                values: new object[] { 1, "test@gmail.com", "q4FNUQnZUklVgBx2JenlHcYFhq6drVS0Bh8E0ye8yiY=", "Ux7QC8+we1StSPeXbhGGrJFfdQSj7OzyjEPv3R9xuQ8=" });
-
-            migrationBuilder.InsertData(
-                table: "Users",
-                columns: new[] { "Id", "Email", "Password", "Salt" },
-                values: new object[] { 2, "du@test.com", "G9Jr7PFw0PecDsLlJhCM2LyxzWtKD40a/GmzAOqn77Y=", "p7JlJExiWZo/cR1sHBm2j1DPsTE8MXO3NAEWya9/Alo=" });
-
-            migrationBuilder.InsertData(
-                table: "Users",
-                columns: new[] { "Id", "Email", "Password", "Salt" },
-                values: new object[] { 3, "vitrysenas@test.com", "s+PMYaajIcGUnVFcGWaRIRxV3nPUGL4i4aa2MWN2Gdc=", "qf9CdzHJz2V323ul6v/qbg87Enbqa84RyRcQhHpV4/A=" });
+                values: new object[,]
+                {
+                    { 1, "test@gmail.com", "q4FNUQnZUklVgBx2JenlHcYFhq6drVS0Bh8E0ye8yiY=", "Ux7QC8+we1StSPeXbhGGrJFfdQSj7OzyjEPv3R9xuQ8=" },
+                    { 2, "du@test.com", "G9Jr7PFw0PecDsLlJhCM2LyxzWtKD40a/GmzAOqn77Y=", "p7JlJExiWZo/cR1sHBm2j1DPsTE8MXO3NAEWya9/Alo=" },
+                    { 3, "vitrysenas@test.com", "s+PMYaajIcGUnVFcGWaRIRxV3nPUGL4i4aa2MWN2Gdc=", "qf9CdzHJz2V323ul6v/qbg87Enbqa84RyRcQhHpV4/A=" }
+                });
 
             migrationBuilder.InsertData(
                 table: "Workspaces",
-                columns: new[] { "Id", "Name", "OwnerId" },
-                values: new object[] { 1, "Workspace1", 1 });
-
-            migrationBuilder.InsertData(
-                table: "Workspaces",
-                columns: new[] { "Id", "Name", "OwnerId" },
-                values: new object[] { 2, "Workspace2", 1 });
-
-            migrationBuilder.InsertData(
-                table: "Workspaces",
-                columns: new[] { "Id", "Name", "OwnerId" },
-                values: new object[] { 3, "Workspace3", 2 });
+                columns: new[] { "Id", "Name", "Owner" },
+                values: new object[,]
+                {
+                    { 1, "Workspace1", 1 },
+                    { 2, "Workspace2", 1 },
+                    { 3, "Workspace3", 2 }
+                });
 
             migrationBuilder.InsertData(
                 table: "TaskGroups",
@@ -234,11 +218,6 @@ namespace RemeTask.Migrations
                 name: "IX_UserWorkspaces_WorkspaceId",
                 table: "UserWorkspaces",
                 column: "WorkspaceId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Workspaces_OwnerId",
-                table: "Workspaces",
-                column: "OwnerId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -253,13 +232,13 @@ namespace RemeTask.Migrations
                 name: "Tasks");
 
             migrationBuilder.DropTable(
+                name: "Users");
+
+            migrationBuilder.DropTable(
                 name: "TaskGroups");
 
             migrationBuilder.DropTable(
                 name: "Workspaces");
-
-            migrationBuilder.DropTable(
-                name: "Users");
         }
     }
 }

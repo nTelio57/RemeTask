@@ -64,6 +64,13 @@ namespace RemeTask.Controllers
             return Ok(_mapper.Map<WorkspaceReadDto>(workspace));
         }
 
+        [HttpGet("by-users-id/{id}", Name = "GetWorkspacesByUserId")]
+        public async Task<IActionResult> GetWorkspacesByUserId(int id)
+        {
+            var workspaces = await _repository.GetWorkspacesByUserId(id);
+            return Ok(_mapper.Map<IEnumerable<WorkspaceReadDto>>(workspaces));
+        }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteWorkspace(int id)
         {

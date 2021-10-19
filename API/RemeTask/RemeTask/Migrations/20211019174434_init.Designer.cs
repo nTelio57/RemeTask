@@ -9,7 +9,7 @@ using RemeTask.Data;
 namespace RemeTask.Migrations
 {
     [DbContext(typeof(RemetaskContext))]
-    [Migration("20211019160645_init")]
+    [Migration("20211019174434_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -328,12 +328,10 @@ namespace RemeTask.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<int?>("OwnerId")
+                    b.Property<int>("Owner")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("OwnerId");
 
                     b.ToTable("Workspaces");
 
@@ -342,19 +340,19 @@ namespace RemeTask.Migrations
                         {
                             Id = 1,
                             Name = "Workspace1",
-                            OwnerId = 1
+                            Owner = 1
                         },
                         new
                         {
                             Id = 2,
                             Name = "Workspace2",
-                            OwnerId = 1
+                            Owner = 1
                         },
                         new
                         {
                             Id = 3,
                             Name = "Workspace3",
-                            OwnerId = 2
+                            Owner = 2
                         });
                 });
 
@@ -414,15 +412,6 @@ namespace RemeTask.Migrations
                     b.Navigation("User");
 
                     b.Navigation("Workspace");
-                });
-
-            modelBuilder.Entity("RemeTask.Models.Workspace", b =>
-                {
-                    b.HasOne("RemeTask.Models.User", "Owner")
-                        .WithMany()
-                        .HasForeignKey("OwnerId");
-
-                    b.Navigation("Owner");
                 });
 
             modelBuilder.Entity("RemeTask.Models.Task", b =>
