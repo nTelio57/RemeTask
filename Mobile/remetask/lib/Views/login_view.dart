@@ -34,24 +34,22 @@ class _LoginViewState extends State<LoginView> {
        children: [
          background(),
          Container(
-           child: Column(
-             mainAxisAlignment: MainAxisAlignment.start,
-             children: [
-               topBox(),
-               Expanded(
-                   child: botBox()
-               )
-             ],
-           )
+           child: SingleChildScrollView(
+             child: Stack(
+               children: [
+                 topBox(),
+                 Padding(
+                   padding: const EdgeInsets.all(50.0),
+                   child: miniIcon(),
+                 ),
+                 Padding(
+                   child: mainBox(),
+                   padding: EdgeInsets.only(left: 25, right: 25, top: 270),
+                 )
+               ],
+             ),
+           ),
          ),
-         Padding(
-           padding: const EdgeInsets.all(50.0),
-           child: miniIcon(),
-         ),
-         Padding(
-           child: mainBox(),
-           padding: EdgeInsets.only(left: 25, right: 25, top: 270),
-         )
        ],
      )
    );

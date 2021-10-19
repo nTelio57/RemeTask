@@ -14,6 +14,7 @@ class Task {
   bool? isCompleted;
   DateTime? completionDate;
   int priority;
+  @JsonKey(toJson: null, includeIfNull: false)
   TaskGroup? taskGroup;
   int? taskGroupId;
 

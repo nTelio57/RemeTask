@@ -36,15 +36,23 @@ class _RegisterViewState extends State<RegisterView> {
       body: Stack(
         children: [
           background(),
-          topBox(),
-          Padding(
-            padding: const EdgeInsets.all(50.0),
-            child: miniIcon(),
+          Container(
+            child: SingleChildScrollView(
+              child: Stack(
+                children: [
+                  topBox(),
+                  Padding(
+                    padding: const EdgeInsets.all(50.0),
+                    child: miniIcon(),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 25, right: 25, top: 270),
+                    child: mainBox(),
+                  )
+                ],
+              ),
+            ),
           ),
-          Padding(
-            padding: EdgeInsets.only(left: 25, right: 25, top: 270),
-            child: mainBox(),
-          )
         ],
       ),
     );

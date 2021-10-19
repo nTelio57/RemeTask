@@ -49,6 +49,9 @@ class CurrentLogin{
     taskGroups = await apiManager.TaskGroupsByUserId(CurrentLogin().user!.id);
   }
 
-
+  void removeTaskFromList(int taskId, int taskGroupId)
+  {
+    taskGroups!.where((group) => group.id == taskGroupId).first.tasks.removeWhere((task) => task.id == taskId);
+  }
 
 }
