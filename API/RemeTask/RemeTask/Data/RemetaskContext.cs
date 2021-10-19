@@ -19,7 +19,7 @@ namespace RemeTask.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<UserWorkspace>().HasKey(ut => new {ut.UserId, WorkspaceId = ut.WorkspaceId});
+            modelBuilder.Entity<UserWorkspace>().HasKey(ut => new {ut.UserId, ut.WorkspaceId});
             SeedDatabase(modelBuilder);
         }
 

@@ -12,7 +12,8 @@ namespace RemeTask.Profiles
     {
         public UserProfile()
         {
-            CreateMap<User, UserReadDto>();
+            CreateMap<User, UserReadDto>()
+                .ForMember(dst => dst.Workspaces, src => src.MapFrom(mbr => mbr.Workspaces.Select(x => x.Workspace)));
             CreateMap<UserCreateDto, User>();
             CreateMap<UserUpdateDto, User>();
             CreateMap<User, UserUpdateDto>();

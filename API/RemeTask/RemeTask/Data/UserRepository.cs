@@ -60,7 +60,7 @@ namespace RemeTask.Data
 
         public async Task<User> GetUserByLogin(string email, string password)
         {
-            User user = await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+            User user = await _context.Users.Include(x=>x.Workspaces).ThenInclude(x=>x.Workspace).FirstOrDefaultAsync(x => x.Email == email);
             if (user == null || !user.Password.Equals(Crypto.Hash(password + user.Salt)))
                 return null;
             return user;
