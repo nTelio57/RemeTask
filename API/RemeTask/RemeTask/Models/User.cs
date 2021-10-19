@@ -14,7 +14,7 @@ namespace RemeTask.Models
         public string Password { get; set; }
         public string Salt { get; set; }
 
-        public ICollection<TaskGroup> TaskGroups { get; set; }
+        //public ICollection<TaskGroup> TaskGroups { get; set; }
         public ICollection<UserWorkspace> Workspaces { get; set; }
     }
 }

@@ -51,18 +51,11 @@ namespace RemeTask.Migrations
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "text", nullable: true),
                     Tag = table.Column<string>(type: "text", nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: true),
                     WorkspaceId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TaskGroups", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_TaskGroups_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_TaskGroups_Workspaces_WorkspaceId",
                         column: x => x.WorkspaceId,
@@ -120,10 +113,38 @@ namespace RemeTask.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "TaskNote",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    Content = table.Column<string>(type: "text", nullable: true),
+                    CreatedOn = table.Column<DateTime>(type: "datetime", nullable: false),
+                    CreatedById = table.Column<int>(type: "int", nullable: false),
+                    TaskId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TaskNote", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TaskNote_Tasks_TaskId",
+                        column: x => x.TaskId,
+                        principalTable: "Tasks",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TaskNote_Users_CreatedById",
+                        column: x => x.CreatedById,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "Email", "Password", "Salt" },
-                values: new object[] { 1, "vienas@test.com", "r08fhHamhLI9qMfjLWZqMduOPvKfIJhCmmxIy53RMUI=", "/CAuKyuKhVVR5B6oLjfQwAzC9eJIhju0xubUPMPiyWQ=" });
+                values: new object[] { 1, "test@gmail.com", "q4FNUQnZUklVgBx2JenlHcYFhq6drVS0Bh8E0ye8yiY=", "Ux7QC8+we1StSPeXbhGGrJFfdQSj7OzyjEPv3R9xuQ8=" });
 
             migrationBuilder.InsertData(
                 table: "Users",
@@ -136,27 +157,40 @@ namespace RemeTask.Migrations
                 values: new object[] { 3, "vitrysenas@test.com", "s+PMYaajIcGUnVFcGWaRIRxV3nPUGL4i4aa2MWN2Gdc=", "qf9CdzHJz2V323ul6v/qbg87Enbqa84RyRcQhHpV4/A=" });
 
             migrationBuilder.InsertData(
-                table: "TaskGroups",
-                columns: new[] { "Id", "Name", "Tag", "UserId", "WorkspaceId" },
-                values: new object[,]
-                {
-                    { 1, "Matematika", "MAT", 1, null },
-                    { 2, "Informatika", "INFO", 1, null },
-                    { 3, "Anglu", "ENG", 2, null }
-                });
-
-            migrationBuilder.InsertData(
                 table: "Workspaces",
                 columns: new[] { "Id", "Name", "OwnerId" },
                 values: new object[] { 1, "Workspace1", 1 });
 
             migrationBuilder.InsertData(
+                table: "Workspaces",
+                columns: new[] { "Id", "Name", "OwnerId" },
+                values: new object[] { 2, "Workspace2", 1 });
+
+            migrationBuilder.InsertData(
+                table: "Workspaces",
+                columns: new[] { "Id", "Name", "OwnerId" },
+                values: new object[] { 3, "Workspace3", 2 });
+
+            migrationBuilder.InsertData(
                 table: "TaskGroups",
-                columns: new[] { "Id", "Name", "Tag", "UserId", "WorkspaceId" },
+                columns: new[] { "Id", "Name", "Tag", "WorkspaceId" },
                 values: new object[,]
                 {
-                    { 4, "Fizika", "FIZ", null, 1 },
-                    { 5, "Objektinis programavimas", "OOP", null, 1 }
+                    { 1, "Matematika", "MAT", 1 },
+                    { 2, "Informatika", "INFO", 1 },
+                    { 4, "Fizika", "FIZ", 1 },
+                    { 5, "Objektinis programavimas", "OOP", 1 },
+                    { 3, "Anglu", "ENG", 2 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "UserWorkspaces",
+                columns: new[] { "UserId", "WorkspaceId" },
+                values: new object[,]
+                {
+                    { 1, 1 },
+                    { 1, 2 },
+                    { 2, 2 }
                 });
 
             migrationBuilder.InsertData(
@@ -170,42 +204,26 @@ namespace RemeTask.Migrations
                     { 1, null, new DateTime(2021, 10, 14, 0, 0, 0, 0, DateTimeKind.Unspecified), "Labai didelis aprasymas", false, 3, 2, "Laboras1" },
                     { 4, null, new DateTime(2021, 10, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), "Labai didelis aprasymas", false, 3, 2, "Pakartotinis lab1" },
                     { 6, null, new DateTime(2021, 12, 18, 0, 0, 0, 0, DateTimeKind.Unspecified), "Labai didelis aprasymas", false, 5, 2, "Lab3" },
-                    { 10, null, new DateTime(2021, 10, 17, 0, 0, 0, 0, DateTimeKind.Unspecified), "Labai didelis aprasymas", false, 1, 2, "Pakartotinis egzas" }
+                    { 10, null, new DateTime(2021, 10, 17, 0, 0, 0, 0, DateTimeKind.Unspecified), "Labai didelis aprasymas", false, 1, 2, "Pakartotinis egzas" },
+                    { 5, new DateTime(2021, 11, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2021, 11, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), "Labai didelis aprasymas", true, 1, 4, "Tarpinis egzas" },
+                    { 7, null, new DateTime(2021, 11, 14, 0, 0, 0, 0, DateTimeKind.Unspecified), "Labai didelis aprasymas", false, 2, 4, "Testas1" },
+                    { 9, new DateTime(2021, 11, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2021, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "Labai didelis aprasymas", true, 4, 4, "Lab6" }
                 });
-
-            migrationBuilder.InsertData(
-                table: "UserWorkspaces",
-                columns: new[] { "UserId", "WorkspaceId" },
-                values: new object[,]
-                {
-                    { 1, 1 },
-                    { 2, 1 }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Tasks",
-                columns: new[] { "Id", "CompletionDate", "Deadline", "Description", "IsCompleted", "Priority", "TaskGroupId", "Title" },
-                values: new object[] { 5, new DateTime(2021, 11, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2021, 11, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), "Labai didelis aprasymas", true, 1, 4, "Tarpinis egzas" });
-
-            migrationBuilder.InsertData(
-                table: "Tasks",
-                columns: new[] { "Id", "CompletionDate", "Deadline", "Description", "IsCompleted", "Priority", "TaskGroupId", "Title" },
-                values: new object[] { 7, null, new DateTime(2021, 11, 14, 0, 0, 0, 0, DateTimeKind.Unspecified), "Labai didelis aprasymas", false, 2, 4, "Testas1" });
-
-            migrationBuilder.InsertData(
-                table: "Tasks",
-                columns: new[] { "Id", "CompletionDate", "Deadline", "Description", "IsCompleted", "Priority", "TaskGroupId", "Title" },
-                values: new object[] { 9, new DateTime(2021, 11, 13, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(2021, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "Labai didelis aprasymas", true, 4, 4, "Lab6" });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TaskGroups_UserId",
-                table: "TaskGroups",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TaskGroups_WorkspaceId",
                 table: "TaskGroups",
                 column: "WorkspaceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TaskNote_CreatedById",
+                table: "TaskNote",
+                column: "CreatedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TaskNote_TaskId",
+                table: "TaskNote",
+                column: "TaskId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tasks_TaskGroupId",
@@ -226,10 +244,13 @@ namespace RemeTask.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Tasks");
+                name: "TaskNote");
 
             migrationBuilder.DropTable(
                 name: "UserWorkspaces");
+
+            migrationBuilder.DropTable(
+                name: "Tasks");
 
             migrationBuilder.DropTable(
                 name: "TaskGroups");

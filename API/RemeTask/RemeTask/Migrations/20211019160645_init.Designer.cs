@@ -9,7 +9,7 @@ using RemeTask.Data;
 namespace RemeTask.Migrations
 {
     [DbContext(typeof(RemetaskContext))]
-    [Migration("20211019145856_init")]
+    [Migration("20211019160645_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -170,15 +170,10 @@ namespace RemeTask.Migrations
                     b.Property<string>("Tag")
                         .HasColumnType("text");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("WorkspaceId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.HasIndex("WorkspaceId");
 
@@ -190,21 +185,21 @@ namespace RemeTask.Migrations
                             Id = 1,
                             Name = "Matematika",
                             Tag = "MAT",
-                            UserId = 1
+                            WorkspaceId = 1
                         },
                         new
                         {
                             Id = 2,
                             Name = "Informatika",
                             Tag = "INFO",
-                            UserId = 1
+                            WorkspaceId = 1
                         },
                         new
                         {
                             Id = 3,
                             Name = "Anglu",
                             Tag = "ENG",
-                            UserId = 2
+                            WorkspaceId = 2
                         },
                         new
                         {
@@ -220,6 +215,33 @@ namespace RemeTask.Migrations
                             Tag = "OOP",
                             WorkspaceId = 1
                         });
+                });
+
+            modelBuilder.Entity("RemeTask.Models.TaskNote", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("text");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime");
+
+                    b.Property<int>("TaskId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("TaskId");
+
+                    b.ToTable("TaskNote");
                 });
 
             modelBuilder.Entity("RemeTask.Models.User", b =>
@@ -245,9 +267,9 @@ namespace RemeTask.Migrations
                         new
                         {
                             Id = 1,
-                            Email = "vienas@test.com",
-                            Password = "r08fhHamhLI9qMfjLWZqMduOPvKfIJhCmmxIy53RMUI=",
-                            Salt = "/CAuKyuKhVVR5B6oLjfQwAzC9eJIhju0xubUPMPiyWQ="
+                            Email = "test@gmail.com",
+                            Password = "q4FNUQnZUklVgBx2JenlHcYFhq6drVS0Bh8E0ye8yiY=",
+                            Salt = "Ux7QC8+we1StSPeXbhGGrJFfdQSj7OzyjEPv3R9xuQ8="
                         },
                         new
                         {
@@ -287,8 +309,13 @@ namespace RemeTask.Migrations
                         },
                         new
                         {
+                            UserId = 1,
+                            WorkspaceId = 2
+                        },
+                        new
+                        {
                             UserId = 2,
-                            WorkspaceId = 1
+                            WorkspaceId = 2
                         });
                 });
 
@@ -316,6 +343,18 @@ namespace RemeTask.Migrations
                             Id = 1,
                             Name = "Workspace1",
                             OwnerId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Workspace2",
+                            OwnerId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Workspace3",
+                            OwnerId = 2
                         });
                 });
 
@@ -332,17 +371,30 @@ namespace RemeTask.Migrations
 
             modelBuilder.Entity("RemeTask.Models.TaskGroup", b =>
                 {
-                    b.HasOne("RemeTask.Models.User", "User")
-                        .WithMany("TaskGroups")
-                        .HasForeignKey("UserId");
-
                     b.HasOne("RemeTask.Models.Workspace", "Workspace")
                         .WithMany("TaskGroups")
                         .HasForeignKey("WorkspaceId");
 
-                    b.Navigation("User");
-
                     b.Navigation("Workspace");
+                });
+
+            modelBuilder.Entity("RemeTask.Models.TaskNote", b =>
+                {
+                    b.HasOne("RemeTask.Models.User", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RemeTask.Models.Task", "Task")
+                        .WithMany("TaskNotes")
+                        .HasForeignKey("TaskId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("Task");
                 });
 
             modelBuilder.Entity("RemeTask.Models.UserWorkspace", b =>
@@ -373,6 +425,11 @@ namespace RemeTask.Migrations
                     b.Navigation("Owner");
                 });
 
+            modelBuilder.Entity("RemeTask.Models.Task", b =>
+                {
+                    b.Navigation("TaskNotes");
+                });
+
             modelBuilder.Entity("RemeTask.Models.TaskGroup", b =>
                 {
                     b.Navigation("Tasks");
@@ -380,8 +437,6 @@ namespace RemeTask.Migrations
 
             modelBuilder.Entity("RemeTask.Models.User", b =>
                 {
-                    b.Navigation("TaskGroups");
-
                     b.Navigation("Workspaces");
                 });
 

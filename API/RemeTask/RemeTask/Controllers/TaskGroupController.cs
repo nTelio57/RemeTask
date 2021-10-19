@@ -89,12 +89,12 @@ namespace RemeTask.Controllers
             return NoContent();
         }
 
-        [HttpGet("by-user-id/{id}", Name = "GetTaskGroupsByUserId")]
+        /*[HttpGet("by-user-id/{id}", Name = "GetTaskGroupsByUserId")]
         public async Task<IActionResult> GetTaskGroupsByUserId(int id)
         {
             var taskGroups = await _repository.GetTaskGroupsByUserId(id);
             return Ok(_mapper.Map<IEnumerable<TaskGroupReadDto>>(taskGroups));
-        }
+        }*/
 
         [HttpGet("{groupId}/task/{taskId}", Name = "GetTaskByGroup")]
         public async Task<IActionResult> GetTaskByGroup(int groupId, int taskId)

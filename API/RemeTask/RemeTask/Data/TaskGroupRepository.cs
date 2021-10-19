@@ -50,10 +50,10 @@ namespace RemeTask.Data
             _context.TaskGroups.Remove(taskGroup);
         }
 
-        public async Task<IEnumerable<TaskGroup>> GetTaskGroupsByUserId(int id)
+        /*public async Task<IEnumerable<TaskGroup>> GetTaskGroupsByUserId(int id)
         {
             return await _context.TaskGroups.Include(x => x.Tasks).Where(x => x.UserId == id).ToListAsync();
-        }
+        }*/
 
         public async Task<IEnumerable<TaskGroup>> GetTaskGroupsByWorkspaceId(int id)
         {

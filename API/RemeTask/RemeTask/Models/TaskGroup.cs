@@ -13,8 +13,9 @@ namespace RemeTask.Models
         public string Name { get; set; }
         public string Tag { get; set; }
 
-        public int? UserId { get; set; }
-        public User User { get; set; }
+        //public int? UserId { get; set; }
+        //public User User { get; set; }
+        
         public int? WorkspaceId { get; set; }
         public Workspace Workspace { get; set; }
         public ICollection<Task> Tasks { get; set; }
