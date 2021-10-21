@@ -26,6 +26,7 @@ String updateTask = '/api/Task/';
 
 //Workspaces
 String workspacesByUserId = 'api/Workspace/by-users-id/';
+String postWorkspace = '/api/Workspace';
 
 Map<String, String> defaultHeaders = {
   'Content-Type': 'application/json; charset=UTF-8',
@@ -155,6 +156,19 @@ class API_Manager{
 
     if(response.statusCode == 201){
       return API_Response(TaskGroup.fromJson(jsonDecode(response.body)), response.statusCode);
+    }else{
+      throw Exception('Failed to post task group');
+    }
+  }
+
+  static Future<API_Response<Workspace>> PostWorkspace(Workspace workspace) async{
+    final response = await http.post(Uri.https(API_URL, postWorkspace),
+        headers: defaultJWTHeaders,
+        body: json.encode(workspace.toJson())
+    );
+
+    if(response.statusCode == 201){
+      return API_Response(Workspace.fromJson(jsonDecode(response.body)), response.statusCode);
     }else{
       throw Exception('Failed to post task group');
     }
