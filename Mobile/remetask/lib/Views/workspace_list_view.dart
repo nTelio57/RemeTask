@@ -4,6 +4,7 @@ import 'package:remetask/Models/CurrentLogin.dart';
 import 'package:remetask/Models/Workspace.dart';
 import 'package:remetask/Utilities/constants.dart';
 import 'package:remetask/Utilities/globals.dart';
+import 'package:remetask/Views/workspace_read_view.dart';
 
 class WorkspaceListView extends StatefulWidget {
   const WorkspaceListView({Key? key}) : super(key: key);
@@ -148,6 +149,8 @@ class _WorkspaceListViewState extends State<WorkspaceListView> {
           ),
           onPressed: () {
             print('Workspace open pressed');
+            Navigator.push(context, new MaterialPageRoute(
+                builder: (context) => WorkspaceReadForm(workspace: workspace)));
           },
           style: TextButton.styleFrom(
               primary: Colors.white,

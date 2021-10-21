@@ -64,6 +64,27 @@ final kLabelStyle = TextStyle(
   fontFamily: 'OpenSans',
 );
 
+final kSecondaryButtonLabel = GoogleFonts.nunito(
+    textStyle: TextStyle(
+        color: kSecondaryLightColor,
+        fontFamily: 'Nunito',
+        fontSize: 16,
+        overflow: TextOverflow.ellipsis,
+        fontWeight: FontWeight.bold
+    )
+);
+
+final kSecondaryButton = TextButton.styleFrom(
+    primary: Colors.white,
+    backgroundColor: kPrimaryColor,
+    shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8.0)
+    )
+);
+
+
+
+
 final kWorkspaceCardLabel = GoogleFonts.nunito(
     textStyle: TextStyle(
         color: kPrimaryDarkColor,
@@ -95,7 +116,7 @@ final kWorkspaceSelectionNote = GoogleFonts.nunito(
 
 final kWorkspaceSelectionButton = GoogleFonts.nunito(
     textStyle: TextStyle(
-        color: kPrimaryDarkColor,
+        color: kPrimaryColor,
         fontFamily: 'Nunito',
         fontSize: 16,
         overflow: TextOverflow.ellipsis,
