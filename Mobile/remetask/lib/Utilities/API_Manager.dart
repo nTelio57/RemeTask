@@ -6,6 +6,7 @@ import 'package:remetask/Models/AuthResult.dart';
 import 'package:remetask/Models/Task.dart';
 import 'package:remetask/Models/TaskGroup.dart';
 import 'package:remetask/Models/Workspace.dart';
+import 'package:remetask/Utilities/API_Response.dart';
 
 String API_URL = 'remetask.herokuapp.com';
 
@@ -16,6 +17,7 @@ String loginUrl = '/api/User/login';
 //Task groups
 @deprecated
 String taskGroupsByUserId = '/api/TaskGroup/by-user-id/';
+String postTaskGroup = 'api/TaskGroup';
 
 //Tasks
 String postTask = '/api/Task';
@@ -142,6 +144,19 @@ class API_Manager{
     }
     else{
       throw Exception('Failed to get workspaces by user id');
+    }
+  }
+
+  static Future<API_Response<TaskGroup>> PostTaskGroup(TaskGroup taskGroup) async{
+    final response = await http.post(Uri.https(API_URL, postTaskGroup),
+        headers: defaultJWTHeaders,
+        body: json.encode(taskGroup.toJson())
+    );
+
+    if(response.statusCode == 201){
+      return API_Response(TaskGroup.fromJson(jsonDecode(response.body)), response.statusCode);
+    }else{
+      throw Exception('Failed to post task group');
     }
   }
 }
