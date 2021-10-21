@@ -7,13 +7,15 @@ part 'TaskGroup.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class TaskGroup {
-  TaskGroup(this.id, this.name, this.tag, this.workspace, this.tasks);
+  TaskGroup({this.id, this.name = '', this.tag = '', this.workspace, this.tasks, this.workspaceId});
 
-  int id;
+  int? id;
   String name;
   String tag;
+  @JsonKey(toJson: null, includeIfNull: false)
   Workspace? workspace;
-  List<Task> tasks;
+  int? workspaceId;
+  List<Task>? tasks;
 
   factory TaskGroup.fromJson(Map<String, dynamic> json) => _$TaskGroupFromJson(json);
 
@@ -22,7 +24,7 @@ class TaskGroup {
   int getTotalCompletedCount()
   {
     int sum = 0;
-    tasks.forEach((element) { if(element.isCompleted!)sum++; });
+    tasks!.forEach((element) { if(element.isCompleted!)sum++; });
     return sum;
   }
 }

@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:remetask/Models/Task.dart';
 import 'package:remetask/Models/TaskGroup.dart';
 
 import 'User.dart';
@@ -20,7 +21,7 @@ class Workspace {
   int getTotalTaskCount()
   {
     int sum = 0;
-    taskGroups.forEach((element) { sum += element.tasks.length; });
+    taskGroups.forEach((element) { sum += element.tasks!.length; });
     return sum;
   }
 
@@ -34,5 +35,10 @@ class Workspace {
     int sum = 0;
     taskGroups.forEach((element) { sum += element.getTotalCompletedCount(); });
     return sum;
+  }
+
+  void addTaskGroup(TaskGroup taskGroup)
+  {
+    taskGroups.add(taskGroup);
   }
 }
