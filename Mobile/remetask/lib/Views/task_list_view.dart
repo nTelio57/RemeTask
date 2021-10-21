@@ -241,9 +241,9 @@ class _TaskListViewState extends State<TaskListView> {
   {
     var tasks = <Task>[];
     for(var i = 0; i < taskGroups.length; i++){
-      for(var j = 0; j < taskGroups[i].tasks.length; j++){
-        taskGroups[i].tasks[j].taskGroup = taskGroups[i];
-        tasks.add(taskGroups[i].tasks[j]);
+      for(var j = 0; j < taskGroups[i].tasks!.length; j++){
+        taskGroups[i].tasks![j].taskGroup = taskGroups[i];
+        tasks.add(taskGroups[i].tasks![j]);
       }
     }
     tasks.sort((a,b) => a.deadline.compareTo(b.deadline));
