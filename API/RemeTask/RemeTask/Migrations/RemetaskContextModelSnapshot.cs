@@ -168,17 +168,12 @@ namespace RemeTask.Migrations
                     b.Property<string>("Tag")
                         .HasColumnType("text");
 
-                    b.Property<int?>("TeamId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UserId")
+                    b.Property<int?>("WorkspaceId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TeamId");
-
-                    b.HasIndex("UserId");
+                    b.HasIndex("WorkspaceId");
 
                     b.ToTable("TaskGroups");
 
@@ -188,63 +183,63 @@ namespace RemeTask.Migrations
                             Id = 1,
                             Name = "Matematika",
                             Tag = "MAT",
-                            UserId = 1
+                            WorkspaceId = 1
                         },
                         new
                         {
                             Id = 2,
                             Name = "Informatika",
                             Tag = "INFO",
-                            UserId = 1
+                            WorkspaceId = 1
                         },
                         new
                         {
                             Id = 3,
                             Name = "Anglu",
                             Tag = "ENG",
-                            UserId = 2
+                            WorkspaceId = 2
                         },
                         new
                         {
                             Id = 4,
                             Name = "Fizika",
                             Tag = "FIZ",
-                            TeamId = 1
+                            WorkspaceId = 1
                         },
                         new
                         {
                             Id = 5,
                             Name = "Objektinis programavimas",
                             Tag = "OOP",
-                            TeamId = 1
+                            WorkspaceId = 1
                         });
                 });
 
-            modelBuilder.Entity("RemeTask.Models.Team", b =>
+            modelBuilder.Entity("RemeTask.Models.TaskNote", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Content")
                         .HasColumnType("text");
 
-                    b.Property<int?>("OwnerId")
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime");
+
+                    b.Property<int>("TaskId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OwnerId");
+                    b.HasIndex("CreatedById");
 
-                    b.ToTable("Teams");
+                    b.HasIndex("TaskId");
 
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Team1",
-                            OwnerId = 1
-                        });
+                    b.ToTable("TaskNote");
                 });
 
             modelBuilder.Entity("RemeTask.Models.User", b =>
@@ -270,9 +265,9 @@ namespace RemeTask.Migrations
                         new
                         {
                             Id = 1,
-                            Email = "vienas@test.com",
-                            Password = "r08fhHamhLI9qMfjLWZqMduOPvKfIJhCmmxIy53RMUI=",
-                            Salt = "/CAuKyuKhVVR5B6oLjfQwAzC9eJIhju0xubUPMPiyWQ="
+                            Email = "test@gmail.com",
+                            Password = "q4FNUQnZUklVgBx2JenlHcYFhq6drVS0Bh8E0ye8yiY=",
+                            Salt = "Ux7QC8+we1StSPeXbhGGrJFfdQSj7OzyjEPv3R9xuQ8="
                         },
                         new
                         {
@@ -290,30 +285,72 @@ namespace RemeTask.Migrations
                         });
                 });
 
-            modelBuilder.Entity("RemeTask.Models.UserTeam", b =>
+            modelBuilder.Entity("RemeTask.Models.UserWorkspace", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TeamId")
+                    b.Property<int>("WorkspaceId")
                         .HasColumnType("int");
 
-                    b.HasKey("UserId", "TeamId");
+                    b.HasKey("UserId", "WorkspaceId");
 
-                    b.HasIndex("TeamId");
+                    b.HasIndex("WorkspaceId");
 
-                    b.ToTable("UserTeams");
+                    b.ToTable("UserWorkspaces");
 
                     b.HasData(
                         new
                         {
                             UserId = 1,
-                            TeamId = 1
+                            WorkspaceId = 1
+                        },
+                        new
+                        {
+                            UserId = 1,
+                            WorkspaceId = 2
                         },
                         new
                         {
                             UserId = 2,
-                            TeamId = 1
+                            WorkspaceId = 2
+                        });
+                });
+
+            modelBuilder.Entity("RemeTask.Models.Workspace", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Owner")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Workspaces");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Workspace1",
+                            Owner = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Workspace2",
+                            Owner = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Workspace3",
+                            Owner = 2
                         });
                 });
 
@@ -330,45 +367,54 @@ namespace RemeTask.Migrations
 
             modelBuilder.Entity("RemeTask.Models.TaskGroup", b =>
                 {
-                    b.HasOne("RemeTask.Models.Team", "Team")
-                        .WithMany()
-                        .HasForeignKey("TeamId");
-
-                    b.HasOne("RemeTask.Models.User", "User")
+                    b.HasOne("RemeTask.Models.Workspace", "Workspace")
                         .WithMany("TaskGroups")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("WorkspaceId");
 
-                    b.Navigation("Team");
-
-                    b.Navigation("User");
+                    b.Navigation("Workspace");
                 });
 
-            modelBuilder.Entity("RemeTask.Models.Team", b =>
+            modelBuilder.Entity("RemeTask.Models.TaskNote", b =>
                 {
-                    b.HasOne("RemeTask.Models.User", "Owner")
+                    b.HasOne("RemeTask.Models.User", "CreatedBy")
                         .WithMany()
-                        .HasForeignKey("OwnerId");
-
-                    b.Navigation("Owner");
-                });
-
-            modelBuilder.Entity("RemeTask.Models.UserTeam", b =>
-                {
-                    b.HasOne("RemeTask.Models.Team", "Team")
-                        .WithMany("Users")
-                        .HasForeignKey("TeamId")
+                        .HasForeignKey("CreatedById")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("RemeTask.Models.Task", "Task")
+                        .WithMany("TaskNotes")
+                        .HasForeignKey("TaskId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("Task");
+                });
+
+            modelBuilder.Entity("RemeTask.Models.UserWorkspace", b =>
+                {
                     b.HasOne("RemeTask.Models.User", "User")
-                        .WithMany("Teams")
+                        .WithMany("Workspaces")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Team");
+                    b.HasOne("RemeTask.Models.Workspace", "Workspace")
+                        .WithMany("Users")
+                        .HasForeignKey("WorkspaceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
+
+                    b.Navigation("Workspace");
+                });
+
+            modelBuilder.Entity("RemeTask.Models.Task", b =>
+                {
+                    b.Navigation("TaskNotes");
                 });
 
             modelBuilder.Entity("RemeTask.Models.TaskGroup", b =>
@@ -376,16 +422,16 @@ namespace RemeTask.Migrations
                     b.Navigation("Tasks");
                 });
 
-            modelBuilder.Entity("RemeTask.Models.Team", b =>
+            modelBuilder.Entity("RemeTask.Models.User", b =>
                 {
-                    b.Navigation("Users");
+                    b.Navigation("Workspaces");
                 });
 
-            modelBuilder.Entity("RemeTask.Models.User", b =>
+            modelBuilder.Entity("RemeTask.Models.Workspace", b =>
                 {
                     b.Navigation("TaskGroups");
 
-                    b.Navigation("Teams");
+                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

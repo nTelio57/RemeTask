@@ -19,5 +19,6 @@ namespace RemeTask.Models
 
         public int TaskGroupId { get; set; }
         public TaskGroup TaskGroup { get; set; }
+        public ICollection<TaskNote> TaskNotes { get; set; }
     }
 }

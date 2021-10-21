@@ -6,6 +6,7 @@ import 'package:remetask/Components/TaskCard.dart';
 import 'package:remetask/Models/CurrentLogin.dart';
 import 'package:remetask/Models/Task.dart';
 import 'package:remetask/Models/TaskGroup.dart';
+import 'package:remetask/Models/Workspace.dart';
 import 'package:remetask/Utilities/API_Manager.dart';
 import 'package:remetask/Utilities/constants.dart';
 import 'package:remetask/Utilities/globals.dart';
@@ -24,63 +25,81 @@ class _TaskListViewState extends State<TaskListView> {
   @override
   Widget build(BuildContext context) {
 
-    int daysForDeadline = 5;
+
     CurrentLogin user = CurrentLogin();
-    var allTasks = sortTaskList(user.taskGroups!);
-    var deadlines = sortTaskList(user.taskGroups!).where((task) => isDeadline(task, daysForDeadline)).toList();
-    var completed = sortTaskList(user.taskGroups!).where((task) => task.isCompleted!).toList();
+
+
 
     return DefaultTabController(
       length: 3,
       initialIndex: 1,
-      child: Scaffold(
-        extendBody: true,
-        appBar: AppBar(
-          //title: Text('Task list'),
-          backgroundColor: kSecondaryLightColor,
-          foregroundColor: kPrimaryColor,
-          centerTitle: true,
-          bottom: TabBar(
-            labelColor: kPrimaryColor,
-            tabs: [
-              Tab(
-                text: 'ALL TASKS' ,
-              ),
-              Tab(
-                text: 'DEADLINES',
-              ),
-              Tab(
-                text: 'COMPLETED',
-              ),
-            ],
+        child: Scaffold(
+          extendBody: true,
+          appBar: AppBar(
+            //title: Text('Task list'),
+            backgroundColor: kSecondaryLightColor,
+            foregroundColor: kPrimaryColor,
+            centerTitle: true,
+            bottom: TabBar(
+              labelColor: kPrimaryColor,
+              tabs: [
+                Tab(
+                  text: 'ALL TASKS' ,
+                ),
+                Tab(
+                  text: 'DEADLINES',
+                ),
+                Tab(
+                  text: 'COMPLETED',
+                ),
+              ],
+            ),
           ),
+          body: user.hasAnyWorkspace() ? workspaceInfo() : noWorkspacesInfo(),
+          floatingActionButton: fabButton(),
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         ),
-        body: TabBarView(
+    );
+  }
+
+  Widget workspaceInfo()
+  {
+    int daysForDeadline = 5;
+    CurrentLogin user = CurrentLogin();
+    var selectedWorkspace = user.getSelectedWorkspace();
+    var allTasks = sortTaskList(selectedWorkspace.taskGroups);
+    var deadlines = sortTaskList(selectedWorkspace.taskGroups).where((task) => isDeadline(task, daysForDeadline)).toList();
+    var completed = sortTaskList(selectedWorkspace.taskGroups).where((task) => task.isCompleted!).toList();
+
+    return TabBarView(
+      children: [
+        Stack(
           children: [
-            Stack(
-              children: [
-                Background(color: kSecondaryColor),
-                taskList(allTasks)
-              ],
-            ),
-            Stack(
-              children: [
-                Background(color: kSecondaryColor),
-                taskList(deadlines)
-              ],
-            ),
-            Stack(
-              children: [
-                Background(color: kSecondaryColor),
-                taskList(completed)
-              ],
-            ),
+            Background(color: kSecondaryColor),
+            taskList(allTasks)
           ],
         ),
-        bottomNavigationBar: BottomNavigationMenus(),
-        floatingActionButton: fabButton(),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      ),
+        Stack(
+          children: [
+            Background(color: kSecondaryColor),
+            taskList(deadlines)
+          ],
+        ),
+        Stack(
+          children: [
+            Background(color: kSecondaryColor),
+            taskList(completed)
+          ],
+        ),
+      ],
+    );
+  }
+
+
+  Widget noWorkspacesInfo()
+  {
+    return Container(
+      color: Colors.green,
     );
   }
 
@@ -91,106 +110,103 @@ class _TaskListViewState extends State<TaskListView> {
             builder: (context) => TaskCreateForm())).then((value) => setState(() {}));
       },
       child: Icon(Icons.add, color: Colors.white),
-      backgroundColor: kComplementaryColor,
+      backgroundColor: kPrimaryColor,
     );
   }
 
   Widget taskList(List<Task> tasks)
   {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 40.0),
-      child: Container(
-        child: ListView.builder(
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-          itemCount: tasks.length,
-          itemBuilder: (context, index)
-          {
-            return Container(
-              margin: EdgeInsets.all(4),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Dismissible(
-                  confirmDismiss: (DismissDirection direction) async {
-                    if(direction == DismissDirection.endToStart)
-                      {
-                        return await showDialog(
-                            context: context,
-                            builder: (context){
-                              return AlertDialog(
-                                title: Text('Confirm'),
-                                content: Text('Are you sure you want to delete this task?'),
-                                actions: [
-                                  TextButton(
-                                    child: Text('No'),
-                                    onPressed: () {
-                                      Navigator.of(context).pop(false);
-                                    },
-                                  ),
-                                  TextButton(
-                                    child: Text('Yes'),
-                                    onPressed: () {
-                                      Navigator.of(context).pop(true);
-                                    },
-                                  )
-                                ],
-                              );
-                            });
-                      }
-                    if(direction == DismissDirection.startToEnd)
-                      {
-                        return true;
-                      }
-                  },
-                  background: Container(
-                    alignment: Alignment.centerLeft,
-                    decoration: BoxDecoration(
-                      color: Colors.green,
-                      borderRadius: BorderRadius.circular(8)
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(18),
-                      child: Icon(Icons.check, color: Colors.white),
-                    ),
+    return Container(
+      child: ListView.builder(
+        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+        itemCount: tasks.length,
+        itemBuilder: (context, index)
+        {
+          return Container(
+            margin: EdgeInsets.all(4),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Dismissible(
+                confirmDismiss: (DismissDirection direction) async {
+                  if(direction == DismissDirection.endToStart)
+                    {
+                      return await showDialog(
+                          context: context,
+                          builder: (context){
+                            return AlertDialog(
+                              title: Text('Confirm'),
+                              content: Text('Are you sure you want to delete this task?'),
+                              actions: [
+                                TextButton(
+                                  child: Text('No'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop(false);
+                                  },
+                                ),
+                                TextButton(
+                                  child: Text('Yes'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop(true);
+                                  },
+                                )
+                              ],
+                            );
+                          });
+                    }
+                  if(direction == DismissDirection.startToEnd)
+                    {
+                      return true;
+                    }
+                },
+                background: Container(
+                  alignment: Alignment.centerLeft,
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.circular(8)
                   ),
-
-
-                  secondaryBackground: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.red, borderRadius: BorderRadius.circular(8)
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(18),
-                      child: Icon(Icons.delete, color: Colors.white),
-                    ),
-                    alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: const EdgeInsets.all(18),
+                    child: Icon(Icons.check, color: Colors.white),
                   ),
+                ),
 
 
-                  child: TaskCard(task: tasks[index]),
-                  key: UniqueKey(),
-                  onDismissed: (direction)
+                secondaryBackground: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.red, borderRadius: BorderRadius.circular(8)
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(18),
+                    child: Icon(Icons.delete, color: Colors.white),
+                  ),
+                  alignment: Alignment.centerRight,
+                ),
+
+
+                child: TaskCard(task: tasks[index]),
+                key: UniqueKey(),
+                onDismissed: (direction)
+                {
+                  if(direction == DismissDirection.endToStart)
                   {
-                    if(direction == DismissDirection.endToStart)
+                    setState(() {
+                      int taskId = tasks[index].id!;
+                      int taskGroupId = tasks[index].taskGroupId!;
+                      // OLD VERSION CurrentLogin().removeTaskFromList(taskId, taskGroupId);
+                      deleteTask(taskId);
+                    });
+                  }
+                  if(direction == DismissDirection.startToEnd)
                     {
                       setState(() {
-                        int taskId = tasks[index].id!;
-                        int taskGroupId = tasks[index].taskGroupId!;
-                        CurrentLogin().removeTaskFromList(taskId, taskGroupId);
-                        deleteTask(taskId);
+                        completeTask(tasks[index]);
                       });
                     }
-                    if(direction == DismissDirection.startToEnd)
-                      {
-                        setState(() {
-                          completeTask(tasks[index]);
-                        });
-                      }
-                  },
-                ),
+                },
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -253,6 +269,7 @@ class _TaskListViewState extends State<TaskListView> {
     task.completionDate = DateTime.now();
 
     await API_Manager.UpdateTask(task.id!, task);
-    await CurrentLogin().loadTaskGroups();
+    // OLD VERSION await CurrentLogin().loadTaskGroups();
   }
 }
+

@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:remetask/Models/AuthResult.dart';
 import 'package:remetask/Models/Task.dart';
 import 'package:remetask/Models/TaskGroup.dart';
+import 'package:remetask/Models/Workspace.dart';
 
 String API_URL = 'remetask.herokuapp.com';
 
@@ -13,12 +14,16 @@ String registerUrl = '/api/User/register';
 String loginUrl = '/api/User/login';
 
 //Task groups
+@deprecated
 String taskGroupsByUserId = '/api/TaskGroup/by-user-id/';
 
 //Tasks
 String postTask = '/api/Task';
 String deleteTask = '/api/Task/';
 String updateTask = '/api/Task/';
+
+//Workspaces
+String workspacesByUserId = 'api/Workspace/by-users-id/';
 
 Map<String, String> defaultHeaders = {
   'Content-Type': 'application/json; charset=UTF-8',
@@ -63,6 +68,7 @@ class API_Manager{
     }
   }
 
+  @deprecated
   Future<List<TaskGroup>> TaskGroupsByUserId(int userId) async{
     final response = await http.get(Uri.https(API_URL, taskGroupsByUserId+userId.toString()),
         headers: defaultJWTHeaders
@@ -118,6 +124,24 @@ class API_Manager{
       return true;
     }else{
       throw Exception('Failed to update task');
+    }
+  }
+
+  static Future<List<Workspace>> GetWorkspacesByUserId(int userId) async
+  {
+    final response = await http.get(Uri.https(API_URL, workspacesByUserId+userId.toString()),
+        headers: defaultJWTHeaders
+    );
+
+    if(response.statusCode == 200)
+    {
+      List<dynamic> jsonData = json.decode(response.body);
+      final parsed = jsonData.cast<Map<String, dynamic>>();
+
+      return parsed.map<Workspace>((e) => Workspace.fromJson(e)).toList();
+    }
+    else{
+      throw Exception('Failed to get workspaces by user id');
     }
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:remetask/Models/CurrentLogin.dart';
 import 'package:remetask/Models/User.dart';
+import 'package:remetask/Views/main_view.dart';
 import 'package:remetask/Views/task_list_view.dart';
 import 'package:remetask/Views/welcome_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,7 +13,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   bool isLoggedInResult = await isLoggedIn();
   if(isLoggedInResult){
-    _defaultHome = new TaskListView();
+    _defaultHome = new MainView();
   }
 
   runApp(MyApp());
