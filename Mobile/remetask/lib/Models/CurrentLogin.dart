@@ -32,11 +32,13 @@ class CurrentLogin{
   }
 
   Future<void> saveToSharedPreferences() async {
+    prefs = await SharedPreferences.getInstance();
+
     prefs!.setString("token", token!);
     prefs!.setInt("id", user!.id);
     prefs!.setString("email", user!.email);
     if(selectedWorkspace != null)
-      prefs!.setInt("selectedWorkspaceId", selectedWorkspace!.id);
+      prefs!.setInt("selectedWorkspaceId", selectedWorkspace!.id!);
   }
 
   Future<void> loadFromSharedPreferences() async
@@ -54,6 +56,7 @@ class CurrentLogin{
 
     if(selectedWorkspaceId != null)
     {
+      print('Current user load from prefs, selected workspace id load: ' + selectedWorkspaceId.toString());
       setSelectedWorkspace(workspaces.firstWhere((element) => element.id == selectedWorkspaceId));
     }
   }
@@ -68,7 +71,7 @@ class CurrentLogin{
   Future<void> loadWorkspaces() async{
     workspaces = await  API_Manager.GetWorkspacesByUserId(user!.id);
     if(workspaces.length > 0)
-      selectedWorkspace = workspaces[0];
+      setSelectedWorkspace(workspaces[0]);
   }
 
   bool hasAnyWorkspace()
@@ -88,7 +91,12 @@ class CurrentLogin{
   void setSelectedWorkspace(Workspace workspace)
   {
     selectedWorkspace = workspace;
-    prefs!.setInt("selectedWorkspaceId", selectedWorkspace!.id);
+    prefs!.setInt("selectedWorkspaceId", selectedWorkspace!.id!);
+  }
+
+  void addWorkspace(Workspace workspace)
+  {
+    workspaces.add(workspace);
   }
 
   /*bool hasTaskGroups()

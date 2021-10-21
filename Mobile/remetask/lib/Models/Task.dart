@@ -21,4 +21,12 @@ class Task {
   factory Task.fromJson(Map<String, dynamic> json) => _$TaskFromJson(json);
 
   Map<String, dynamic> toJson() => _$TaskToJson(this);
+
+  bool isDeadline({int deadlineDaysThreshold = 5})
+  {
+    var timeLeft =  deadline.difference(DateTime.now());
+    if(timeLeft.inDays <= deadlineDaysThreshold && !isCompleted!)
+      return true;
+    return false;
+  }
 }

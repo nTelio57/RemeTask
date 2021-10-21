@@ -7,11 +7,11 @@ part of 'Workspace.dart';
 // **************************************************************************
 
 Workspace _$WorkspaceFromJson(Map<String, dynamic> json) => Workspace(
-      json['id'] as int,
-      json['name'] as String,
-      json['owner'] as int,
-      (json['taskGroups'] as List<dynamic>)
-          .map((e) => TaskGroup.fromJson(e as Map<String, dynamic>))
+      id: json['id'] as int?,
+      name: json['name'] as String? ?? '',
+      owner: json['owner'] as int?,
+      taskGroups: (json['taskGroups'] as List<dynamic>?)
+          ?.map((e) => TaskGroup.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 

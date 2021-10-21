@@ -27,4 +27,15 @@ class TaskGroup {
     tasks!.forEach((element) { if(element.isCompleted!)sum++; });
     return sum;
   }
+
+  int getDeadlineCount()
+  {
+    int sum = 0;
+    tasks!.forEach((element) {
+      if(element.isDeadline())
+        sum++;
+    });
+    return sum;
+  }
+
 }

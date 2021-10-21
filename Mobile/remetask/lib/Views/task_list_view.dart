@@ -67,9 +67,9 @@ class _TaskListViewState extends State<TaskListView> {
     int daysForDeadline = 5;
     CurrentLogin user = CurrentLogin();
     var selectedWorkspace = user.getSelectedWorkspace();
-    var allTasks = sortTaskList(selectedWorkspace.taskGroups);
-    var deadlines = sortTaskList(selectedWorkspace.taskGroups).where((task) => isDeadline(task, daysForDeadline)).toList();
-    var completed = sortTaskList(selectedWorkspace.taskGroups).where((task) => task.isCompleted!).toList();
+    var allTasks = sortTaskList(selectedWorkspace.taskGroups!);
+    var deadlines = sortTaskList(selectedWorkspace.taskGroups!).where((task) => isDeadline(task, daysForDeadline)).toList();
+    var completed = sortTaskList(selectedWorkspace.taskGroups!).where((task) => task.isCompleted!).toList();
 
     return TabBarView(
       children: [

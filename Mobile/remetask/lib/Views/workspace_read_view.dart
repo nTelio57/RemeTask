@@ -152,10 +152,10 @@ class _WorkspaceReadFormState extends State<WorkspaceReadForm> {
   {
     return Container(
       child: ListView.builder(
-          itemCount: widget.workspace.taskGroups.length,
+          itemCount: widget.workspace.taskGroups!.length,
           itemBuilder: (context, index)
           {
-            return taskGroupCard(widget.workspace.taskGroups[index]);
+            return taskGroupCard(widget.workspace.taskGroups![index]);
           }
           ),
     );
