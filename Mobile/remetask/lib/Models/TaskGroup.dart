@@ -18,4 +18,11 @@ class TaskGroup {
   factory TaskGroup.fromJson(Map<String, dynamic> json) => _$TaskGroupFromJson(json);
 
   Map<String, dynamic> toJson() => _$TaskGroupToJson(this);
+
+  int getTotalCompletedCount()
+  {
+    int sum = 0;
+    tasks.forEach((element) { if(element.isCompleted!)sum++; });
+    return sum;
+  }
 }

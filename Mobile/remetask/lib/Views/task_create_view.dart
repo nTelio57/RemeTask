@@ -50,7 +50,6 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
   }
 
   Widget createForm(){
-    print('TG ' + CurrentLogin().taskGroups!.length.toString());
     return Stack(
       children: [
         Background(color: kSecondaryColor),
@@ -62,7 +61,7 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
               SizedBox(height: 20),
               buttonTab(FormDatePicker()),
               SizedBox(height: 20),
-              middleTab(FormDropdownList(items: CurrentLogin().taskGroups)),
+              middleTab(FormDropdownList(items: CurrentLogin().selectedWorkspace!.taskGroups)),
               SizedBox(height: 20),
               middleTab(FormSlider()),
               SizedBox(height: 20),
@@ -176,7 +175,7 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
     Task newTask = new Task(title, description, deadline, false, null, selectedPriority, null, taskGroup.id);
 
     await API_Manager.PostTask(newTask);
-    await CurrentLogin().loadTaskGroups();
+    // OLD VERSION await CurrentLogin().loadTaskGroups();
     showToast(successToast());
     Navigator.pop(context);
   }

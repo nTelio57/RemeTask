@@ -12,8 +12,8 @@ const kPrimaryDarkColor = Color(0xFF512DA8);*/
 
 //light blue theme
 const kPrimaryColor = Color(0xFF0476bd);
-const kPrimaryLightColor = Color(0xFFB3E5FC);
-const kPrimaryDarkColor = Color(0xFF0288D1);
+const kPrimaryLightColor = Color(0xFF0288D1);
+const kPrimaryDarkColor = Color(0xFF03569b);
 
 const kSecondaryColor = Color.fromRGBO(235, 235, 235, 1);//Color(0xFFdcdcdc);
 const kSecondaryLightColor = Colors.white;
@@ -62,6 +62,45 @@ final kLabelStyle = TextStyle(
   color: Colors.black,
   fontWeight: FontWeight.bold,
   fontFamily: 'OpenSans',
+);
+
+final kWorkspaceCardLabel = GoogleFonts.nunito(
+    textStyle: TextStyle(
+        color: kPrimaryDarkColor,
+        fontFamily: 'Nunito',
+        fontSize: 18,
+        overflow: TextOverflow.ellipsis,
+        fontWeight: FontWeight.bold
+    )
+);
+
+final kWorkspaceCardExpansionPanel = GoogleFonts.nunito(
+    textStyle: TextStyle(
+        color: kTextOnPrimary,
+        fontFamily: 'Nunito',
+        fontSize: 16,
+        overflow: TextOverflow.ellipsis
+    )
+);
+
+final kWorkspaceSelectionNote = GoogleFonts.nunito(
+    textStyle: TextStyle(
+        color: kPrimaryDarkColor,
+        fontFamily: 'Nunito',
+        fontSize: 12,
+        overflow: TextOverflow.ellipsis,
+        fontWeight: FontWeight.bold
+    )
+);
+
+final kWorkspaceSelectionButton = GoogleFonts.nunito(
+    textStyle: TextStyle(
+        color: kPrimaryDarkColor,
+        fontFamily: 'Nunito',
+        fontSize: 16,
+        overflow: TextOverflow.ellipsis,
+        fontWeight: FontWeight.bold
+    )
 );
 
 final kTaskLabelFullColor = GoogleFonts.nunito(

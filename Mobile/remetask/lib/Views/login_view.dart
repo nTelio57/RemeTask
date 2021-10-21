@@ -7,6 +7,7 @@ import 'package:remetask/Models/User.dart';
 import 'package:remetask/Utilities/API_Manager.dart';
 import 'package:remetask/Utilities/constants.dart';
 import 'package:remetask/Utilities/globals.dart';
+import 'package:remetask/Views/main_view.dart';
 import 'package:remetask/Views/task_list_view.dart';
 
 import 'register_view.dart';
@@ -226,7 +227,7 @@ class _LoginViewState extends State<LoginView> {
             CurrentLogin().setCurrentLogin(authResult.user!, authResult.token!);
             await CurrentLogin().load();
             Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
-                builder: (context) => TaskListView()
+                builder: (context) => MainView()
             ), (Route<dynamic> route) => false);
           }else{
             ScaffoldMessenger.of(context).showSnackBar(new SnackBar(content: Text('Login failed. ' + authResult.errors![0])));
