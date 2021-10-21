@@ -6,6 +6,7 @@ import 'package:remetask/Utilities/API_Manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final API_Manager apiManager = API_Manager();
+SharedPreferences? prefs;
 
 class CurrentLogin{
   static CurrentLogin? _instance;
@@ -31,14 +32,36 @@ class CurrentLogin{
   }
 
   Future<void> saveToSharedPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString("token", token!);
-    prefs.setInt("id", user!.id);
-    prefs.setString("email", user!.email);
+    prefs!.setString("token", token!);
+    prefs!.setInt("id", user!.id);
+    prefs!.setString("email", user!.email);
+    if(selectedWorkspace != null)
+      prefs!.setInt("selectedWorkspaceId", selectedWorkspace!.id);
   }
 
-  Future<void> load() async
+  Future<void> loadFromSharedPreferences() async
   {
+    prefs = await SharedPreferences.getInstance();
+
+    var token = prefs!.getString("token");
+    var id = prefs!.getInt("id");
+    var email = prefs!.getString("email");
+    var selectedWorkspaceId = prefs!.getInt("selectedWorkspaceId");
+
+    setCurrentLogin(new User(id!, email!), token!);
+
+    await reload();
+
+    if(selectedWorkspaceId != null)
+    {
+      setSelectedWorkspace(workspaces.firstWhere((element) => element.id == selectedWorkspaceId));
+    }
+  }
+
+  Future<void> reload() async
+  {
+    prefs = await SharedPreferences.getInstance();
+
     await loadWorkspaces();
   }
 
@@ -65,6 +88,7 @@ class CurrentLogin{
   void setSelectedWorkspace(Workspace workspace)
   {
     selectedWorkspace = workspace;
+    prefs!.setInt("selectedWorkspaceId", selectedWorkspace!.id);
   }
 
   /*bool hasTaskGroups()
