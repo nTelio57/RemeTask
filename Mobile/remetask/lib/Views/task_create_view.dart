@@ -32,7 +32,7 @@ class TaskCreateForm extends StatefulWidget {
 class _TaskCreateFormState extends State<TaskCreateForm> {
 
   double _borderRadius = 22;
-  bool _isProccessingApiCall = false;
+  bool _isProcessingApiCall = false;
 
   @override
   Widget build(BuildContext context) {
@@ -163,11 +163,11 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
 
   void createTask() async
   {
-    if(!validation() || _isProccessingApiCall)
+    if(!validation() || _isProcessingApiCall)
       {
         return;
       }
-    _isProccessingApiCall = true;
+    _isProcessingApiCall = true;
 
     var title = _titleController.text;
     var description = _descriptionController.text;
@@ -182,13 +182,13 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
       {
         _selectedTaskGroup!.tasks!.add(newTask);
         showToast(successToast());
-        _isProccessingApiCall = false;
+        _isProcessingApiCall = false;
       }
     else{
       showToast(failureToast('Failed to create task. ${response.reasonPhrase} ${response.statusCode}'));
-      _isProccessingApiCall = false;
+      _isProcessingApiCall = false;
     }
-    _isProccessingApiCall = false;
+    _isProcessingApiCall = false;
     Navigator.pop(context);
 
   }

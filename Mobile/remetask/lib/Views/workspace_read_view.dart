@@ -18,6 +18,9 @@ class WorkspaceReadForm extends StatefulWidget {
 }
 
 class _WorkspaceReadFormState extends State<WorkspaceReadForm> {
+
+  bool _isProcessingApiCall = false;
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -280,15 +283,18 @@ class _WorkspaceReadFormState extends State<WorkspaceReadForm> {
       height: 50,
       child: TextButton(
         onPressed: ()  async {
-          print('New task group clicked');
+          if(_isProcessingApiCall) return;
+
+          _isProcessingApiCall = true;
           var newTaskGroup = await API_Manager.PostTaskGroup(new TaskGroup(name: _taskGroupTitle.text, tag: _taskGroupTag.text, workspaceId: widget.workspace.id));
           if(newTaskGroup.statusCode == 201)
             {
               setState(() {
+                _isProcessingApiCall = false;
                 widget.workspace.addTaskGroup(newTaskGroup.body!);
-                Navigator.pop(context);
                 _taskGroupTitle.clear();
                 _taskGroupTag.clear();
+                Navigator.pop(context);
               });
             }
         } ,
