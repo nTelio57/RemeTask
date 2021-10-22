@@ -4,6 +4,7 @@ import 'package:remetask/Models/User.dart';
 import 'package:remetask/Models/Workspace.dart';
 import 'package:remetask/Utilities/API_Manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:collection/collection.dart';
 
 final API_Manager apiManager = API_Manager();
 SharedPreferences? prefs;
@@ -57,7 +58,11 @@ class CurrentLogin{
     if(selectedWorkspaceId != null)
     {
       print('Current user load from prefs, selected workspace id load: ' + selectedWorkspaceId.toString());
-      setSelectedWorkspace(workspaces.firstWhere((element) => element.id == selectedWorkspaceId));
+      var workspaceById = workspaces.firstWhereOrNull((element) => element.id == selectedWorkspaceId);
+      if(workspaceById != null)
+        setSelectedWorkspace(workspaceById);
+      else if(workspaces.length > 0)
+        setSelectedWorkspace(workspaces[0]);
     }
   }
 

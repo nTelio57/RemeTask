@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:remetask/Models/CurrentLogin.dart';
 import 'package:remetask/Models/TaskGroup.dart';
 import 'package:remetask/Models/Workspace.dart';
@@ -76,7 +77,9 @@ class _WorkspaceReadFormState extends State<WorkspaceReadForm> {
             ],
           ),
          SizedBox(height: 8),
-         Expanded(child: taskGroupList())
+         Expanded(
+           child:  widget.workspace.taskGroups!.length > 0 ? taskGroupList() : noTaskGroupsInfo()
+         )
         ],
       ),
     );
@@ -310,6 +313,37 @@ class _WorkspaceReadFormState extends State<WorkspaceReadForm> {
     );
   }
 
+  Widget noTaskGroupsInfo()
+  {
+    return Container(
+      color: kSecondaryColor,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 22),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Icon(
+              Icons.add,
+              color: kPrimaryColor,
+              size: 32,
+            ),
+            Text(
+              'You need groups to store your tasks.',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.nunito(
+                  textStyle: TextStyle(
+                    color: kPrimaryColor,
+                    fontSize: 18,
+                    fontFamily: 'Nunito',
+                    fontWeight: FontWeight.w600,
+                  )
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
 
   Widget membersBar()

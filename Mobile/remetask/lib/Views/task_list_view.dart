@@ -55,8 +55,9 @@ class _TaskListViewState extends State<TaskListView> {
               ],
             ),
           ),
-          body: user.hasAnyWorkspace() ? workspaceInfo() : noWorkspacesInfo(),
-          floatingActionButton: fabButton(),
+          body: !user.hasAnyWorkspace() ? noWorkspacesInfo() :
+            user.getSelectedWorkspace().taskGroups!.length > 0 ? workspaceInfo() : noTaskGroupInfo(),
+          floatingActionButton: user.hasAnyWorkspace() ? fabButton() : null,
           floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         ),
     );
@@ -99,7 +100,65 @@ class _TaskListViewState extends State<TaskListView> {
   Widget noWorkspacesInfo()
   {
     return Container(
-      color: Colors.green,
+      color: kSecondaryColor,
+      child: Container(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.view_carousel,
+              color: kPrimaryColor,
+              size: 32,
+            ),
+            Text(
+              'Begin by creating your first workspace and adding groups to it.',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.nunito(
+                  textStyle: TextStyle(
+                    color: kPrimaryColor,
+                    fontSize: 18,
+                    fontFamily: 'Nunito',
+                    fontWeight: FontWeight.w600,
+                  )
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget noTaskGroupInfo()
+  {
+    return Container(
+      color: kSecondaryColor,
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.view_carousel,
+              color: kPrimaryColor,
+              size: 32,
+            ),
+            Text(
+              'You need groups in your workspace to be able to create and store your tasks.',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.nunito(
+                  textStyle: TextStyle(
+                    color: kPrimaryColor,
+                    fontSize: 18,
+                    fontFamily: 'Nunito',
+                    fontWeight: FontWeight.w600,
+                  )
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

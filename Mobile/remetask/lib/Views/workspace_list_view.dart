@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:remetask/Models/CurrentLogin.dart';
 import 'package:remetask/Models/Workspace.dart';
 import 'package:remetask/Utilities/API_Manager.dart';
@@ -47,14 +48,37 @@ class _WorkspaceListViewState extends State<WorkspaceListView> {
   {
     return Container(
       child: AlertDialog(
+        contentPadding: EdgeInsets.all(0),
         content: Wrap(
           children: [
             Container(
               child: Column(
                 children: [
-                  newWorkspaceTitleForm(),
-                  SizedBox(height: 20,),
-                  newWorkspaceButtonForm()
+                  Container(
+                    color: kPrimaryColor,
+                    width: double.infinity,
+                    padding: EdgeInsets.fromLTRB(24, 10, 24, 10),
+                    alignment: Alignment.center,
+                    child: Text(
+                      'New workspace',
+                      style: GoogleFonts.nunito(
+                          textStyle: TextStyle(
+                            color: kTextOnPrimary,
+                            fontSize: 32,
+                            fontFamily: 'Nunito',
+                            fontWeight: FontWeight.w600,
+                          )
+                      ),
+                    ),
+                  ),
+                  Container(
+                    child: newWorkspaceTitleForm(),
+                    padding: EdgeInsets.fromLTRB(24, 20, 24, 10)
+                  ),
+                  Container(
+                    child: newWorkspaceButtonForm(),
+                    padding: EdgeInsets.fromLTRB(24, 10, 24, 24)
+                  )
                 ],
               ),
             ),
@@ -137,8 +161,40 @@ class _WorkspaceListViewState extends State<WorkspaceListView> {
     return Stack(
       children: [
         Background(color: kSecondaryColor),
-        workspaceList(workspaces)
+        workspaces.length > 0 ? workspaceList(workspaces) : noWorkspacesInfo()
       ],
+    );
+  }
+
+  Widget noWorkspacesInfo()
+  {
+    return Container(
+      color: kSecondaryColor,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 64),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Icon(
+              Icons.add,
+              color: kPrimaryColor,
+              size: 32,
+            ),
+            Text(
+              'Workspaces appear here when you create them.',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.nunito(
+                  textStyle: TextStyle(
+                    color: kPrimaryColor,
+                    fontSize: 18,
+                    fontFamily: 'Nunito',
+                    fontWeight: FontWeight.w600,
+                  )
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
