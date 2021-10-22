@@ -19,6 +19,10 @@ class _TaskReadFormState extends State<TaskReadForm> {
   double _borderRadius = 22;
   DateFormat dateFormat = DateFormat("MM/dd/yyyy HH:mm");
 
+  double _insetLeft = 22;
+  double _insetRight = 22;
+  double _insetHorizontal = 22;
+
   @override
   Widget build(BuildContext context) {
 
@@ -52,19 +56,28 @@ class _TaskReadFormState extends State<TaskReadForm> {
   {
     return Container(
       width: double.infinity,
-      height: 300,
-      padding: EdgeInsets.only(left: 22, right: 22),
       decoration: BoxDecoration(
           color: kSecondaryLightColor,
           borderRadius: BorderRadius.only(bottomLeft: Radius.circular(_borderRadius), bottomRight: Radius.circular(_borderRadius))
       ),
-      child: Column(
+      child: Wrap(
+
         children: [
-          titleRow(),
-          SizedBox(height: 40),
-          tabRow(label(dateFormat.format(widget.task.deadline)), 'Deadline'),
-          tabRow(longText(widget.task.taskGroup!.name, textAlign: TextAlign.right), 'Group'),
-          tabRow(label(Priority.parseToString(widget.task.priority)), 'Priority')
+          Column(
+            children: [
+              titleRow(),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 12),
+                child: Column(
+                  children: [
+                    tabRow(label(dateFormat.format(widget.task.deadline)), 'Deadline'),
+                    tabRow(longText(widget.task.taskGroup!.name, textAlign: TextAlign.right), 'Group'),
+                    tabRow(label(Priority.parseToString(widget.task.priority)), 'Priority')
+                  ],
+                ),
+              )
+            ],
+          ),
         ],
       ),
     );
@@ -77,7 +90,7 @@ class _TaskReadFormState extends State<TaskReadForm> {
     return Container(
       width: double.infinity,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12.0),
+        padding: EdgeInsets.only(left: _insetLeft, right: _insetRight, top: 10, bottom: 10),
         child: Row(
           children: [
             Expanded(child: label(hint)),
@@ -93,14 +106,15 @@ class _TaskReadFormState extends State<TaskReadForm> {
     return Container(
       width: double.infinity,
       color: kPrimaryColor,
-      padding: EdgeInsets.only(top: 60),
+      padding: EdgeInsets.only(top: 60, left: _insetLeft, right: _insetRight, bottom: 15),
       child: Text(
         widget.task.title,
         style: GoogleFonts.nunito(
             textStyle: TextStyle(
-                color: kTextOnSecondary,
+                color: kTextOnPrimary,
                 fontFamily: 'Nunito',
-                fontSize: 22,
+                fontWeight: FontWeight.w600,
+                fontSize: 26,
                 overflow: TextOverflow.ellipsis
             )
         ),
@@ -113,7 +127,7 @@ class _TaskReadFormState extends State<TaskReadForm> {
     return Container(
       child: child,
       width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 22, vertical: 22),
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       decoration: BoxDecoration(
           color: kSecondaryLightColor,
           borderRadius: BorderRadius.all(Radius.circular(_borderRadius))
@@ -126,7 +140,14 @@ class _TaskReadFormState extends State<TaskReadForm> {
     return Container(
       child: Text(
         text,
-        style: kTaskLabelFullColor,
+        style: GoogleFonts.nunito(
+            textStyle: TextStyle(
+                color: kTextOnSecondary,
+                fontFamily: 'Nunito',
+                fontSize: 16,
+                overflow: TextOverflow.ellipsis
+            )
+        ),
       ),
     );
   }
@@ -141,7 +162,7 @@ class _TaskReadFormState extends State<TaskReadForm> {
             textStyle: TextStyle(
               color: kTextOnSecondary,
               fontFamily: 'Nunito',
-              fontSize: 18,
+              fontSize: 16,
             )
         ),
       ),

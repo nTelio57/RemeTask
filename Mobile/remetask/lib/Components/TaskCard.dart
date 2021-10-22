@@ -69,31 +69,31 @@ class TaskCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        width: double.infinity,
                         alignment: Alignment.centerLeft,
                         child: Padding(
                           padding: const EdgeInsets.only(left: 10, top: 7, right: 2),
-                          child: Container(
-                            child: Row(
-                              children: [
-                                Text(
-                                  '|${task.taskGroup!.tag}| ',
-                                  style: GoogleFonts.nunito(
-                                      textStyle: TextStyle(
-                                          color: kPrimaryColor,
-                                          fontWeight: FontWeight.w800,
-                                          fontFamily: 'Nunito',
-                                          fontSize: 16,
-                                          overflow: TextOverflow.ellipsis
-                                      )
-                                  ),
-                                  textAlign: TextAlign.left,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                '|${task.taskGroup!.tag}| ',
+                                style: GoogleFonts.nunito(
+                                    textStyle: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontWeight: FontWeight.w800,
+                                        fontFamily: 'Nunito',
+                                        fontSize: 16,
+                                        overflow: TextOverflow.ellipsis
+                                    )
                                 ),
-                                Text(
+                                textAlign: TextAlign.left,
+                              ),
+                              Flexible(
+                                child: Text(
                                   task.title,
                                   style: GoogleFonts.nunito(
                                       textStyle: TextStyle(
-                                          color: kPrimaryDarkColor,
+                                          color: kTextOnSecondary,
                                           fontWeight: FontWeight.w600,
                                           fontFamily: 'Nunito',
                                           fontSize: 18,
@@ -102,10 +102,8 @@ class TaskCard extends StatelessWidget {
                                   ),
                                   textAlign: TextAlign.left,
                                 ),
-                              ],
-                            ),
-                            alignment: Alignment.centerLeft,
-                            height: 25,
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -119,7 +117,7 @@ class TaskCard extends StatelessWidget {
                               '${dateFormat.format(task.deadline)}',
                               style: GoogleFonts.nunito(
                                   textStyle: TextStyle(
-                                      color: kPrimaryColor,
+                                      color: kTextOnSecondary,
                                       fontWeight: FontWeight.w600,
                                       fontFamily: 'Nunito',
                                       fontSize: 16,
