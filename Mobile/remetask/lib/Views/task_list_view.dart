@@ -13,6 +13,12 @@ import 'package:remetask/Utilities/globals.dart';
 import 'package:remetask/Views/task_create_view.dart';
 
 final API_Manager apiManager = API_Manager();
+CurrentLogin user = CurrentLogin();
+int daysForDeadline = 5;
+Workspace? selectedWorkspace;
+List<Task> allTasks = [];
+List<Task> deadlines = [];
+List<Task> completed = [];
 
 class TaskListView extends StatefulWidget {
   const TaskListView({Key? key}) : super(key: key);
@@ -22,21 +28,21 @@ class TaskListView extends StatefulWidget {
 }
 
 class _TaskListViewState extends State<TaskListView> {
+
   @override
   Widget build(BuildContext context) {
 
-
-    CurrentLogin user = CurrentLogin();
-
-
+    selectedWorkspace = user.getSelectedWorkspace();
+    allTasks = sortTaskList(selectedWorkspace!.taskGroups!);
+    deadlines = sortTaskList(selectedWorkspace!.taskGroups!).where((task) => isDeadline(task, daysForDeadline)).toList();
+    completed = sortTaskList(selectedWorkspace!.taskGroups!).where((task) => task.isCompleted!).toList();
 
     return DefaultTabController(
       length: 3,
-      initialIndex: 0,
+      initialIndex: deadlines.length > 0 ? 1 : 0,
         child: Scaffold(
           extendBody: true,
           appBar: AppBar(
-            //title: Text('Task list'),
             backgroundColor: kSecondaryLightColor,
             foregroundColor: kPrimaryColor,
             centerTitle: true,
@@ -65,12 +71,6 @@ class _TaskListViewState extends State<TaskListView> {
 
   Widget workspaceInfo()
   {
-    int daysForDeadline = 5;
-    CurrentLogin user = CurrentLogin();
-    var selectedWorkspace = user.getSelectedWorkspace();
-    var allTasks = sortTaskList(selectedWorkspace.taskGroups!);
-    var deadlines = sortTaskList(selectedWorkspace.taskGroups!).where((task) => isDeadline(task, daysForDeadline)).toList();
-    var completed = sortTaskList(selectedWorkspace.taskGroups!).where((task) => task.isCompleted!).toList();
 
     if(deadlines.length == 0)
       DefaultTabController.of(context)!.animateTo(0);
@@ -211,96 +211,103 @@ class _TaskListViewState extends State<TaskListView> {
   Widget taskList(List<Task> tasks)
   {
     return Container(
-      child: ListView.builder(
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-        itemCount: tasks.length,
-        itemBuilder: (context, index)
-        {
-          return Container(
-            margin: EdgeInsets.all(4),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Dismissible(
-                confirmDismiss: (DismissDirection direction) async {
-                  if(direction == DismissDirection.endToStart)
-                    {
-                      return await showDialog(
-                          context: context,
-                          builder: (context){
-                            return AlertDialog(
-                              title: Text('Confirm'),
-                              content: Text('Are you sure you want to delete this task?'),
-                              actions: [
-                                TextButton(
-                                  child: Text('No'),
-                                  onPressed: () {
-                                    Navigator.of(context).pop(false);
-                                  },
-                                ),
-                                TextButton(
-                                  child: Text('Yes'),
-                                  onPressed: () {
-                                    Navigator.of(context).pop(true);
-                                  },
-                                )
-                              ],
-                            );
-                          });
-                    }
-                  if(direction == DismissDirection.startToEnd)
-                    {
-                      return true;
-                    }
-                },
-                background: Container(
-                  alignment: Alignment.centerLeft,
-                  decoration: BoxDecoration(
-                    color: Colors.green,
-                    borderRadius: BorderRadius.circular(8)
+      child: RefreshIndicator(
+        onRefresh: () async {
+          CurrentLogin user = CurrentLogin();
+          await user.loadWorkspaces();
+          setState(()  {
+
+          });
+        },
+        child: ListView.builder(
+          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+          itemCount: tasks.length,
+          itemBuilder: (context, index)
+          {
+            return Container(
+              margin: EdgeInsets.all(4),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Dismissible(
+                  confirmDismiss: (DismissDirection direction) async {
+                    if(direction == DismissDirection.endToStart)
+                      {
+                        return await showDialog(
+                            context: context,
+                            builder: (context){
+                              return AlertDialog(
+                                title: Text('Confirm'),
+                                content: Text('Are you sure you want to delete this task?'),
+                                actions: [
+                                  TextButton(
+                                    child: Text('No'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop(false);
+                                    },
+                                  ),
+                                  TextButton(
+                                    child: Text('Yes'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop(true);
+                                    },
+                                  )
+                                ],
+                              );
+                            });
+                      }
+                    if(direction == DismissDirection.startToEnd)
+                      {
+                        return true;
+                      }
+                  },
+                  background: Container(
+                    alignment: Alignment.centerLeft,
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.circular(8)
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(18),
+                      child: Icon(Icons.check, color: Colors.white),
+                    ),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(18),
-                    child: Icon(Icons.check, color: Colors.white),
+                  secondaryBackground: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.red, borderRadius: BorderRadius.circular(8)
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(18),
+                      child: Icon(Icons.delete, color: Colors.white),
+                    ),
+                    alignment: Alignment.centerRight,
                   ),
-                ),
 
 
-                secondaryBackground: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.red, borderRadius: BorderRadius.circular(8)
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(18),
-                    child: Icon(Icons.delete, color: Colors.white),
-                  ),
-                  alignment: Alignment.centerRight,
-                ),
-
-
-                child: TaskCard(task: tasks[index]),
-                key: UniqueKey(),
-                onDismissed: (direction)
-                {
-                  if(direction == DismissDirection.endToStart)
+                  child: TaskCard(task: tasks[index]),
+                  key: UniqueKey(),
+                  onDismissed: (direction)
                   {
-                    setState(() {
-                      int taskId = tasks[index].id!;
-                      int taskGroupId = tasks[index].taskGroupId!;
-                      // OLD VERSION CurrentLogin().removeTaskFromList(taskId, taskGroupId);
-                      deleteTask(taskId);
-                    });
-                  }
-                  if(direction == DismissDirection.startToEnd)
+                    if(direction == DismissDirection.endToStart)
                     {
                       setState(() {
-                        completeTask(tasks[index]);
+                        int taskId = tasks[index].id!;
+                        int taskGroupId = tasks[index].taskGroupId!;
+                        // OLD VERSION CurrentLogin().removeTaskFromList(taskId, taskGroupId);
+                        deleteTask(taskId);
                       });
                     }
-                },
+                    if(direction == DismissDirection.startToEnd)
+                      {
+                        setState(() {
+                          completeTask(tasks[index]);
+                        });
+                      }
+                  },
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

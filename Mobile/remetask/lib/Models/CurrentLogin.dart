@@ -75,8 +75,15 @@ class CurrentLogin{
 
   Future<void> loadWorkspaces() async{
     workspaces = await  API_Manager.GetWorkspacesByUserId(user!.id);
-    if(workspaces.length > 0)
-      setSelectedWorkspace(workspaces[0]);
+    workspaces.forEach((element) {element.taskGroups!.forEach((element) {element.tasks!.forEach((element) {print(element.title);});});});
+    if(selectedWorkspace != null)
+      {
+        var workspaceById = workspaces.firstWhereOrNull((element) => element.id == selectedWorkspace!.id);
+        if(workspaceById != null)
+          {
+            setSelectedWorkspace(workspaceById);
+          }
+      }
   }
 
   bool hasAnyWorkspace()
