@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:remetask/Models/Task.dart';
 import 'package:remetask/Utilities/constants.dart';
 import 'package:remetask/Views/task_read_view.dart';
@@ -31,6 +33,8 @@ class TaskCard extends StatelessWidget {
 
   Widget taskCard(BuildContext context)
   {
+    DateFormat dateFormat = DateFormat("MM/dd HH:mm");
+
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -50,7 +54,6 @@ class TaskCard extends StatelessWidget {
         child: InkWell(
           splashColor: kPrimaryDarkColor.withAlpha(50),
           onTap: () {
-            print('Card tapped');
             Navigator.push(context, new MaterialPageRoute(
                 builder: (context) => TaskReadForm(task: task)));
           },
@@ -66,30 +69,61 @@ class TaskCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        width: double.infinity,
                         alignment: Alignment.centerLeft,
                         child: Padding(
                           padding: const EdgeInsets.only(left: 10, top: 7, right: 2),
-                          child: Container(
-                            child: Text(
-                              task.title,
-                              style: kTaskCardTitle,
-                              textAlign: TextAlign.left,
-                            ),
-                            alignment: Alignment.centerLeft,
-                            height: 25,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                '|${task.taskGroup!.tag}| ',
+                                style: GoogleFonts.nunito(
+                                    textStyle: TextStyle(
+                                        color: kPrimaryColor,
+                                        fontWeight: FontWeight.w800,
+                                        fontFamily: 'Nunito',
+                                        fontSize: 16,
+                                        overflow: TextOverflow.ellipsis
+                                    )
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                              Flexible(
+                                child: Text(
+                                  task.title,
+                                  style: GoogleFonts.nunito(
+                                      textStyle: TextStyle(
+                                          color: kTextOnSecondary,
+                                          fontWeight: FontWeight.w600,
+                                          fontFamily: 'Nunito',
+                                          fontSize: 18,
+                                          overflow: TextOverflow.ellipsis
+                                      )
+                                  ),
+                                  textAlign: TextAlign.left,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                       Expanded(
                         child: Padding(
-                          padding:const EdgeInsets.only(left: 10, right: 2, bottom: 7),
+                          padding:const EdgeInsets.only(left: 10, right: 10, bottom: 7),
                           child: Container(
-                            alignment: Alignment.bottomLeft,
+                            alignment: Alignment.bottomRight,
                             height: 25,
                             child: Text(
-                              task.taskGroup!.tag,
-                              style: kTaskCardTag,
+                              '${dateFormat.format(task.deadline)}',
+                              style: GoogleFonts.nunito(
+                                  textStyle: TextStyle(
+                                      color: kTextOnSecondary,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: 'Nunito',
+                                      fontSize: 16,
+                                      overflow: TextOverflow.ellipsis
+                                  )
+                              ),
                               textAlign: TextAlign.left,
                             ),
                           ),
