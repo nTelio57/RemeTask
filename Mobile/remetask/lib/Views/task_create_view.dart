@@ -177,11 +177,10 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
 
     Task newTask = new Task(title, description, deadline, false, null, selectedPriority, null, taskGroup.id);
 
-    _selectedTaskGroup!.tasks!.add(newTask);
-
     var response = await API_Manager.PostTask(newTask);
     if(response.statusCode == 201)
       {
+        _selectedTaskGroup!.tasks!.add(newTask);
         showToast(successToast());
         _isProccessingApiCall = false;
       }

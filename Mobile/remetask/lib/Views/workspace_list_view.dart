@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:remetask/Models/CurrentLogin.dart';
 import 'package:remetask/Models/Workspace.dart';
@@ -7,6 +8,8 @@ import 'package:remetask/Utilities/API_Manager.dart';
 import 'package:remetask/Utilities/constants.dart';
 import 'package:remetask/Utilities/globals.dart';
 import 'package:remetask/Views/workspace_read_view.dart';
+
+FToast? _toast;
 
 class WorkspaceListView extends StatefulWidget {
   const WorkspaceListView({Key? key}) : super(key: key);
@@ -16,8 +19,15 @@ class WorkspaceListView extends StatefulWidget {
 }
 
 class _WorkspaceListViewState extends State<WorkspaceListView> {
+
+  bool _isProcessingApiCall = false;
+
   @override
   Widget build(BuildContext context) {
+
+    _toast = FToast();
+    _toast!.init(context);
+
     return SafeArea(
       child: Scaffold(
         body: body(),
@@ -121,17 +131,24 @@ class _WorkspaceListViewState extends State<WorkspaceListView> {
       height: 50,
       child: TextButton(
         onPressed: ()  async {
-          print('New task group clicked');
+          if(_isProcessingApiCall) return;
+
+          _isProcessingApiCall = true;
           var newTaskGroup = await API_Manager.PostWorkspace(new Workspace(name: _workspaceTitle.text, owner: CurrentLogin().user!.id));
           if(newTaskGroup.statusCode == 201)
           {
-            setState(() {
-              CurrentLogin().addWorkspace(newTaskGroup.body!);
-              CurrentLogin().setSelectedWorkspace(newTaskGroup.body!);
-              Navigator.pop(context);
-              _workspaceTitle.clear();
-            });
+            CurrentLogin().addWorkspace(newTaskGroup.body!);
+            CurrentLogin().setSelectedWorkspace(newTaskGroup.body!);
+          }else {
+            showToast(failureToast('Failed to create workspace. ${newTaskGroup.statusCode} ${newTaskGroup.reasonPhrase}'));
           }
+
+          setState(() {
+            _isProcessingApiCall = false;
+            _workspaceTitle.clear();
+            Navigator.pop(context);
+          });
+
         } ,
         style: TextButton.styleFrom(
             primary: Colors.white,
@@ -151,6 +168,34 @@ class _WorkspaceListViewState extends State<WorkspaceListView> {
           ),
         ),
       ),
+    );
+  }
+
+  void showToast(Widget toast) {
+    _toast!.showToast(
+      child: toast,
+      gravity: ToastGravity.TOP_RIGHT,
+      toastDuration: Duration(seconds: 3),
+    );
+  }
+
+  Widget failureToast(String text){
+    return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20.0),
+          color: kFailureToast,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.error, color: Colors.white),
+            SizedBox(
+              width: 12.0,
+            ),
+            Text(text, style: kToastStyle)
+          ],
+        )
     );
   }
 
