@@ -32,7 +32,7 @@ class _TaskListViewState extends State<TaskListView> {
 
     return DefaultTabController(
       length: 3,
-      initialIndex: 1,
+      initialIndex: 0,
         child: Scaffold(
           extendBody: true,
           appBar: AppBar(
@@ -72,6 +72,9 @@ class _TaskListViewState extends State<TaskListView> {
     var deadlines = sortTaskList(selectedWorkspace.taskGroups!).where((task) => isDeadline(task, daysForDeadline)).toList();
     var completed = sortTaskList(selectedWorkspace.taskGroups!).where((task) => task.isCompleted!).toList();
 
+    if(deadlines.length == 0)
+      DefaultTabController.of(context)!.animateTo(0);
+
     return TabBarView(
       children: [
         Stack(
@@ -83,7 +86,7 @@ class _TaskListViewState extends State<TaskListView> {
         Stack(
           children: [
             Background(color: kSecondaryColor),
-            taskList(deadlines)
+            deadlines.length > 0 ? taskList(deadlines) : noDeadlinesInfo()
           ],
         ),
         Stack(
@@ -96,6 +99,38 @@ class _TaskListViewState extends State<TaskListView> {
     );
   }
 
+  Widget noDeadlinesInfo()
+  {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.only(top: 20),
+      child: Container(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text(
+              'No deadlines for now.',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.nunito(
+                  textStyle: TextStyle(
+                    color: kPrimaryColor,
+                    fontSize: 18,
+                    fontFamily: 'Nunito',
+                    fontWeight: FontWeight.w600,
+                  )
+              ),
+            ),
+            Icon(
+              Icons.sentiment_satisfied_alt,
+              color: kPrimaryColor,
+              size: 32,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   Widget noWorkspacesInfo()
   {
