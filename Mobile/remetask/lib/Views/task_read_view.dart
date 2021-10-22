@@ -92,6 +92,7 @@ class _TaskReadFormState extends State<TaskReadForm> {
   {
     return Container(
       width: double.infinity,
+      color: kPrimaryColor,
       padding: EdgeInsets.only(top: 60),
       child: Text(
         widget.task.title,
