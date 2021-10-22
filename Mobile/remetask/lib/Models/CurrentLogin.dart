@@ -4,8 +4,10 @@ import 'package:remetask/Models/User.dart';
 import 'package:remetask/Models/Workspace.dart';
 import 'package:remetask/Utilities/API_Manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:collection/collection.dart';
 
 final API_Manager apiManager = API_Manager();
+SharedPreferences? prefs;
 
 class CurrentLogin{
   static CurrentLogin? _instance;
@@ -31,21 +33,50 @@ class CurrentLogin{
   }
 
   Future<void> saveToSharedPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString("token", token!);
-    prefs.setInt("id", user!.id);
-    prefs.setString("email", user!.email);
+    prefs = await SharedPreferences.getInstance();
+
+    prefs!.setString("token", token!);
+    prefs!.setInt("id", user!.id);
+    prefs!.setString("email", user!.email);
+    if(selectedWorkspace != null)
+      prefs!.setInt("selectedWorkspaceId", selectedWorkspace!.id!);
   }
 
-  Future<void> load() async
+  Future<void> loadFromSharedPreferences() async
   {
+    prefs = await SharedPreferences.getInstance();
+
+    var token = prefs!.getString("token");
+    var id = prefs!.getInt("id");
+    var email = prefs!.getString("email");
+    var selectedWorkspaceId = prefs!.getInt("selectedWorkspaceId");
+
+    setCurrentLogin(new User(id!, email!), token!);
+
+    await reload();
+
+    if(selectedWorkspaceId != null)
+    {
+      print('Current user load from prefs, selected workspace id load: ' + selectedWorkspaceId.toString());
+      var workspaceById = workspaces.firstWhereOrNull((element) => element.id == selectedWorkspaceId);
+      if(workspaceById != null)
+        setSelectedWorkspace(workspaceById);
+      else if(workspaces.length > 0)
+        setSelectedWorkspace(workspaces[0]);
+    }
+  }
+
+  Future<void> reload() async
+  {
+    prefs = await SharedPreferences.getInstance();
+
     await loadWorkspaces();
   }
 
   Future<void> loadWorkspaces() async{
     workspaces = await  API_Manager.GetWorkspacesByUserId(user!.id);
     if(workspaces.length > 0)
-      selectedWorkspace = workspaces[0];
+      setSelectedWorkspace(workspaces[0]);
   }
 
   bool hasAnyWorkspace()
@@ -65,6 +96,12 @@ class CurrentLogin{
   void setSelectedWorkspace(Workspace workspace)
   {
     selectedWorkspace = workspace;
+    prefs!.setInt("selectedWorkspaceId", selectedWorkspace!.id!);
+  }
+
+  void addWorkspace(Workspace workspace)
+  {
+    workspaces.add(workspace);
   }
 
   /*bool hasTaskGroups()

@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:remetask/Models/Task.dart';
 import 'package:remetask/Models/TaskGroup.dart';
 
 import 'User.dart';
@@ -6,12 +7,12 @@ part 'Workspace.g.dart';
 
 @JsonSerializable()
 class Workspace {
-  Workspace(this.id, this.name, this.owner, this.taskGroups);
+  Workspace({this.id, this.name = '', this.owner, this.taskGroups});
 
-  int id;
+  int? id;
   String name;
-  int owner;
-  List<TaskGroup> taskGroups;
+  int? owner;
+  List<TaskGroup>? taskGroups;
 
   factory Workspace.fromJson(Map<String, dynamic> json) => _$WorkspaceFromJson(json);
 
@@ -20,19 +21,26 @@ class Workspace {
   int getTotalTaskCount()
   {
     int sum = 0;
-    taskGroups.forEach((element) { sum += element.tasks.length; });
+    taskGroups!.forEach((element) { sum += element.tasks!.length; });
     return sum;
   }
 
   int getTotalDeadlineCount()
   {
-    return 3;
+    int sum = 0;
+    taskGroups!.forEach((element) { sum += element.getDeadlineCount(); });
+    return sum;
   }
 
   int getTotalCompletedCount()
   {
     int sum = 0;
-    taskGroups.forEach((element) { sum += element.getTotalCompletedCount(); });
+    taskGroups!.forEach((element) { sum += element.getTotalCompletedCount(); });
     return sum;
+  }
+
+  void addTaskGroup(TaskGroup taskGroup)
+  {
+    taskGroups!.add(taskGroup);
   }
 }

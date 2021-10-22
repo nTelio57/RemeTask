@@ -175,7 +175,7 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
     Task newTask = new Task(title, description, deadline, false, null, selectedPriority, null, taskGroup.id);
 
     await API_Manager.PostTask(newTask);
-    // OLD VERSION await CurrentLogin().loadTaskGroups();
+    _selectedTaskGroup!.tasks!.add(newTask);
     showToast(successToast());
     Navigator.pop(context);
   }

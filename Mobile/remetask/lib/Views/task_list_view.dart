@@ -32,7 +32,7 @@ class _TaskListViewState extends State<TaskListView> {
 
     return DefaultTabController(
       length: 3,
-      initialIndex: 1,
+      initialIndex: 0,
         child: Scaffold(
           extendBody: true,
           appBar: AppBar(
@@ -55,8 +55,9 @@ class _TaskListViewState extends State<TaskListView> {
               ],
             ),
           ),
-          body: user.hasAnyWorkspace() ? workspaceInfo() : noWorkspacesInfo(),
-          floatingActionButton: fabButton(),
+          body: !user.hasAnyWorkspace() ? noWorkspacesInfo() :
+            user.getSelectedWorkspace().taskGroups!.length > 0 ? workspaceInfo() : noTaskGroupInfo(),
+          floatingActionButton: user.hasAnyWorkspace() ? fabButton() : null,
           floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         ),
     );
@@ -67,9 +68,12 @@ class _TaskListViewState extends State<TaskListView> {
     int daysForDeadline = 5;
     CurrentLogin user = CurrentLogin();
     var selectedWorkspace = user.getSelectedWorkspace();
-    var allTasks = sortTaskList(selectedWorkspace.taskGroups);
-    var deadlines = sortTaskList(selectedWorkspace.taskGroups).where((task) => isDeadline(task, daysForDeadline)).toList();
-    var completed = sortTaskList(selectedWorkspace.taskGroups).where((task) => task.isCompleted!).toList();
+    var allTasks = sortTaskList(selectedWorkspace.taskGroups!);
+    var deadlines = sortTaskList(selectedWorkspace.taskGroups!).where((task) => isDeadline(task, daysForDeadline)).toList();
+    var completed = sortTaskList(selectedWorkspace.taskGroups!).where((task) => task.isCompleted!).toList();
+
+    if(deadlines.length == 0)
+      DefaultTabController.of(context)!.animateTo(0);
 
     return TabBarView(
       children: [
@@ -82,7 +86,7 @@ class _TaskListViewState extends State<TaskListView> {
         Stack(
           children: [
             Background(color: kSecondaryColor),
-            taskList(deadlines)
+            deadlines.length > 0 ? taskList(deadlines) : noDeadlinesInfo()
           ],
         ),
         Stack(
@@ -95,11 +99,101 @@ class _TaskListViewState extends State<TaskListView> {
     );
   }
 
+  Widget noDeadlinesInfo()
+  {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.only(top: 20),
+      child: Container(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text(
+              'No deadlines for now.',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.nunito(
+                  textStyle: TextStyle(
+                    color: kPrimaryColor,
+                    fontSize: 18,
+                    fontFamily: 'Nunito',
+                    fontWeight: FontWeight.w600,
+                  )
+              ),
+            ),
+            Icon(
+              Icons.sentiment_satisfied_alt,
+              color: kPrimaryColor,
+              size: 32,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   Widget noWorkspacesInfo()
   {
     return Container(
-      color: Colors.green,
+      color: kSecondaryColor,
+      child: Container(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.view_carousel,
+              color: kPrimaryColor,
+              size: 32,
+            ),
+            Text(
+              'Begin by creating your first workspace and adding groups to it.',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.nunito(
+                  textStyle: TextStyle(
+                    color: kPrimaryColor,
+                    fontSize: 18,
+                    fontFamily: 'Nunito',
+                    fontWeight: FontWeight.w600,
+                  )
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget noTaskGroupInfo()
+  {
+    return Container(
+      color: kSecondaryColor,
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.view_carousel,
+              color: kPrimaryColor,
+              size: 32,
+            ),
+            Text(
+              'You need groups in your workspace to be able to create and store your tasks.',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.nunito(
+                  textStyle: TextStyle(
+                    color: kPrimaryColor,
+                    fontSize: 18,
+                    fontFamily: 'Nunito',
+                    fontWeight: FontWeight.w600,
+                  )
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -241,9 +335,9 @@ class _TaskListViewState extends State<TaskListView> {
   {
     var tasks = <Task>[];
     for(var i = 0; i < taskGroups.length; i++){
-      for(var j = 0; j < taskGroups[i].tasks.length; j++){
-        taskGroups[i].tasks[j].taskGroup = taskGroups[i];
-        tasks.add(taskGroups[i].tasks[j]);
+      for(var j = 0; j < taskGroups[i].tasks!.length; j++){
+        taskGroups[i].tasks![j].taskGroup = taskGroups[i];
+        tasks.add(taskGroups[i].tasks![j]);
       }
     }
     tasks.sort((a,b) => a.deadline.compareTo(b.deadline));

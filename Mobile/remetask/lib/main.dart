@@ -25,12 +25,7 @@ Future<bool> isLoggedIn() async{
 
   if(token == null || token.isEmpty) return false;
 
-  var id = prefs.getInt("id");
-  var email = prefs.getString("email");
-  CurrentLogin().setCurrentLogin(new User(id!, email!), token);
-
-  await CurrentLogin().load();
-
+  await CurrentLogin().loadFromSharedPreferences();
   return true;
 }
 

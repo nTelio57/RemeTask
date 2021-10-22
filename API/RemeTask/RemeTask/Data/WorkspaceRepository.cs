@@ -27,6 +27,7 @@ namespace RemeTask.Data
             if (workspace == null)
                 throw new ArgumentNullException(nameof(workspace));
             await _context.Workspaces.AddAsync(workspace);
+            await _context.UserWorkspaces.AddAsync(new UserWorkspace{UserId = workspace.Owner, Workspace = workspace});
         }
 
         public async Task<IEnumerable<Workspace>> GetAllWorkspaces()
