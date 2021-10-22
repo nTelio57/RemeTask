@@ -89,15 +89,16 @@ class API_Manager{
     }
   }
 
-  static Future<Task> PostTask(Task task) async {
+  static Future<API_Response<Task>> PostTask(Task task) async {
     final response = await http.post(Uri.https(API_URL, postTask),
         headers: defaultJWTHeaders,
         body: json.encode(task.toJson())
     );
 
     if(response.statusCode == 201){
-      return Task.fromJson(jsonDecode(response.body));
+      return API_Response(Task.fromJson(jsonDecode(response.body)), response.statusCode, response.reasonPhrase);
     }else{
+      return API_Response(null, response.statusCode, response.reasonPhrase);
       throw Exception('Failed to post task');
     }
   }
@@ -155,7 +156,7 @@ class API_Manager{
     );
 
     if(response.statusCode == 201){
-      return API_Response(TaskGroup.fromJson(jsonDecode(response.body)), response.statusCode);
+      return API_Response(TaskGroup.fromJson(jsonDecode(response.body)), response.statusCode, response.reasonPhrase);
     }else{
       throw Exception('Failed to post task group');
     }
@@ -168,7 +169,7 @@ class API_Manager{
     );
 
     if(response.statusCode == 201){
-      return API_Response(Workspace.fromJson(jsonDecode(response.body)), response.statusCode);
+      return API_Response(Workspace.fromJson(jsonDecode(response.body)), response.statusCode, response.reasonPhrase);
     }else{
       throw Exception('Failed to post task group');
     }

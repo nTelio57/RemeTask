@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:remetask/Components/TaskCreateFormComponents.dart';
 import 'package:remetask/Enums/PriorityType.dart';
@@ -31,6 +32,7 @@ class TaskCreateForm extends StatefulWidget {
 class _TaskCreateFormState extends State<TaskCreateForm> {
 
   double _borderRadius = 22;
+  bool _isProccessingApiCall = false;
 
   @override
   Widget build(BuildContext context) {
@@ -161,10 +163,11 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
 
   void createTask() async
   {
-    if(!validation())
+    if(!validation() || _isProccessingApiCall)
       {
         return;
       }
+    _isProccessingApiCall = true;
 
     var title = _titleController.text;
     var description = _descriptionController.text;
@@ -174,10 +177,21 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
 
     Task newTask = new Task(title, description, deadline, false, null, selectedPriority, null, taskGroup.id);
 
-    await API_Manager.PostTask(newTask);
     _selectedTaskGroup!.tasks!.add(newTask);
-    showToast(successToast());
+
+    var response = await API_Manager.PostTask(newTask);
+    if(response.statusCode == 201)
+      {
+        showToast(successToast());
+        _isProccessingApiCall = false;
+      }
+    else{
+      showToast(failureToast('Failed to create task. ${response.reasonPhrase} ${response.statusCode}'));
+      _isProccessingApiCall = false;
+    }
+    _isProccessingApiCall = false;
     Navigator.pop(context);
+
   }
 
   bool validation()
