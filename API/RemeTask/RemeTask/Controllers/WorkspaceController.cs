@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using RemeTask.Data;
 using RemeTask.Dtos.Task;
 using RemeTask.Dtos.TaskGroup;
+using RemeTask.Dtos.User;
 using RemeTask.Dtos.Workspace;
 using RemeTask.Models;
 
@@ -69,6 +70,13 @@ namespace RemeTask.Controllers
         {
             var workspaces = await _repository.GetWorkspacesByUserId(id);
             return Ok(_mapper.Map<IEnumerable<WorkspaceReadDto>>(workspaces));
+        }
+
+        [HttpGet("users/{id}", Name = "GetUsersByWorkspaceId")]
+        public async Task<IActionResult> GetUsersByWorkspaceId(int id)
+        {
+            var users = await _repository.GetUsersByWorkspaceId(id);
+            return Ok(_mapper.Map<IEnumerable<UserReadDto>>(users));
         }
 
         [HttpDelete("{id}")]

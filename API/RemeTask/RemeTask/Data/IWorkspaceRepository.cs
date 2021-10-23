@@ -15,6 +15,7 @@ namespace RemeTask.Data
         Task<IEnumerable<TaskGroup>> GetTaskGroupsByWorkspaceId(int id);
         Task<Workspace> GetWorkspaceById(int id);
         Task<IEnumerable<Workspace>> GetWorkspacesByUserId(int id);
+        Task<IEnumerable<User>> GetUsersByWorkspaceId(int id);
         Task UpdateWorkspace(Workspace workspace);
         Task DeleteWorkspace(Workspace workspace);
     }
