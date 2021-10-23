@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:remetask/Models/CurrentLogin.dart';
 import 'package:remetask/Models/TaskGroup.dart';
+import 'package:remetask/Models/User.dart';
 import 'package:remetask/Models/Workspace.dart';
 import 'package:remetask/Utilities/API_Manager.dart';
 import 'package:remetask/Utilities/constants.dart';
@@ -23,6 +24,7 @@ class _WorkspaceReadFormState extends State<WorkspaceReadForm> {
 
   @override
   Widget build(BuildContext context) {
+
     return DefaultTabController(
       length: 2,
       initialIndex: 0,
@@ -369,7 +371,110 @@ class _WorkspaceReadFormState extends State<WorkspaceReadForm> {
 
   Widget membersBar()
   {
-    return Container();
+    return Container(
+      padding: EdgeInsets.all(8),
+      child: RefreshIndicator(
+        onRefresh: () async {
+          var result = await API_Manager.GetUsersByWorkspace(widget.workspace.id!);
+          widget.workspace.users = result.body;
+          setState(() {
+
+          });
+        },
+        child: Column(
+          children: [
+            Row(
+              children: [
+                newMemberButton()
+              ],
+            ),
+            SizedBox(height: 8),
+            Expanded(
+                child: membersList()
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget membersList()
+  {
+    var members = widget.workspace.users!;
+    return Container(
+      child: ListView.builder(
+          itemCount: members.length,
+          itemBuilder: (context, index)
+          {
+            return memberCard(members[index]);
+          }
+      ),
+    );
+  }
+
+  Widget memberCard(User user)
+  {
+    double _borderRadius = 4;
+
+    return Container(
+      child: Card(
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(_borderRadius),
+        ),
+        child: InkWell(
+          splashColor: kPrimaryDarkColor.withAlpha(50),
+          borderRadius: BorderRadius.circular(_borderRadius),
+          onTap: () {
+
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+            child: Row(
+              children: [
+                Text(
+                  user.email,
+                  style: GoogleFonts.nunito(
+                      textStyle: TextStyle(
+                        color: kTextOnSecondary,
+                        fontFamily: 'Nunito',
+                        fontSize: 14,
+                        overflow: TextOverflow.ellipsis,
+                        fontWeight: FontWeight.w700
+                      )
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget newMemberButton()
+  {
+    return Expanded(
+      child: Container(
+        child: TextButton(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Invite members',
+                  style: kSecondaryButtonLabel,
+                ),
+                SizedBox(width: 10,),
+                Icon(Icons.person_add, color: kSecondaryLightColor)
+              ],
+            ),
+            onPressed: () {
+              print('New member pressed');
+            },
+            style: kSecondaryButton
+        ),
+      ),
+    );
   }
 
 }

@@ -83,6 +83,14 @@ class CurrentLogin{
             setSelectedWorkspace(workspaceById);
           }
       }
+
+    workspaces.forEach((element) {loadWorkspaceMembers(element);});
+  }
+
+  Future<void> loadWorkspaceMembers(Workspace workspace) async
+  {
+    var members = await API_Manager.GetUsersByWorkspace(workspace.id!);
+    workspace.users = members.body!;
   }
 
   bool hasAnyWorkspace()
