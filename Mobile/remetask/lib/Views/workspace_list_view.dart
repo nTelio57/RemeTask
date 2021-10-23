@@ -246,18 +246,27 @@ class _WorkspaceListViewState extends State<WorkspaceListView> {
   Widget workspaceList(List<Workspace> workspaces)
   {
     return Container(
-      child: ListView.builder(
-        itemCount: workspaces.length,
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-        itemBuilder: (context, index)
-        {
-          return Column(
-            children: [
-              workspaceTab(workspaces[index]),
-              SizedBox(height: 20,)
-            ],
-          );
+      child: RefreshIndicator(
+        onRefresh: () async {
+          CurrentLogin user = CurrentLogin();
+          await user.loadWorkspaces();
+          setState(() {
+
+          });
         },
+        child: ListView.builder(
+          itemCount: workspaces.length,
+          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+          itemBuilder: (context, index)
+          {
+            return Column(
+              children: [
+                workspaceTab(workspaces[index]),
+                SizedBox(height: 20,)
+              ],
+            );
+          },
+        ),
       ),
     );
   }
