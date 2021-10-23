@@ -72,7 +72,8 @@ class _TaskReadFormState extends State<TaskReadForm> {
                   children: [
                     tabRow(label(dateFormat.format(widget.task.deadline)), 'Deadline'),
                     tabRow(longText(widget.task.taskGroup!.name, textAlign: TextAlign.right), 'Group'),
-                    tabRow(label(Priority.parseToString(widget.task.priority)), 'Priority')
+                    tabRow(label(Priority.parseToString(widget.task.priority)), 'Priority'),
+                    widget.task.isCompleted! ? tabRow(label(dateFormat.format(widget.task.completionDate!)), 'Completed on') : Container()
                   ],
                 ),
               )
@@ -94,7 +95,7 @@ class _TaskReadFormState extends State<TaskReadForm> {
         child: Row(
           children: [
             Expanded(child: label(hint)),
-            Expanded(child: Container(child: child,alignment: Alignment.centerRight), flex: 3)
+            Expanded(child: Container(child: child,alignment: Alignment.centerRight))
           ],
         ),
       ),

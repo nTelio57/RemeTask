@@ -111,16 +111,16 @@ class TaskCard extends StatelessWidget {
                         child: Padding(
                           padding:const EdgeInsets.only(left: 10, right: 10, bottom: 7),
                           child: Container(
-                            alignment: Alignment.bottomRight,
+                            alignment: Alignment.bottomLeft,
                             height: 25,
                             child: Text(
-                              '${dateFormat.format(task.deadline)}',
+                              task.isCompleted! ? 'Completed on: ${dateFormat.format(task.completionDate!)}' : 'Deadline: ${dateFormat.format(task.deadline)}',
                               style: GoogleFonts.nunito(
                                   textStyle: TextStyle(
                                       color: kTextOnSecondary,
                                       fontWeight: FontWeight.w600,
                                       fontFamily: 'Nunito',
-                                      fontSize: 16,
+                                      fontSize: 12,
                                       overflow: TextOverflow.ellipsis
                                   )
                               ),
