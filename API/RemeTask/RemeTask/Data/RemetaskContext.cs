@@ -13,6 +13,7 @@ namespace RemeTask.Data
         public DbSet<TaskGroup> TaskGroups { get; set; }
         public DbSet<Workspace> Workspaces { get; set; }
         public DbSet<UserWorkspace> UserWorkspaces { get; set; }
+        public DbSet<Invitation> Invitations { get; set; }
         public RemetaskContext(DbContextOptions<RemetaskContext> opt) : base(opt)
         {
         }
@@ -31,6 +32,16 @@ namespace RemeTask.Data
             SeedTaskGroups(modelBuilder);
             SeedTasks(modelBuilder);
             SeedNotes(modelBuilder);
+            SeedInvitations(modelBuilder);
+        }
+
+        void SeedInvitations(ModelBuilder modelBuilder)
+        {
+            var invite1 = new Invitation {Id = 1, InvitationDate = new DateTime(2021, 10, 19), InviteeId = 1, InviterId = 2, WorkspaceId = 3};
+            var invite2 = new Invitation { Id = 2, InvitationDate = new DateTime(2021, 10, 18), InviteeId = 1, InviterId = 2, WorkspaceId = 75};
+            var invite3 = new Invitation { Id = 3, InvitationDate = new DateTime(2021, 10, 15), InviteeId = 15, InviterId = 1, WorkspaceId = 1};
+
+            modelBuilder.Entity<Invitation>().HasData(invite1, invite2, invite3);
         }
 
         void SeedUsers(ModelBuilder modelBuilder)
