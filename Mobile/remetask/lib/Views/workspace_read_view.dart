@@ -72,18 +72,33 @@ class _WorkspaceReadFormState extends State<WorkspaceReadForm> {
   {
     return Container(
       padding: EdgeInsets.all(8),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              newTaskGroupButton()
-            ],
-          ),
-         SizedBox(height: 8),
-         Expanded(
-           child:  widget.workspace.taskGroups!.length > 0 ? taskGroupList() : noTaskGroupsInfo()
-         )
-        ],
+      child: RefreshIndicator(
+        onRefresh: () async {
+          var result = await API_Manager.GetWorkspace(widget.workspace.id!);
+          if(result.statusCode == 200)
+            {
+              widget.workspace = result.body!;
+            }
+          else{
+            Navigator.pop(context);
+          }
+          setState(() {
+
+          });
+        },
+        child: Column(
+          children: [
+            Row(
+              children: [
+                newTaskGroupButton()
+              ],
+            ),
+           SizedBox(height: 8),
+           Expanded(
+             child:  widget.workspace.taskGroups!.length > 0 ? taskGroupList() : noTaskGroupsInfo()
+           )
+          ],
+        ),
       ),
     );
   }
