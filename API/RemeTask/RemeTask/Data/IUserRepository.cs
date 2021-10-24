@@ -15,6 +15,7 @@ namespace RemeTask.Data
         Task AddNewUser(User user);
         Task<User> GetUserByLogin(string email, string password);
         Task<User> GetUserById(int id);
+        Task<IEnumerable<User>> GetUsersByEmail(string email);
         Task UpdateUser(User user);
     }
 }

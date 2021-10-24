@@ -71,6 +71,11 @@ namespace RemeTask.Data
             return await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
         }
 
+        public async Task<IEnumerable<User>> GetUsersByEmail(string email)
+        {
+            return await _context.Users.Where(x => x.Email == email).ToListAsync();
+        }
+
         public async Task UpdateUser(User user)
         {
             

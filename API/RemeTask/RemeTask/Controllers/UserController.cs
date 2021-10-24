@@ -97,5 +97,13 @@ namespace RemeTask.Controllers
             return NoContent();
         }
 
+        [Authorize]
+        [HttpGet("by-email/{email}", Name = "GetUsersByEmail")]
+        public async Task<IActionResult> GetUsersByEmail(string email)
+        {
+            var invitations = await _repository.GetUsersByEmail(email);
+            return Ok(_mapper.Map<IEnumerable<UserReadDto>>(invitations));
+        }
+
     }
 }
