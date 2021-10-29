@@ -3,6 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:remetask/Models/AuthResult.dart';
+import 'package:remetask/Models/Invitation.dart';
+import 'package:remetask/Models/InvitationResponse.dart';
 import 'package:remetask/Models/Task.dart';
 import 'package:remetask/Models/TaskGroup.dart';
 import 'package:remetask/Models/User.dart';
@@ -15,6 +17,9 @@ String API_URL = 'remetask.herokuapp.com';
 String registerUrl = '/api/User/register';
 String loginUrl = '/api/User/login';
 
+//User
+String getUsersByEmail = '/api/User/by-email/';
+
 //Task groups
 @deprecated
 String taskGroupsByUserId = '/api/TaskGroup/by-user-id/';
@@ -26,10 +31,15 @@ String deleteTask = '/api/Task/';
 String updateTask = '/api/Task/';
 
 //Workspaces
-String workspacesByUserId = 'api/Workspace/by-users-id/';
+String workspacesByUserId = '/api/Workspace/by-users-id/';
 String getWorkspace = '/api/Workspace/';
 String postWorkspace = '/api/Workspace';
 String getUsersByWorkspace = '/api/Workspace/users/';
+
+//Invitations
+String postInvitation = '/api/Invitation';
+String getInvitationsByUser = '/api/Invitation/by-users-id/';
+String postInvitationResponse = '/api/Invitation/respond';
 
 Map<String, String> defaultHeaders = {
   'Content-Type': 'application/json; charset=UTF-8',
@@ -71,6 +81,24 @@ class API_Manager{
       return AuthResult.fromJson(jsonDecode(response.body));
     }else{
       throw Exception('Failed to login');
+    }
+  }
+
+  static Future<API_Response<List<User>>> GetUsersByEmail(String email) async
+  {
+    final response = await http.get(Uri.https(API_URL, getUsersByEmail+email),
+        headers: defaultJWTHeaders
+    );
+
+    if(response.statusCode == 200)
+    {
+      List<dynamic> jsonData = json.decode(response.body);
+      final parsed = jsonData.cast<Map<String, dynamic>>();
+
+      return API_Response(parsed.map<User>((e) => User.fromJson(e)).toList(), response.statusCode, response.reasonPhrase);
+    }
+    else{
+      throw Exception('Failed to get users by email');
     }
   }
 
@@ -208,6 +236,50 @@ class API_Manager{
     }
     else{
       throw Exception('Failed to get users of workspace');
+    }
+  }
+
+  static Future<API_Response<List<Invitation>>> GetInvitationsByUserId(int id) async
+  {
+    final response = await http.get(Uri.https(API_URL, getInvitationsByUser+id.toString()),
+        headers: defaultJWTHeaders
+    );
+
+    if(response.statusCode == 200)
+    {
+      List<dynamic> jsonData = json.decode(response.body);
+      final parsed = jsonData.cast<Map<String, dynamic>>();
+
+      return API_Response(parsed.map<Invitation>((e) => Invitation.fromJson(e)).toList(), response.statusCode, response.reasonPhrase);
+    }
+    else{
+      throw Exception('Failed to get users invitations');
+    }
+  }
+
+  static Future<API_Response<Invitation>> PostInvitation(Invitation invitation) async{
+    final response = await http.post(Uri.https(API_URL, postInvitation),
+        headers: defaultJWTHeaders,
+        body: json.encode(invitation.toJson())
+    );
+
+    if(response.statusCode == 201){
+      return API_Response(Invitation.fromJson(jsonDecode(response.body)), response.statusCode, response.reasonPhrase);
+    }else{
+      throw Exception('Failed to post invitation response');
+    }
+  }
+
+  static Future<API_Response<bool>> PostInvitationResponse(InvitationResponse invitationResponse) async{
+    final response = await http.post(Uri.https(API_URL, postInvitationResponse),
+        headers: defaultJWTHeaders,
+        body: json.encode(invitationResponse.toJson())
+    );
+
+    if(response.statusCode == 200){
+      return API_Response(true, response.statusCode, response.reasonPhrase);
+    }else{
+      throw Exception('Failed to post invitation response');
     }
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:remetask/Models/Invitation.dart';
 import 'package:remetask/Models/TaskGroup.dart';
 import 'package:remetask/Models/User.dart';
 import 'package:remetask/Models/Workspace.dart';
@@ -15,6 +16,7 @@ class CurrentLogin{
   String? token;
   List<Workspace> workspaces = [];
   Workspace? selectedWorkspace;
+  List<Invitation> invitations = [];
 
   CurrentLogin._internal();
 
@@ -71,6 +73,7 @@ class CurrentLogin{
     prefs = await SharedPreferences.getInstance();
 
     await loadWorkspaces();
+    await loadInvitations();
   }
 
   Future<void> loadWorkspaces() async{
@@ -95,11 +98,23 @@ class CurrentLogin{
 
   bool hasAnyWorkspace()
   {
-    if(workspaces.length == 0)
-      {
-        return false;
-      }
-    return true;
+    return workspaces.length > 0;
+  }
+
+  bool hasAnyInvitation()
+  {
+    return invitations.length > 0;
+  }
+
+  Future<void> loadInvitations() async
+  {
+    var result = await API_Manager.GetInvitationsByUserId(user!.id);
+    invitations = result.body!;
+  }
+
+  void removeInvitation(Invitation invitation)
+  {
+    invitations.remove(invitation);
   }
 
   Workspace getSelectedWorkspace()

@@ -7,6 +7,7 @@ import 'package:remetask/Models/Workspace.dart';
 import 'package:remetask/Utilities/API_Manager.dart';
 import 'package:remetask/Utilities/constants.dart';
 import 'package:remetask/Utilities/globals.dart';
+import 'package:remetask/Views/invitation_create_view.dart';
 
 class WorkspaceReadForm extends StatefulWidget {
 
@@ -470,8 +471,107 @@ class _WorkspaceReadFormState extends State<WorkspaceReadForm> {
             ),
             onPressed: () {
               print('New member pressed');
+              Navigator.push(context, new MaterialPageRoute(builder: (context) => InvitationCreateView(workspace: widget.workspace,)));
             },
             style: kSecondaryButton
+        ),
+      ),
+    );
+  }
+
+  Widget newMemberDialog()
+  {
+    return AlertDialog(
+      insetPadding: EdgeInsets.all(0),
+      backgroundColor: kPrimaryColor,
+      content: Container(
+        color: Colors.green,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                newMemberEmailForm(),
+                newMemberButtonForm()
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget newMemberEmailForm()
+  {
+    return Container(
+      alignment: Alignment.centerLeft,
+      decoration: BoxDecoration(
+        color: kSecondaryLightColor,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: TextField(
+        controller: _taskGroupTitle,
+        style: TextStyle(
+            color: kPrimaryColor,
+            fontFamily: 'OpenSans'
+        ),
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.only(top: 14.0),
+          prefixIcon: Icon(
+            Icons.alternate_email,
+            color: kPrimaryColor,
+          ),
+          hintText: "Email",
+          hintStyle: GoogleFonts.nunito(
+              textStyle: TextStyle(
+                  color: kPrimaryColor,
+                  fontFamily: 'Nunito',
+              )
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget newMemberButtonForm()
+  {
+    return Container(
+      width: double.infinity,
+      height: 50,
+      child: TextButton(
+        onPressed: ()  async {
+          if(_isProcessingApiCall) return;
+
+          _isProcessingApiCall = true;
+          var newTaskGroup = await API_Manager.PostTaskGroup(new TaskGroup(name: _taskGroupTitle.text, tag: _taskGroupTag.text, workspaceId: widget.workspace.id));
+          if(newTaskGroup.statusCode == 201)
+          {
+            setState(() {
+              _isProcessingApiCall = false;
+              widget.workspace.addTaskGroup(newTaskGroup.body!);
+              _taskGroupTitle.clear();
+              _taskGroupTag.clear();
+              Navigator.pop(context);
+            });
+          }
+        } ,
+        style: TextButton.styleFrom(
+            primary: Colors.white,
+            backgroundColor: kPrimaryColor,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0)
+            )
+        ),
+        child: Text(
+          'Create',
+          style: TextStyle(
+              color: kTextOnPrimary,
+              letterSpacing: 1.5,
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'OpenSans'
+          ),
         ),
       ),
     );

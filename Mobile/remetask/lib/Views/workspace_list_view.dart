@@ -7,6 +7,7 @@ import 'package:remetask/Models/Workspace.dart';
 import 'package:remetask/Utilities/API_Manager.dart';
 import 'package:remetask/Utilities/constants.dart';
 import 'package:remetask/Utilities/globals.dart';
+import 'package:remetask/Views/invitation_list_view.dart';
 import 'package:remetask/Views/workspace_read_view.dart';
 
 FToast? _toast;
@@ -202,12 +203,58 @@ class _WorkspaceListViewState extends State<WorkspaceListView> {
   Widget body()
   {
     var workspaces = CurrentLogin().workspaces;
+    var invitations = CurrentLogin().invitations;
 
     return Stack(
       children: [
         Background(color: kSecondaryColor),
-        workspaces.length > 0 ? workspaceList(workspaces) : noWorkspacesInfo()
+        Container(
+          child: Column(
+            children: [
+              invitationsBar(),
+              //invitations.length > 0 ? invitationsBar() : Container(),
+              Expanded(
+                  child: workspaces.length > 0 ? workspaceList(workspaces) : noWorkspacesInfo()
+              ),
+              //invitations.length > 0 ? invitationsBar() : Container(),
+            ]
+          ),
+        )
       ],
+    );
+  }
+
+  Widget invitationsBar()
+  {
+    return Container(
+      decoration: BoxDecoration(
+        color: kPrimaryColor,
+        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(8), bottomRight: Radius.circular(8)),
+      ),
+      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      child: TextButton(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Show invitations',
+              ),
+              SizedBox(width: 10,),
+              Icon(Icons.chevron_right, color: kPrimaryColor)
+            ],
+          ),
+          onPressed: () {
+            print('Show invitations pressed');
+            Navigator.push(context, new MaterialPageRoute(builder: (context) => InvitationListView()));
+          },
+          style: TextButton.styleFrom(
+              primary: kPrimaryColor,
+              backgroundColor: kSecondaryLightColor,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0)
+              )
+          )
+      ),
     );
   }
 
@@ -250,6 +297,7 @@ class _WorkspaceListViewState extends State<WorkspaceListView> {
         onRefresh: () async {
           CurrentLogin user = CurrentLogin();
           await user.loadWorkspaces();
+          await user.loadInvitations();
           setState(() {
 
           });
