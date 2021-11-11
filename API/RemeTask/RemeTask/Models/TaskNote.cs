@@ -6,14 +6,12 @@ using System.Threading.Tasks;
 
 namespace RemeTask.Models
 {
-    public class TaskNote
-    {
-        [Key]
-        public int Id { get; set; }
+    public class TaskNote : Entity
+    { 
         public string Content { get; set; }
         public DateTime CreatedOn { get; set; }
         public User CreatedBy { get; set; }
-        public int CreatedById { get; set; }
+        public string CreatedById { get; set; }
         public Task Task { get; set; }
         public int TaskId { get; set; }
     }

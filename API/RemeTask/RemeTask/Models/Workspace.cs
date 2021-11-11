@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 
 namespace RemeTask.Models
 {
-    public class Workspace
+    public class Workspace : Entity
     {
-        [Key]
-        public int Id { get; set; }
         public string Name { get; set; }
-        public int Owner { get; set; }
+        public string Owner { get; set; }
         public ICollection<UserWorkspace> Users { get; set; }
         public ICollection<TaskGroup> TaskGroups { get; set; }
     }
