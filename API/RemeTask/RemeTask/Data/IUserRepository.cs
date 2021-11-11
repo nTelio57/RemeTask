@@ -14,7 +14,7 @@ namespace RemeTask.Data
         Task<string> GenerateToken(string email);
         Task AddNewUser(User user);
         Task<User> GetUserByLogin(string email, string password);
-        Task<User> GetUserById(int id);
+        Task<User> GetUserById(string id);
         Task<IEnumerable<User>> GetUsersByEmail(string email);
         Task UpdateUser(User user);
     }

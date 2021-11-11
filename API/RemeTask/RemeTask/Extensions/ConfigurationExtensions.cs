@@ -8,6 +8,7 @@ using RemeTask.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using RemeTask.Models;
 
 namespace RemeTask.Extensions
 {
@@ -16,10 +17,10 @@ namespace RemeTask.Extensions
         public static IServiceCollection AddRepositoriesDependencies(this IServiceCollection services)
         {
             return services
-                .AddScoped<ITaskRepository, TaskRepository>()
-                .AddScoped<ITaskGroupRepository, TaskGroupRepository>()
-                .AddScoped<IWorkspaceRepository, WorkspaceRepository>()
-                .AddScoped<IInvitationRepository, InvitationRepository>();
+                .AddScoped<IRepository<Task>, TaskRepository>()
+                .AddScoped<IRepository<TaskGroup>, TaskGroupRepository>()
+                .AddScoped<IRepository<Workspace>, WorkspaceRepository>()
+                .AddScoped<IRepository<Invitation>, InvitationRepository>();
         }
 
         public static IServiceCollection AddAuthorizationDependencies(this IServiceCollection services, IConfiguration configuration)

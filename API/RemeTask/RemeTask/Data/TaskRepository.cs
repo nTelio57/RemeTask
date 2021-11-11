@@ -3,49 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using RemeTask.Models;
 using RTTask = RemeTask.Models.Task;
 
 namespace RemeTask.Data
 {
-    public class TaskRepository : ITaskRepository
+    public class TaskRepository : Repository<RTTask>
     {
-        private readonly RemetaskContext _context;
-        public TaskRepository(RemetaskContext context)
+        protected override DbSet<RTTask> Entities { get; }
+        public TaskRepository(RemetaskContext context) : base(context)
         {
-            _context = context;
+            Entities = context.Tasks;
         }
-
-        public async Task<bool> SaveChanges()
+        
+        public async Task<bool> CanUserEdit(string userId, RTTask task)
         {
-            return await _context.SaveChangesAsync() >= 0;
-        }
+            TaskGroup taskGroup = await Context.TaskGroups.Where(x => x.Id == task.TaskGroupId).FirstOrDefaultAsync();
+            Workspace workspace = await Context.Workspaces.Where(x => x.Id == taskGroup.WorkspaceId).FirstOrDefaultAsync();
 
-        public async Task CreateTask(RTTask task)
-        {
-            if (task == null)
-                throw new ArgumentNullException(nameof(task));
-            await _context.Tasks.AddAsync(task);
-        }
-
-        public async Task<IEnumerable<RTTask>> GetAllTasks()
-        {
-            return await _context.Tasks.ToListAsync();
-        }
-
-        public async Task<RTTask> GetTaskById(int id)
-        {
-            return await _context.Tasks.FirstOrDefaultAsync(x => x.Id == id);
-        }
-
-        public async Task UpdateTask(RTTask task)
-        {
-        }
-
-        public async Task DeleteTask(RTTask task)
-        {
-            if (task == null)
-                throw new ArgumentNullException(nameof(task));
-            _context.Tasks.Remove(task);
+            return Context.UserWorkspaces.Count(x => x.WorkspaceId == workspace.Id && x.UserId == userId) > 0;
         }
     }
 }
