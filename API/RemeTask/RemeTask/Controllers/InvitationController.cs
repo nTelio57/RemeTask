@@ -1,15 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RemeTask.Data;
 using RemeTask.Dtos.Invitation;
-using RemeTask.Dtos.Workspace;
 using RemeTask.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace RemeTask.Controllers
 {
@@ -18,11 +14,11 @@ namespace RemeTask.Controllers
     [ApiController]
     public class InvitationController : ControllerBase
     {
-        private readonly IInvitationRepository _repository;
+        private readonly InvitationRepository _repository;
         private readonly IMapper _mapper;
-        public InvitationController(IInvitationRepository repository, IMapper mapper)
+        public InvitationController(IRepository<Invitation> repository, IMapper mapper)
         {
-            _repository = repository;
+            _repository = repository as InvitationRepository;
             _mapper = mapper;
         }
 
@@ -40,7 +36,7 @@ namespace RemeTask.Controllers
         {
             var invitationModel = _mapper.Map<Invitation>(invitationCreateDto);
 
-            await _repository.CreateInvitation(invitationModel);
+            await _repository.Create(invitationModel);
             await _repository.SaveChanges();
 
             var invitationReadDto = _mapper.Map<InvitationReadDto>(invitationModel);
@@ -48,7 +44,7 @@ namespace RemeTask.Controllers
         }
 
         [HttpGet("by-users-id/{id}", Name = "GetInvitationsByUserId")]
-        public async Task<IActionResult> GetInvitationsByUserId(int id)
+        public async Task<IActionResult> GetInvitationsByUserId(string id)
         {
             var invitations = await _repository.GetInvitationsByUserId(id);
             return Ok(_mapper.Map<IEnumerable<InvitationReadDto>>(invitations));
@@ -72,7 +68,7 @@ namespace RemeTask.Controllers
             {
                 await _repository.AcceptInvitation(invitation);
             }
-            await _repository.DeleteInvitation(invitation);
+            await _repository.Delete(invitation);
             await _repository.SaveChanges();
             
             return Ok();

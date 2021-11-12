@@ -12,6 +12,7 @@ namespace RemeTask.Data
         public DbSet<Workspace> Workspaces { get; set; }
         public DbSet<UserWorkspace> UserWorkspaces { get; set; }
         public DbSet<Invitation> Invitations { get; set; }
+
         public RemetaskContext(DbContextOptions<RemetaskContext> opt) : base(opt)
         {
         }
@@ -22,3 +23,4 @@ namespace RemeTask.Data
             modelBuilder.Entity<UserWorkspace>().HasKey(ut => new {ut.UserId, ut.WorkspaceId});
         }
     }
+}
