@@ -1,17 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.VisualBasic.CompilerServices;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using RemeTask.Auth;
 using RemeTask.Data;
 using RemeTask.Dtos.User;
 using RemeTask.Models;
 using RemeTask.Utilities;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace RemeTask.Controllers
 {
@@ -19,75 +16,102 @@ namespace RemeTask.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+        private readonly UserManager<User> _userManager;
         private readonly IUserRepository _repository;
         private readonly IMapper _mapper;
-        public UserController(IUserRepository jwtAuthenticationRepo, IMapper mapper)
+        private readonly ITokenManager _tokenManager;
+        private readonly IPasswordValidator<User> _passwordValidator;
+
+        public UserController(UserManager<User> userManager, IUserRepository userRepository, IMapper mapper, ITokenManager tokenManager, IPasswordValidator<User> passwordValidator)
         {
-            _repository = jwtAuthenticationRepo;
+            _userManager = userManager;
+            _repository = userRepository;
             _mapper = mapper;
+            _tokenManager = tokenManager;
+            _passwordValidator = passwordValidator;
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(AuthRequest authRequest)
+        [AllowAnonymous]
+        public async Task<IActionResult> Register(UserCreateDto authRequest)
         {
-            var existingUser = await _repository.GetUserByEmail(authRequest.Email);
-
-            if (existingUser != null)
+            var user = await _userManager.FindByEmailAsync(authRequest.Email);
+            if (user != null)
             {
                 return BadRequest(new AuthResult
                 {
-                    Errors = new[] {"User with this email address already exists"}
+                    Errors = new[] {"User with this email address already exists."}
                 });
             }
+            var result = await _passwordValidator.ValidateAsync(_userManager, null, authRequest.Password);
+            if (!result.Succeeded)
+                return BadRequest(new AuthResult
+                {
+                    Errors = result.Errors.Select(x => x.Description)
+                });
 
             var salt = Crypto.GenerateSalt();
-
             var newUser = new User
             {
+                UserName = authRequest.Email,
                 Email = authRequest.Email,
-                Password = Crypto.Hash(authRequest.Password+salt),
                 Salt = salt
             };
 
-            await _repository.AddNewUser(newUser);
-            await _repository.SaveChanges();
+            var createdUser = await _userManager.CreateAsync(newUser, authRequest.Password + salt);
+            if(!createdUser.Succeeded)
+                return BadRequest(new AuthResult
+                {
+                    Errors = new[] { "Could not create a user." }
+                });
 
-            var token = await _repository.GenerateToken(authRequest.Email);
-            return Ok(new AuthResult
+            await _userManager.AddToRoleAsync(newUser, UserRoles.Basic);
+            var accessToken = await _tokenManager.CreateAccessTokenAsync(newUser);
+
+            return CreatedAtAction(nameof(Register), new AuthResult
             {
                 Success = true,
-                Token = token,
+                Token = accessToken,
                 User = _mapper.Map<UserReadDto>(newUser)
             });
         }
 
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(AuthRequest authRequest)
         {
-            var existingUser = await _repository.GetUserByLogin(authRequest.Email, authRequest.Password);
-
-            if (existingUser == null)
+            var user = await _userManager.FindByEmailAsync(authRequest.Email);
+            if (user == null)
             {
                 return BadRequest(new AuthResult
                 {
-                    Errors = new[] { "Wrong credentials" }
+                    Errors = new[] { "Wrong credentials." }
                 });
             }
 
-            var token = await _repository.GenerateToken(authRequest.Email);
+            var isPasswordValid = await _userManager.CheckPasswordAsync(user, authRequest.Password + user.Salt);
+            if (!isPasswordValid)
+            {
+                return BadRequest(new AuthResult
+                {
+                    Errors = new[] { "Wrong credentials." }
+                });
+            }
+
+            var accessToken = await _tokenManager.CreateAccessTokenAsync(user);
             return Ok(new AuthResult
             {
                 Success = true,
-                Token = token,
-                User = _mapper.Map<UserReadDto>(existingUser)
+                Token = accessToken,
+                User = _mapper.Map<UserReadDto>(user)
             });
         }
 
         [Authorize]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, UserUpdateDto userUpdateDto)
+        public async Task<IActionResult> UpdateUser(string id, UserUpdateDto userUpdateDto)
         {
-            var userModel = await _repository.GetUserById(id);
+            var userModel = await _userManager.FindByIdAsync(id);
             if (userModel == null)
                 return NotFound();
 
@@ -95,14 +119,6 @@ namespace RemeTask.Controllers
             await _repository.UpdateUser(userModel);
             await _repository.SaveChanges();
             return NoContent();
-        }
-
-        [Authorize]
-        [HttpGet("by-email/{email}", Name = "GetUsersByEmail")]
-        public async Task<IActionResult> GetUsersByEmail(string email)
-        {
-            var invitations = await _repository.GetUsersByEmail(email);
-            return Ok(_mapper.Map<IEnumerable<UserReadDto>>(invitations));
         }
 
     }
