@@ -12,5 +12,6 @@ namespace RemeTask.Data
         Task<bool> SaveChanges();
         Task<string> GenerateToken(string email);
         Task UpdateUser(User user);
+        Task<IEnumerable<User>> GetUsersByEmail(string email);
     }
 }

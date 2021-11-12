@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -119,6 +120,15 @@ namespace RemeTask.Controllers
             await _repository.UpdateUser(userModel);
             await _repository.SaveChanges();
             return NoContent();
+        }
+
+        [Authorize]
+        [Roles(UserRoles.Basic, UserRoles.Pro, UserRoles.Admin)]
+        [HttpGet("by-email/{email}", Name = "GetUsersByEmail")]
+        public async Task<IActionResult> GetUsersByEmail(string email)
+        {
+            var invitations = await _repository.GetUsersByEmail(email);
+            return Ok(_mapper.Map<IEnumerable<UserReadDto>>(invitations));
         }
 
     }
