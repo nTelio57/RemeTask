@@ -9,57 +9,40 @@ using Task = System.Threading.Tasks.Task;
 
 namespace RemeTask.Data
 {
-    public class WorkspaceRepository : IWorkspaceRepository
+    public class WorkspaceRepository : Repository<Workspace>
     {
-        private readonly RemetaskContext _context;
-        public WorkspaceRepository(RemetaskContext context)
+        protected override DbSet<Workspace> Entities { get; }
+        public WorkspaceRepository(RemetaskContext context) : base(context)
         {
-            _context = context;
+            Entities = context.Workspaces;
         }
 
-        public async Task<bool> SaveChanges()
-        {
-            return await _context.SaveChangesAsync() >= 0;
-        }
-
-        public async Task CreateWorkspace(Workspace workspace)
+        public override async Task Create(Workspace workspace)
         {
             if (workspace == null)
                 throw new ArgumentNullException(nameof(workspace));
-            await _context.Workspaces.AddAsync(workspace);
-            await _context.UserWorkspaces.AddAsync(new UserWorkspace{UserId = workspace.Owner, Workspace = workspace});
-        }
-
-        public async Task<IEnumerable<Workspace>> GetAllWorkspaces()
-        {
-            return await _context.Workspaces.ToListAsync();
-        }
-
-        public async Task<Workspace> GetWorkspaceById(int id)
-        {
-            return await _context.Workspaces.Include(x=> x.TaskGroups).FirstOrDefaultAsync(x => x.Id == id);
+            await Context.Workspaces.AddAsync(workspace);
+            await Context.UserWorkspaces.AddAsync(new UserWorkspace{UserId = workspace.Owner, Workspace = workspace});
         }
 
         public async Task<IEnumerable<TaskGroup>> GetTaskGroupsByWorkspaceId(int id)
         {
-            return await _context.TaskGroups.Include(x => x.Tasks).Where(x => x.WorkspaceId == id).ToListAsync();
+            return await Context.TaskGroups.Include(x => x.Tasks).Where(x => x.WorkspaceId == id).ToListAsync();
         }
 
-        public async Task<IEnumerable<Workspace>> GetWorkspacesByUserId(int id)
+        public async Task<IEnumerable<Workspace>> GetWorkspacesByUserId(string id)
         {
-            return await _context.UserWorkspaces.Include(x => x.Workspace).Include(x => x.Workspace.TaskGroups).ThenInclude(x => x.Tasks).Where(x => x.UserId == id).Select(x => x.Workspace).ToListAsync();
+            return await Context.UserWorkspaces
+                .Include(x => x.Workspace)
+                .Include(x => x.Workspace.TaskGroups)
+                    .ThenInclude(x => x.Tasks).Where(x => x.UserId == id)
+                .Select(x => x.Workspace)
+                .ToListAsync();
         }
 
-        public async Task UpdateWorkspace(Workspace workspace)
+        public async Task<IEnumerable<User>> GetUsersByWorkspaceId(int id)
         {
-            
-        }
-
-        public async Task DeleteWorkspace(Workspace workspace)
-        {
-            if (workspace == null)
-                throw new ArgumentNullException(nameof(workspace));
-            _context.Workspaces.Remove(workspace);
+            return await Context.UserWorkspaces.Include(x => x.User).Where(x => x.WorkspaceId == id).Select(x => x.User).ToListAsync();
         }
     }
 }

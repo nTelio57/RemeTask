@@ -8,6 +8,6 @@ namespace RemeTask.Dtos.Workspace
     public class WorkspaceCreateDto
     {
         public string Name { get; set; }
-        public int? Owner { get; set; }
+        public string? Owner { get; set; }
     }
 }

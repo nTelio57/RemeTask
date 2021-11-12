@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace RemeTask.Models
 {
-    public class TaskGroup
+    public class TaskGroup : Entity
     {
-        [Key]
-        public int Id { get; set; }
         public string Name { get; set; }
         public string Tag { get; set; }
 

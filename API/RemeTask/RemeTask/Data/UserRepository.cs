@@ -48,27 +48,14 @@ namespace RemeTask.Data
             return tokenHandler.WriteToken(token);
         }
 
-        public async Task<User> GetUserByEmail(string email)
-        {
-            return await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
-        }
-
-        public async Task AddNewUser(User user)
-        {
-            await _context.Users.AddAsync(user);
-        }
-
-        public async Task<User> GetUserByLogin(string email, string password)
-        {
-            User user = await _context.Users.Include(x=>x.Workspaces).ThenInclude(x=>x.Workspace).FirstOrDefaultAsync(x => x.Email == email);
-            if (user == null || !user.Password.Equals(Crypto.Hash(password + user.Salt)))
-                return null;
-            return user;
-        }
-
-        public async Task<User> GetUserById(int id)
+        public async Task<User> GetUserById(string id)
         {
             return await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<IEnumerable<User>> GetUsersByEmail(string email)
+        {
+            return await _context.Users.Where(x => x.Email == email).ToListAsync();
         }
 
         public async Task UpdateUser(User user)

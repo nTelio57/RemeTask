@@ -9,45 +9,17 @@ using RTTask = RemeTask.Models.Task;
 
 namespace RemeTask.Data
 {
-    public class TaskGroupRepository : ITaskGroupRepository
+    public class TaskGroupRepository : Repository<TaskGroup>
     {
-        private readonly RemetaskContext _context;
-        public TaskGroupRepository(RemetaskContext context)
+        protected override DbSet<TaskGroup> Entities { get; }
+        public TaskGroupRepository(RemetaskContext context) : base(context)
         {
-            _context = context;
-        }
-        public async Task<bool> SaveChanges()
-        {
-            return await _context.SaveChangesAsync() >= 0;
+            Entities = context.TaskGroups;
         }
 
-        public async Task CreateTaskGroup(TaskGroup taskGroup)
+        protected override IQueryable<TaskGroup> IncludeDependencies(IQueryable<TaskGroup> queryable)
         {
-            if (taskGroup == null)
-                throw new ArgumentNullException(nameof(taskGroup));
-            await _context.TaskGroups.AddAsync(taskGroup);
-        }
-
-        public async Task<IEnumerable<TaskGroup>> GetAllTaskGroups()
-        {
-            return await _context.TaskGroups.Include(x => x.Tasks).ToListAsync();
-        }
-
-        public async Task<TaskGroup> GetTaskGroupById(int id)
-        {
-            return await _context.TaskGroups.Include(x => x.Tasks).FirstOrDefaultAsync(x => x.Id == id);
-        }
-
-        public async Task UpdateTaskGroup(TaskGroup taskGroup)
-        {
-            
-        }
-
-        public async Task DeleteTaskGroup(TaskGroup taskGroup)
-        {
-            if (taskGroup == null)
-                throw new ArgumentNullException(nameof(taskGroup));
-            _context.TaskGroups.Remove(taskGroup);
+            return queryable.Include(x => x.Tasks);
         }
 
         /*public async Task<IEnumerable<TaskGroup>> GetTaskGroupsByUserId(int id)
@@ -57,12 +29,14 @@ namespace RemeTask.Data
 
         public async Task<IEnumerable<TaskGroup>> GetTaskGroupsByWorkspaceId(int id)
         {
-            return await _context.TaskGroups.Include(x => x.Tasks).Where(x => x.WorkspaceId == id).ToListAsync();
+            return await Context.TaskGroups.Include(x => x.Tasks).Where(x => x.WorkspaceId == id).ToListAsync();
         }
 
         public async Task<RTTask> GetTaskByGroup(int groupId, int taskId)
         {
-            var group = await GetTaskGroupById(groupId);
+            var group = await GetById(groupId);
+            if (group is null)
+                return null;
             return group.Tasks.FirstOrDefault(x => x.Id == taskId);
         }
     }

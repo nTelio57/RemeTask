@@ -7,12 +7,13 @@ part 'Workspace.g.dart';
 
 @JsonSerializable()
 class Workspace {
-  Workspace({this.id, this.name = '', this.owner, this.taskGroups});
+  Workspace({this.id, this.name = '', this.owner, this.taskGroups, this.users});
 
   int? id;
   String name;
   int? owner;
   List<TaskGroup>? taskGroups;
+  List<User>? users;
 
   factory Workspace.fromJson(Map<String, dynamic> json) => _$WorkspaceFromJson(json);
 

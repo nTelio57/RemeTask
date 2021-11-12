@@ -17,6 +17,7 @@ const kPrimaryDarkColor = Color(0xFF03569b);
 
 const kSecondaryColor = Color.fromRGBO(235, 235, 235, 1);//Color(0xFFdcdcdc);
 const kSecondaryLightColor = Colors.white;
+const kSecondaryDarkColor = Color.fromRGBO(200, 200, 200, 1);
 
 const kTextOnPrimary = Colors.white;
 const kTextOnSecondary = Color(0xFF212121);

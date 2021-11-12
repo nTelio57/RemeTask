@@ -17,6 +17,163 @@ namespace RemeTask.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
                 .HasAnnotation("ProductVersion", "5.0.10");
 
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(767)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex");
+
+                    b.ToTable("AspNetRoles");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("text");
+
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("varchar(767)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(767)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("varchar(767)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("varchar(767)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(767)");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(767)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("varchar(767)");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(767)");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("varchar(767)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("varchar(767)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("text");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("RemeTask.Models.Invitation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("InvitationDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("InviteeId")
+                        .HasColumnType("varchar(767)");
+
+                    b.Property<string>("InviterId")
+                        .HasColumnType("varchar(767)");
+
+                    b.Property<int>("WorkspaceId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InviteeId");
+
+                    b.HasIndex("InviterId");
+
+                    b.HasIndex("WorkspaceId");
+
+                    b.ToTable("Invitations");
+                });
+
             modelBuilder.Entity("RemeTask.Models.Task", b =>
                 {
                     b.Property<int>("Id")
@@ -49,111 +206,6 @@ namespace RemeTask.Migrations
                     b.HasIndex("TaskGroupId");
 
                     b.ToTable("Tasks");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Deadline = new DateTime(2021, 10, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Labai didelis aprasymas",
-                            IsCompleted = false,
-                            Priority = 3,
-                            TaskGroupId = 2,
-                            Title = "Laboras1"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CompletionDate = new DateTime(2021, 10, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Deadline = new DateTime(2021, 10, 17, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Labai didelis aprasymas",
-                            IsCompleted = true,
-                            Priority = 2,
-                            TaskGroupId = 1,
-                            Title = "Laboras2"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Deadline = new DateTime(2021, 10, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Labai didelis aprasymas",
-                            IsCompleted = false,
-                            Priority = 3,
-                            TaskGroupId = 1,
-                            Title = "Kontras"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Deadline = new DateTime(2021, 10, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Labai didelis aprasymas",
-                            IsCompleted = false,
-                            Priority = 3,
-                            TaskGroupId = 2,
-                            Title = "Pakartotinis lab1"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CompletionDate = new DateTime(2021, 11, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Deadline = new DateTime(2021, 11, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Labai didelis aprasymas",
-                            IsCompleted = true,
-                            Priority = 1,
-                            TaskGroupId = 4,
-                            Title = "Tarpinis egzas"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Deadline = new DateTime(2021, 12, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Labai didelis aprasymas",
-                            IsCompleted = false,
-                            Priority = 5,
-                            TaskGroupId = 2,
-                            Title = "Lab3"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Deadline = new DateTime(2021, 11, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Labai didelis aprasymas",
-                            IsCompleted = false,
-                            Priority = 2,
-                            TaskGroupId = 4,
-                            Title = "Testas1"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Deadline = new DateTime(2021, 12, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Labai didelis aprasymas",
-                            IsCompleted = false,
-                            Priority = 3,
-                            TaskGroupId = 1,
-                            Title = "Anglu egzas"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            CompletionDate = new DateTime(2021, 11, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Deadline = new DateTime(2021, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Labai didelis aprasymas",
-                            IsCompleted = true,
-                            Priority = 4,
-                            TaskGroupId = 4,
-                            Title = "Lab6"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            Deadline = new DateTime(2021, 10, 17, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "Labai didelis aprasymas",
-                            IsCompleted = false,
-                            Priority = 1,
-                            TaskGroupId = 2,
-                            Title = "Pakartotinis egzas"
-                        });
                 });
 
             modelBuilder.Entity("RemeTask.Models.TaskGroup", b =>
@@ -176,43 +228,6 @@ namespace RemeTask.Migrations
                     b.HasIndex("WorkspaceId");
 
                     b.ToTable("TaskGroups");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Matematika",
-                            Tag = "MAT",
-                            WorkspaceId = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Informatika",
-                            Tag = "INFO",
-                            WorkspaceId = 1
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Anglu",
-                            Tag = "ENG",
-                            WorkspaceId = 2
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Fizika",
-                            Tag = "FIZ",
-                            WorkspaceId = 1
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "Objektinis programavimas",
-                            Tag = "OOP",
-                            WorkspaceId = 1
-                        });
                 });
 
             modelBuilder.Entity("RemeTask.Models.TaskNote", b =>
@@ -224,8 +239,8 @@ namespace RemeTask.Migrations
                     b.Property<string>("Content")
                         .HasColumnType("text");
 
-                    b.Property<int>("CreatedById")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("varchar(767)");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime");
@@ -244,51 +259,75 @@ namespace RemeTask.Migrations
 
             modelBuilder.Entity("RemeTask.Models.User", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(767)");
+
+                    b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<string>("Email")
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
                         .HasColumnType("text");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("timestamp");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("PasswordHash")
                         .HasColumnType("text");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Salt")
                         .HasColumnType("text");
 
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
 
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Email = "test@gmail.com",
-                            Password = "q4FNUQnZUklVgBx2JenlHcYFhq6drVS0Bh8E0ye8yiY=",
-                            Salt = "Ux7QC8+we1StSPeXbhGGrJFfdQSj7OzyjEPv3R9xuQ8="
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Email = "du@test.com",
-                            Password = "G9Jr7PFw0PecDsLlJhCM2LyxzWtKD40a/GmzAOqn77Y=",
-                            Salt = "p7JlJExiWZo/cR1sHBm2j1DPsTE8MXO3NAEWya9/Alo="
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Email = "vitrysenas@test.com",
-                            Password = "s+PMYaajIcGUnVFcGWaRIRxV3nPUGL4i4aa2MWN2Gdc=",
-                            Salt = "qf9CdzHJz2V323ul6v/qbg87Enbqa84RyRcQhHpV4/A="
-                        });
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex");
+
+                    b.ToTable("AspNetUsers");
                 });
 
             modelBuilder.Entity("RemeTask.Models.UserWorkspace", b =>
                 {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(767)");
 
                     b.Property<int>("WorkspaceId")
                         .HasColumnType("int");
@@ -298,23 +337,6 @@ namespace RemeTask.Migrations
                     b.HasIndex("WorkspaceId");
 
                     b.ToTable("UserWorkspaces");
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = 1,
-                            WorkspaceId = 1
-                        },
-                        new
-                        {
-                            UserId = 1,
-                            WorkspaceId = 2
-                        },
-                        new
-                        {
-                            UserId = 2,
-                            WorkspaceId = 2
-                        });
                 });
 
             modelBuilder.Entity("RemeTask.Models.Workspace", b =>
@@ -326,32 +348,86 @@ namespace RemeTask.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<int>("Owner")
-                        .HasColumnType("int");
+                    b.Property<string>("Owner")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.ToTable("Workspaces");
+                });
 
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Workspace1",
-                            Owner = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Workspace2",
-                            Owner = 1
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Workspace3",
-                            Owner = 2
-                        });
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.HasOne("RemeTask.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.HasOne("RemeTask.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RemeTask.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.HasOne("RemeTask.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("RemeTask.Models.Invitation", b =>
+                {
+                    b.HasOne("RemeTask.Models.User", "Invitee")
+                        .WithMany()
+                        .HasForeignKey("InviteeId");
+
+                    b.HasOne("RemeTask.Models.User", "Inviter")
+                        .WithMany()
+                        .HasForeignKey("InviterId");
+
+                    b.HasOne("RemeTask.Models.Workspace", "Workspace")
+                        .WithMany()
+                        .HasForeignKey("WorkspaceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Invitee");
+
+                    b.Navigation("Inviter");
+
+                    b.Navigation("Workspace");
                 });
 
             modelBuilder.Entity("RemeTask.Models.Task", b =>
@@ -378,9 +454,7 @@ namespace RemeTask.Migrations
                 {
                     b.HasOne("RemeTask.Models.User", "CreatedBy")
                         .WithMany()
-                        .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CreatedById");
 
                     b.HasOne("RemeTask.Models.Task", "Task")
                         .WithMany("TaskNotes")

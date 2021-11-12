@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:remetask/Models/CurrentLogin.dart';
 import 'package:remetask/Models/TaskGroup.dart';
+import 'package:remetask/Models/User.dart';
 import 'package:remetask/Models/Workspace.dart';
 import 'package:remetask/Utilities/API_Manager.dart';
 import 'package:remetask/Utilities/constants.dart';
 import 'package:remetask/Utilities/globals.dart';
+import 'package:remetask/Views/invitation_create_view.dart';
 
 class WorkspaceReadForm extends StatefulWidget {
 
@@ -23,6 +25,7 @@ class _WorkspaceReadFormState extends State<WorkspaceReadForm> {
 
   @override
   Widget build(BuildContext context) {
+
     return DefaultTabController(
       length: 2,
       initialIndex: 0,
@@ -369,7 +372,209 @@ class _WorkspaceReadFormState extends State<WorkspaceReadForm> {
 
   Widget membersBar()
   {
-    return Container();
+    return Container(
+      padding: EdgeInsets.all(8),
+      child: RefreshIndicator(
+        onRefresh: () async {
+          var result = await API_Manager.GetUsersByWorkspace(widget.workspace.id!);
+          widget.workspace.users = result.body;
+          setState(() {
+
+          });
+        },
+        child: Column(
+          children: [
+            Row(
+              children: [
+                newMemberButton()
+              ],
+            ),
+            SizedBox(height: 8),
+            Expanded(
+                child: membersList()
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget membersList()
+  {
+    var members = widget.workspace.users!;
+    return Container(
+      child: ListView.builder(
+          itemCount: members.length,
+          itemBuilder: (context, index)
+          {
+            return memberCard(members[index]);
+          }
+      ),
+    );
+  }
+
+  Widget memberCard(User user)
+  {
+    double _borderRadius = 4;
+
+    return Container(
+      child: Card(
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(_borderRadius),
+        ),
+        child: InkWell(
+          splashColor: kPrimaryDarkColor.withAlpha(50),
+          borderRadius: BorderRadius.circular(_borderRadius),
+          onTap: () {
+
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+            child: Row(
+              children: [
+                Text(
+                  user.email,
+                  style: GoogleFonts.nunito(
+                      textStyle: TextStyle(
+                        color: kTextOnSecondary,
+                        fontFamily: 'Nunito',
+                        fontSize: 14,
+                        overflow: TextOverflow.ellipsis,
+                        fontWeight: FontWeight.w700
+                      )
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget newMemberButton()
+  {
+    return Expanded(
+      child: Container(
+        child: TextButton(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Invite members',
+                  style: kSecondaryButtonLabel,
+                ),
+                SizedBox(width: 10,),
+                Icon(Icons.person_add, color: kSecondaryLightColor)
+              ],
+            ),
+            onPressed: () {
+              print('New member pressed');
+              Navigator.push(context, new MaterialPageRoute(builder: (context) => InvitationCreateView(workspace: widget.workspace,)));
+            },
+            style: kSecondaryButton
+        ),
+      ),
+    );
+  }
+
+  Widget newMemberDialog()
+  {
+    return AlertDialog(
+      insetPadding: EdgeInsets.all(0),
+      backgroundColor: kPrimaryColor,
+      content: Container(
+        color: Colors.green,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                newMemberEmailForm(),
+                newMemberButtonForm()
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget newMemberEmailForm()
+  {
+    return Container(
+      alignment: Alignment.centerLeft,
+      decoration: BoxDecoration(
+        color: kSecondaryLightColor,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: TextField(
+        controller: _taskGroupTitle,
+        style: TextStyle(
+            color: kPrimaryColor,
+            fontFamily: 'OpenSans'
+        ),
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.only(top: 14.0),
+          prefixIcon: Icon(
+            Icons.alternate_email,
+            color: kPrimaryColor,
+          ),
+          hintText: "Email",
+          hintStyle: GoogleFonts.nunito(
+              textStyle: TextStyle(
+                  color: kPrimaryColor,
+                  fontFamily: 'Nunito',
+              )
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget newMemberButtonForm()
+  {
+    return Container(
+      width: double.infinity,
+      height: 50,
+      child: TextButton(
+        onPressed: ()  async {
+          if(_isProcessingApiCall) return;
+
+          _isProcessingApiCall = true;
+          var newTaskGroup = await API_Manager.PostTaskGroup(new TaskGroup(name: _taskGroupTitle.text, tag: _taskGroupTag.text, workspaceId: widget.workspace.id));
+          if(newTaskGroup.statusCode == 201)
+          {
+            setState(() {
+              _isProcessingApiCall = false;
+              widget.workspace.addTaskGroup(newTaskGroup.body!);
+              _taskGroupTitle.clear();
+              _taskGroupTag.clear();
+              Navigator.pop(context);
+            });
+          }
+        } ,
+        style: TextButton.styleFrom(
+            primary: Colors.white,
+            backgroundColor: kPrimaryColor,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0)
+            )
+        ),
+        child: Text(
+          'Create',
+          style: TextStyle(
+              color: kTextOnPrimary,
+              letterSpacing: 1.5,
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'OpenSans'
+          ),
+        ),
+      ),
+    );
   }
 
 }

@@ -1,15 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RemeTask.Data;
 using RemeTask.Dtos.Task;
 using RemeTask.Dtos.TaskGroup;
 using RemeTask.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace RemeTask.Controllers
 {
@@ -18,11 +15,11 @@ namespace RemeTask.Controllers
     [ApiController]
     public class TaskGroupController : ControllerBase
     {
-        private readonly ITaskGroupRepository _repository;
+        private readonly TaskGroupRepository _repository;
         private readonly IMapper _mapper;
-        public TaskGroupController(ITaskGroupRepository repository, IMapper mapper)
+        public TaskGroupController(IRepository<TaskGroup> repository, IMapper mapper)
         {
-            _repository = repository;
+            _repository = repository as TaskGroupRepository;
             _mapper = mapper;
         }
 
@@ -31,7 +28,7 @@ namespace RemeTask.Controllers
         {
             var taskGroupModel = _mapper.Map<TaskGroup>(taskGroupCreateDto);
 
-            await _repository.CreateTaskGroup(taskGroupModel);
+            await _repository.Create(taskGroupModel);
             await _repository.SaveChanges();
 
             var taskGroupReadDto = _mapper.Map<TaskGroupReadDto>(taskGroupModel);
@@ -39,52 +36,57 @@ namespace RemeTask.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> GetAllTaskGroups()
         {
-            var taskGroup = await _repository.GetAllTaskGroups();
+            var taskGroup = await _repository.GetAll();
             return Ok(_mapper.Map<IEnumerable<TaskGroupReadDto>>(taskGroup));
         }
 
         [HttpGet("{id}", Name = "GetTaskGroupById")]
+        [Authorize(Roles = "Basic,Pro,Admin")]
         public async Task<IActionResult> GetTaskGroupById(int id)
         {
-            var taskGroup = await _repository.GetTaskGroupById(id);
+            var taskGroup = await _repository.GetById(id);
             if (taskGroup == null)
                 return NotFound();
             return Ok(_mapper.Map<TaskGroupReadDto>(taskGroup));
         }
 
         [HttpGet("{id}/tasks", Name = "GetTasksByTaskGroupId")]
+        [Authorize(Roles = "Basic,Pro,Admin")]
         public async Task<IActionResult> GetTasksByTaskGroupId(int id)
         {
-            var taskGroup = await _repository.GetTaskGroupById(id);
+            var taskGroup = await _repository.GetById(id);
             if (taskGroup == null)
                 return NotFound();
             return Ok(_mapper.Map<IEnumerable<TaskReadDto>>(taskGroup.Tasks));
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Basic,Pro,Admin")]
         public async Task<IActionResult> DeleteTaskGroup(int id)
         {
-            var taskGroupModel = await _repository.GetTaskGroupById(id);
+            var taskGroupModel = await _repository.GetById(id);
             if (taskGroupModel == null)
                 return NotFound();
 
-            await _repository.DeleteTaskGroup(taskGroupModel);
+            await _repository.Delete(taskGroupModel);
             await _repository.SaveChanges();
 
             return NoContent();
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateTaskGroup(int id, TaskUpdateDto taskGroupUpdateDto)
+        [Authorize(Roles = "Basic,Pro,Admin")]
+        public async Task<IActionResult> UpdateTaskGroup(int id, TaskGroupUpdateDto taskGroupUpdateDto)
         {
-            var taskGroupModel = await _repository.GetTaskGroupById(id);
+            var taskGroupModel = await _repository.GetById(id);
             if (taskGroupModel == null)
                 return NotFound();
 
             _mapper.Map(taskGroupUpdateDto, taskGroupModel);
-            await _repository.UpdateTaskGroup(taskGroupModel);
+            await _repository.Update(taskGroupModel);
             await _repository.SaveChanges();
             return NoContent();
         }
@@ -97,6 +99,7 @@ namespace RemeTask.Controllers
         }*/
 
         [HttpGet("{groupId}/task/{taskId}", Name = "GetTaskByGroup")]
+        [Authorize(Roles = "Basic,Pro,Admin")]
         public async Task<IActionResult> GetTaskByGroup(int groupId, int taskId)
         {
             var task = await _repository.GetTaskByGroup(groupId, taskId);
