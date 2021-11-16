@@ -162,10 +162,7 @@ class _InvitationListViewState extends State<InvitationListView> {
       CurrentLogin().removeInvitation(invitation);
     });
     var invitationResponse = new InvitationResponse(response, invitation.id!);
-    //cia nereikes awaitu kai workspace list viewe bus suoptimizuota su future builderiu
     await API_Manager.PostInvitationResponse(invitationResponse);
-    await CurrentLogin().loadWorkspaces();
-
   }
 
 }

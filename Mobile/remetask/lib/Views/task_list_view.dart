@@ -8,6 +8,7 @@ import 'package:remetask/Models/Task.dart';
 import 'package:remetask/Models/TaskGroup.dart';
 import 'package:remetask/Models/Workspace.dart';
 import 'package:remetask/Utilities/API_Manager.dart';
+import 'package:remetask/Utilities/API_Response.dart';
 import 'package:remetask/Utilities/constants.dart';
 import 'package:remetask/Utilities/globals.dart';
 import 'package:remetask/Views/task_create_view.dart';
@@ -31,50 +32,89 @@ class _TaskListViewState extends State<TaskListView> {
 
   @override
   Widget build(BuildContext context) {
+    return tabController();
+  }
 
+
+  void setTaskLists()
+  {
     selectedWorkspace = user.getSelectedWorkspace();
     allTasks = sortTaskList(selectedWorkspace!.taskGroups!);
     deadlines = sortTaskList(selectedWorkspace!.taskGroups!).where((task) => isDeadline(task, daysForDeadline)).toList();
     completed = sortTaskList(selectedWorkspace!.taskGroups!).where((task) => task.isCompleted!).toList();
+  }
 
-    return DefaultTabController(
-      length: 3,
-      initialIndex: deadlines.length > 0 ? 1 : 0,
-        child: Scaffold(
-          extendBody: true,
-          appBar: AppBar(
-            backgroundColor: kSecondaryLightColor,
-            foregroundColor: kPrimaryColor,
-            centerTitle: true,
-            bottom: TabBar(
-              labelColor: kPrimaryColor,
-              tabs: [
-                Tab(
-                  text: 'ALL TASKS' ,
-                ),
-                Tab(
-                  text: 'DEADLINES',
-                ),
-                Tab(
-                  text: 'COMPLETED',
-                ),
-              ],
+  Widget taskLoader()
+  {
+    selectedWorkspace = user.getSelectedWorkspace();
+
+    return FutureBuilder(
+      future: loadTasks(),
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot)
+      {
+        if(snapshot.hasData)
+        {
+          return workspaceInfo();
+        }
+        else if(snapshot.hasError)
+        {
+          return Container(
+            color: Colors.red,
+          );
+        }
+        else
+        {
+          if(selectedWorkspace != null && selectedWorkspace!.taskGroups!.isNotEmpty)
+          {
+            setTaskLists();
+            return workspaceInfo();
+          }
+
+          return Center(
+            child: Container(
+              child: CircularProgressIndicator(),
             ),
+          );
+        }
+      },
+    );
+  }
+
+  Widget tabController()
+  { return DefaultTabController(
+      length: 3,
+      initialIndex: 0,//deadlines.length > 0 ? 1 : 0,
+      child: Scaffold(
+        extendBody: true,
+        appBar: AppBar(
+          backgroundColor: kSecondaryLightColor,
+          foregroundColor: kPrimaryColor,
+          centerTitle: true,
+          bottom: TabBar(
+            labelColor: kPrimaryColor,
+            tabs: [
+              Tab(
+                text: 'ALL TASKS' ,
+              ),
+              Tab(
+                text: 'DEADLINES',
+              ),
+              Tab(
+                text: 'COMPLETED',
+              ),
+            ],
           ),
-          body: !user.hasAnyWorkspace() ? noWorkspacesInfo() :
-            user.getSelectedWorkspace().taskGroups!.length > 0 ? workspaceInfo() : noTaskGroupInfo(),
-          floatingActionButton: user.hasAnyWorkspace() ? fabButton() : null,
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         ),
+        body : !user.hasAnyWorkspace() ? noWorkspacesInfo() :
+        user.getSelectedWorkspace()!.taskGroups!.length > 0 ? taskLoader() : noTaskGroupInfo(),
+        floatingActionButton: user.hasAnyWorkspace() ? fabButton() : null,
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      ),
     );
   }
 
   Widget workspaceInfo()
   {
-
-    if(deadlines.length == 0)
-      DefaultTabController.of(context)!.animateTo(0);
-
     return TabBarView(
       children: [
         Stack(
@@ -97,6 +137,33 @@ class _TaskListViewState extends State<TaskListView> {
         ),
       ],
     );
+  }
+
+  Future loadTasks() async
+  {
+    var selectedWorkspaceId = CurrentLogin().getSelectedWorkspaceId();
+    if(selectedWorkspaceId != null)
+      {
+        if(user.getSelectedWorkspace() == null)
+          {
+            var selectedWorkspace = await API_Manager.GetWorkspace(selectedWorkspaceId);
+            if(selectedWorkspace.statusCode == 200)
+              {
+                user.setWorkspaces([selectedWorkspace.body!]);
+              }
+          }
+
+        var selectedWorkspaceTasks = await API_Manager.GetWorkspaceTaskGroups(selectedWorkspaceId);
+        if(selectedWorkspaceTasks.statusCode == 200)
+          {
+            user.setSelectedWorkspaceTasks(selectedWorkspaceTasks.body!);
+
+            setTaskLists();
+          }
+        return true;
+      }
+
+    return false;
   }
 
   Widget noDeadlinesInfo()
@@ -213,8 +280,7 @@ class _TaskListViewState extends State<TaskListView> {
     return Container(
       child: RefreshIndicator(
         onRefresh: () async {
-          CurrentLogin user = CurrentLogin();
-          await user.loadWorkspaces();
+          await loadTasks();
           setState(()  {
 
           });

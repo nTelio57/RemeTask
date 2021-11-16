@@ -63,7 +63,7 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
               SizedBox(height: 20),
               buttonTab(FormDatePicker()),
               SizedBox(height: 20),
-              middleTab(FormDropdownList(items: CurrentLogin().selectedWorkspace!.taskGroups)),
+              middleTab(FormDropdownList(items: CurrentLogin().getSelectedWorkspace()!.taskGroups)),
               SizedBox(height: 20),
               middleTab(FormSlider()),
               SizedBox(height: 20),
