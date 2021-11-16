@@ -62,7 +62,7 @@ class API_Manager{
       body: json.encode(authRequest.toJson())
     );
 
-    if(response.statusCode == 200 || response.statusCode == 400){
+    if(response.statusCode == 201 || response.statusCode == 400){
       var responseBody = AuthResult.fromJson(jsonDecode(response.body));
       return responseBody;
     }else{
