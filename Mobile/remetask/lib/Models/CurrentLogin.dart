@@ -12,10 +12,15 @@ SharedPreferences? prefs;
 
 class CurrentLogin{
   static CurrentLogin? _instance;
+
+
   User? user;
   String? token;
+  bool isLoaded = false;
+
+  int _selectedWorkspaceId = -1;
+  bool _isWorkspacesSet = false;
   List<Workspace> workspaces = [];
-  Workspace? selectedWorkspace;
   List<Invitation> invitations = [];
 
   CurrentLogin._internal();
@@ -34,14 +39,17 @@ class CurrentLogin{
     saveToSharedPreferences();
   }
 
+  SharedPreferences getSharedPreferences()
+  {
+    return prefs!;
+  }
+
   Future<void> saveToSharedPreferences() async {
     prefs = await SharedPreferences.getInstance();
 
     prefs!.setString("token", token!);
-    prefs!.setInt("id", user!.id);
+    prefs!.setString("id", user!.id);
     prefs!.setString("email", user!.email);
-    if(selectedWorkspace != null)
-      prefs!.setInt("selectedWorkspaceId", selectedWorkspace!.id!);
   }
 
   Future<void> loadFromSharedPreferences() async
@@ -49,61 +57,77 @@ class CurrentLogin{
     prefs = await SharedPreferences.getInstance();
 
     var token = prefs!.getString("token");
-    var id = prefs!.getInt("id");
+    var id = prefs!.getString("id");
     var email = prefs!.getString("email");
-    var selectedWorkspaceId = prefs!.getInt("selectedWorkspaceId");
 
     setCurrentLogin(new User(id!, email!), token!);
-
-    await reload();
-
-    if(selectedWorkspaceId != null)
-    {
-      print('Current user load from prefs, selected workspace id load: ' + selectedWorkspaceId.toString());
-      var workspaceById = workspaces.firstWhereOrNull((element) => element.id == selectedWorkspaceId);
-      if(workspaceById != null)
-        setSelectedWorkspace(workspaceById);
-      else if(workspaces.length > 0)
-        setSelectedWorkspace(workspaces[0]);
-    }
   }
 
-  Future<void> reload() async
+  int? getSelectedWorkspaceId()
   {
-    prefs = await SharedPreferences.getInstance();
-
-    await loadWorkspaces();
-    await loadInvitations();
-  }
-
-  Future<void> loadWorkspaces() async{
-    workspaces = await  API_Manager.GetWorkspacesByUserId(user!.id);
-    if(selectedWorkspace != null)
+    if(_selectedWorkspaceId == -1)
       {
-        var workspaceById = workspaces.firstWhereOrNull((element) => element.id == selectedWorkspace!.id);
-        if(workspaceById != null)
+        var selectedWorkspaceIdFromPrefs = prefs!.getInt("selectedWorkspaceId");
+        if(selectedWorkspaceIdFromPrefs != null)
           {
-            setSelectedWorkspace(workspaceById);
+            _selectedWorkspaceId = selectedWorkspaceIdFromPrefs;
+            return _selectedWorkspaceId;
           }
+        return selectedWorkspaceIdFromPrefs;
       }
-
-    workspaces.forEach((element) {loadWorkspaceMembers(element);});
+    return _selectedWorkspaceId;
   }
 
-  Future<void> loadWorkspaceMembers(Workspace workspace) async
+  void setSelectedWorkspaceId(int newId)
   {
-    var members = await API_Manager.GetUsersByWorkspace(workspace.id!);
-    workspace.users = members.body!;
+    _selectedWorkspaceId = newId;
+    prefs!.setInt("selectedWorkspaceId", newId);
   }
 
-  bool hasAnyWorkspace()
+  void setWorkspaces(List<Workspace> workspaces)
   {
-    return workspaces.length > 0;
+    this.workspaces = workspaces;
   }
 
-  bool hasAnyInvitation()
+  bool isWorkspaceSet()
   {
-    return invitations.length > 0;
+    return _isWorkspacesSet;
+  }
+
+  void setWorkspaceSet(bool value)
+  {
+    _isWorkspacesSet = value;
+  }
+
+  Workspace? getSelectedWorkspace()
+  {
+    var workspaceId = getSelectedWorkspaceId();
+    if(workspaceId != null)
+      {
+        return workspaces.firstWhereOrNull((element) => element.id == workspaceId);
+      }
+    else if(workspaces.isNotEmpty)
+      {
+        return workspaces[0];
+      }
+    return null;
+  }
+
+  void setSelectedWorkspace(Workspace workspace)
+  {
+    setSelectedWorkspaceId(workspace.id!);
+  }
+
+  void setSelectedWorkspaceTasks(List<TaskGroup> taskGroups)
+  {
+    var selectedWorkspace = getSelectedWorkspace();
+    if(selectedWorkspace != null)
+      selectedWorkspace.taskGroups = taskGroups;
+  }
+
+  Workspace getWorkspace(int id)
+  {
+    return workspaces.firstWhere((element) => element.id == id);
   }
 
   Future<void> loadInvitations() async
@@ -112,40 +136,18 @@ class CurrentLogin{
     invitations = result.body!;
   }
 
-  void removeInvitation(Invitation invitation)
-  {
-    invitations.remove(invitation);
-  }
-
-  Workspace getSelectedWorkspace()
-  {
-    return selectedWorkspace!;
-  }
-
-  void setSelectedWorkspace(Workspace workspace)
-  {
-    selectedWorkspace = workspace;
-    prefs!.setInt("selectedWorkspaceId", selectedWorkspace!.id!);
-  }
-
   void addWorkspace(Workspace workspace)
   {
     workspaces.add(workspace);
   }
 
-  /*bool hasTaskGroups()
+  void removeInvitation(Invitation invitation)
   {
-    return taskGroups != null;
+    invitations.remove(invitation);
   }
 
-  Future<void> loadTaskGroups() async
+  bool hasAnyWorkspace()
   {
-    taskGroups = await apiManager.TaskGroupsByUserId(user!.id);
+    return workspaces.length > 0;
   }
-
-  void removeTaskFromList(int taskId, int taskGroupId)
-  {
-    taskGroups!.where((group) => group.id == taskGroupId).first.tasks.removeWhere((task) => task.id == taskId);
-  }*/
-
 }
