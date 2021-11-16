@@ -17,8 +17,8 @@ class Invitation {
   User? invitee;
 
   int? workspaceId;
-  int? inviterId;
-  int? inviteeId;
+  String? inviterId;
+  String? inviteeId;
 
   factory Invitation.fromJson(Map<String, dynamic> json) => _$InvitationFromJson(json);
 
