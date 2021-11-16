@@ -64,7 +64,7 @@ class _WorkspaceReadFormState extends State<WorkspaceReadForm> {
         Stack(
           children: [
             Background(color: kSecondaryColor,),
-            membersBar()
+            membersLoader()
           ],
         )
       ],
@@ -369,6 +369,41 @@ class _WorkspaceReadFormState extends State<WorkspaceReadForm> {
     );
   }
 
+  Widget membersLoader()
+  {
+    return FutureBuilder<List<User>>(
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot)
+      {
+        if(snapshot.hasData)
+          {
+            CurrentLogin().getWorkspace(widget.workspace.id!).setUsers(snapshot.data);
+            return membersBar();
+          }
+        else if(snapshot.hasError)
+          {
+            return Container(
+              color: Colors.red,
+            );
+          }
+        else
+          {
+            return Center(
+              child: Container(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
+      },
+      future: loadMembers(),
+    );
+  }
+
+  Future<List<User>> loadMembers() async
+  {
+    var result = await API_Manager.GetUsersByWorkspace(widget.workspace.id!);
+    widget.workspace.users = result.body;
+    return result.body!;
+  }
 
   Widget membersBar()
   {

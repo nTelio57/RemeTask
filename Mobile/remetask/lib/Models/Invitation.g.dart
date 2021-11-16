@@ -21,8 +21,8 @@ Invitation _$InvitationFromJson(Map<String, dynamic> json) => Invitation(
           ? null
           : User.fromJson(json['invitee'] as Map<String, dynamic>),
       workspaceId: json['workspaceId'] as int?,
-      inviteeId: json['inviteeId'] as int?,
-      inviterId: json['inviterId'] as int?,
+      inviteeId: json['inviteeId'] as String?,
+      inviterId: json['inviterId'] as String?,
     );
 
 Map<String, dynamic> _$InvitationToJson(Invitation instance) {

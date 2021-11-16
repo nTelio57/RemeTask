@@ -9,7 +9,7 @@ part of 'Workspace.dart';
 Workspace _$WorkspaceFromJson(Map<String, dynamic> json) => Workspace(
       id: json['id'] as int?,
       name: json['name'] as String? ?? '',
-      owner: json['owner'] as int?,
+      owner: json['owner'] as String?,
       taskGroups: (json['taskGroups'] as List<dynamic>?)
           ?.map((e) => TaskGroup.fromJson(e as Map<String, dynamic>))
           .toList(),

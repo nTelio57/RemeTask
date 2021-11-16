@@ -294,7 +294,6 @@ class _RegisterViewState extends State<RegisterView> {
                 });
               }else{//succeeded
                 CurrentLogin().setCurrentLogin(authResult.user!, authResult.token!);
-                await CurrentLogin().reload();
                 Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
                     builder: (context) => MainView()
                 ), (Route<dynamic> route) => false);

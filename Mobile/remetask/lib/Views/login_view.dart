@@ -225,7 +225,6 @@ class _LoginViewState extends State<LoginView> {
           AuthResult authResult = await _apiManager.Login(_emailText.text, _passwordText.text);
           if(authResult.success!){
             CurrentLogin().setCurrentLogin(authResult.user!, authResult.token!);
-            await CurrentLogin().reload();
             Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
                 builder: (context) => MainView()
             ), (Route<dynamic> route) => false);

@@ -7,7 +7,7 @@ part of 'User.dart';
 // **************************************************************************
 
 User _$UserFromJson(Map<String, dynamic> json) => User(
-      json['id'] as int,
+      json['id'] as String,
       json['email'] as String,
       workspaces: (json['workspaces'] as List<dynamic>?)
           ?.map((e) => Workspace.fromJson(e as Map<String, dynamic>))

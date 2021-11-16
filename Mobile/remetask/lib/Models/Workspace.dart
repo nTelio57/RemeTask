@@ -11,7 +11,7 @@ class Workspace {
 
   int? id;
   String name;
-  int? owner;
+  String? owner;
   List<TaskGroup>? taskGroups;
   List<User>? users;
 
@@ -43,5 +43,10 @@ class Workspace {
   void addTaskGroup(TaskGroup taskGroup)
   {
     taskGroups!.add(taskGroup);
+  }
+
+  void setUsers(List<User> users)
+  {
+    this.users = users;
   }
 }

@@ -11,6 +11,8 @@ import 'package:remetask/Views/invitation_list_view.dart';
 import 'package:remetask/Views/workspace_read_view.dart';
 
 FToast? _toast;
+List<Workspace> workspaces = [];
+CurrentLogin user = CurrentLogin();
 
 class WorkspaceListView extends StatefulWidget {
   const WorkspaceListView({Key? key}) : super(key: key);
@@ -138,8 +140,8 @@ class _WorkspaceListViewState extends State<WorkspaceListView> {
           var newTaskGroup = await API_Manager.PostWorkspace(new Workspace(name: _workspaceTitle.text, owner: CurrentLogin().user!.id));
           if(newTaskGroup.statusCode == 201)
           {
-            CurrentLogin().addWorkspace(newTaskGroup.body!);
-            CurrentLogin().setSelectedWorkspace(newTaskGroup.body!);
+            user.addWorkspace(newTaskGroup.body!);
+            user.setSelectedWorkspace(newTaskGroup.body!);
           }else {
             showToast(failureToast('Failed to create workspace. ${newTaskGroup.statusCode} ${newTaskGroup.reasonPhrase}'));
           }
@@ -211,12 +213,10 @@ class _WorkspaceListViewState extends State<WorkspaceListView> {
         Container(
           child: Column(
             children: [
-              invitationsBar(),
-              //invitations.length > 0 ? invitationsBar() : Container(),
+              invitations.length > 0 ? invitationsBar(invitations.length) : Container(),
               Expanded(
-                  child: workspaces.length > 0 ? workspaceList(workspaces) : noWorkspacesInfo()
+                  child: listBuilder()
               ),
-              //invitations.length > 0 ? invitationsBar() : Container(),
             ]
           ),
         )
@@ -224,8 +224,9 @@ class _WorkspaceListViewState extends State<WorkspaceListView> {
     );
   }
 
-  Widget invitationsBar()
+  Widget invitationsBar(int invitationCount)
   {
+    String ending = invitationCount == 1 ? '' : 's';
     return Container(
       decoration: BoxDecoration(
         color: kPrimaryColor,
@@ -237,14 +238,13 @@ class _WorkspaceListViewState extends State<WorkspaceListView> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Show invitations',
+                '$invitationCount Invitation request$ending',
               ),
               SizedBox(width: 10,),
               Icon(Icons.chevron_right, color: kPrimaryColor)
             ],
           ),
           onPressed: () {
-            print('Show invitations pressed');
             Navigator.push(context, new MaterialPageRoute(builder: (context) => InvitationListView()));
           },
           style: TextButton.styleFrom(
@@ -290,13 +290,55 @@ class _WorkspaceListViewState extends State<WorkspaceListView> {
     );
   }
 
+  Future<List<Workspace>> getWorkspacesFromApi() async
+  {
+    var workspaces = await API_Manager.GetWorkspacesByUserId(user.user!.id);
+    return workspaces.body!;
+  }
+
+  Widget listBuilder()
+  {
+    return Container(
+      child: FutureBuilder(
+        future: getWorkspacesFromApi(),
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot)
+        {
+          if(snapshot.hasData)
+          {
+            workspaces = snapshot.data;
+            user.setWorkspaces(snapshot.data);
+            user.setWorkspaceSet(true);
+          }
+          else if(snapshot.hasError)
+          {
+            return Text('error ${snapshot.error}');
+          }else{
+
+            if(user.workspaces.isNotEmpty && user.isWorkspaceSet())
+                return workspaceList(user.workspaces);
+            
+            return Expanded(
+              child: Center(
+                child: Container(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            );
+          }
+          return workspaces.length > 0 ? workspaceList(workspaces) : noWorkspacesInfo();
+        },
+      ),
+    );
+  }
+
   Widget workspaceList(List<Workspace> workspaces)
   {
     return Container(
       child: RefreshIndicator(
         onRefresh: () async {
-          CurrentLogin user = CurrentLogin();
-          await user.loadWorkspaces();
+          var workspaces = await getWorkspacesFromApi();
+          user.setWorkspaces(workspaces);
+          user.setWorkspaceSet(true);
           await user.loadInvitations();
           setState(() {
 
@@ -333,7 +375,7 @@ class _WorkspaceListViewState extends State<WorkspaceListView> {
                   style: kWorkspaceCardLabel,
                 ),
               ),
-              CurrentLogin().selectedWorkspace == workspace ?
+              user.getSelectedWorkspace()!.id == workspace.id ?
               Container(
                 child: Text(
                   'SELECTED',
@@ -353,8 +395,8 @@ class _WorkspaceListViewState extends State<WorkspaceListView> {
                 //CurrentLogin().selectedWorkspace != workspace ? workspaceSelectionButton(workspace) : Container(),
                 Row(
                   children: [
-                    if(CurrentLogin().selectedWorkspace != workspace) Expanded(child: workspaceSelectionButton(workspace)),
-                    if(CurrentLogin().selectedWorkspace != workspace) SizedBox(width: 10,),
+                    if(user.getSelectedWorkspace() != workspace) Expanded(child: workspaceSelectionButton(workspace)),
+                    if(user.getSelectedWorkspace() != workspace) SizedBox(width: 10,),
                     Expanded(child: workspaceOpenButton(workspace))
                   ],
                 ),

@@ -6,7 +6,7 @@ part 'User.g.dart';
 class User {
   User(this.id, this.email, {this.workspaces});
 
-  int id;
+  String id;
   String email;
   List<Workspace>? workspaces;
 

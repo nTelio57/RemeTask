@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:remetask/Models/AuthResult.dart';
+import 'package:remetask/Models/CurrentLogin.dart';
 import 'package:remetask/Models/Invitation.dart';
 import 'package:remetask/Models/InvitationResponse.dart';
 import 'package:remetask/Models/Task.dart';
@@ -31,6 +32,7 @@ String deleteTask = '/api/Task/';
 String updateTask = '/api/Task/';
 
 //Workspaces
+String getWorkspaceTaskGroups = '/api/Workspace/';
 String workspacesByUserId = '/api/Workspace/by-users-id/';
 String getWorkspace = '/api/Workspace/';
 String postWorkspace = '/api/Workspace';
@@ -47,7 +49,7 @@ Map<String, String> defaultHeaders = {
 
 Map<String, String> defaultJWTHeaders = {
   'Content-Type': 'application/json; charset=UTF-8',
-  'Authorization': 'bearer '+('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAZ21haWwuY29tIiwibmJmIjoxNjMzODA1NDIxLCJleHAiOjE2MzY0ODM4MjEsImlhdCI6MTYzMzgwNTQyMX0.lHnySUe2KWP3ngfPBQ73hmbEYXVuwc4RfgljhIw8Cd8'),
+  'Authorization': 'bearer '+CurrentLogin().token!,
 };
 
 class API_Manager{
@@ -60,7 +62,7 @@ class API_Manager{
       body: json.encode(authRequest.toJson())
     );
 
-    if(response.statusCode == 200 || response.statusCode == 400){
+    if(response.statusCode == 201 || response.statusCode == 400){
       var responseBody = AuthResult.fromJson(jsonDecode(response.body));
       return responseBody;
     }else{
@@ -90,12 +92,12 @@ class API_Manager{
         headers: defaultJWTHeaders
     );
 
-    if(response.statusCode == 200)
-    {
+    if(response.statusCode == 200 || response.statusCode == 404) {
       List<dynamic> jsonData = json.decode(response.body);
       final parsed = jsonData.cast<Map<String, dynamic>>();
 
-      return API_Response(parsed.map<User>((e) => User.fromJson(e)).toList(), response.statusCode, response.reasonPhrase);
+      return API_Response(parsed.map<User>((e) => User.fromJson(e)).toList(),
+          response.statusCode, response.reasonPhrase);
     }
     else{
       throw Exception('Failed to get users by email');
@@ -162,9 +164,9 @@ class API_Manager{
     }
   }
 
-  static Future<List<Workspace>> GetWorkspacesByUserId(int userId) async
+  static Future<API_Response<List<Workspace>>> GetWorkspacesByUserId(String userId) async
   {
-    final response = await http.get(Uri.https(API_URL, workspacesByUserId+userId.toString()),
+    final response = await http.get(Uri.https(API_URL, workspacesByUserId+userId),
         headers: defaultJWTHeaders
     );
 
@@ -173,10 +175,28 @@ class API_Manager{
       List<dynamic> jsonData = json.decode(response.body);
       final parsed = jsonData.cast<Map<String, dynamic>>();
 
-      return parsed.map<Workspace>((e) => Workspace.fromJson(e)).toList();
+      return API_Response(parsed.map<Workspace>((e) => Workspace.fromJson(e)).toList(), response.statusCode, response.reasonPhrase);
     }
     else{
       throw Exception('Failed to get workspaces by user id');
+    }
+  }
+
+  static Future<API_Response<List<TaskGroup>>> GetWorkspaceTaskGroups(int workspaceId) async
+  {
+    final response = await http.get(Uri.https(API_URL, getWorkspaceTaskGroups+workspaceId.toString()+'/task-groups'),
+        headers: defaultJWTHeaders
+    );
+
+    if(response.statusCode == 200)
+    {
+      List<dynamic> jsonData = json.decode(response.body);
+      final parsed = jsonData.cast<Map<String, dynamic>>();
+
+      return API_Response(parsed.map<TaskGroup>((e) => TaskGroup.fromJson(e)).toList(), response.statusCode, response.reasonPhrase);
+    }
+    else{
+      throw Exception('Failed to get workspace task groups');
     }
   }
 
@@ -199,6 +219,7 @@ class API_Manager{
         headers: defaultJWTHeaders
     );
 
+    print(response.body);
     if(response.statusCode == 200)
     {
       return API_Response(Workspace.fromJson(jsonDecode(response.body)), response.statusCode, response.reasonPhrase);
@@ -239,9 +260,9 @@ class API_Manager{
     }
   }
 
-  static Future<API_Response<List<Invitation>>> GetInvitationsByUserId(int id) async
+  static Future<API_Response<List<Invitation>>> GetInvitationsByUserId(String id) async
   {
-    final response = await http.get(Uri.https(API_URL, getInvitationsByUser+id.toString()),
+    final response = await http.get(Uri.https(API_URL, getInvitationsByUser+id),
         headers: defaultJWTHeaders
     );
 
