@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:remetask/Utilities/constants.dart';
+import 'package:remetask/Views/account_view.dart';
 import 'package:remetask/Views/task_list_view.dart';
 import 'package:remetask/Views/workspace_list_view.dart';
 
@@ -15,7 +16,7 @@ class _MainViewState extends State<MainView> {
   int _selectedIndex = 1;
 
   var _navigationPages = [
-    Container(color: Colors.red,),
+    AccountView(),
     TaskListView(),
     WorkspaceListView(),
   ];
