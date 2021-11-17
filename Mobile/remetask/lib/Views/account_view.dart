@@ -115,7 +115,7 @@ class _AccountViewState extends State<AccountView> {
   {
     return Container(
       child: Text(
-        'verylongemail@verylongemail.com',
+        user.user!.email,
         style: GoogleFonts.nunito(
             textStyle: TextStyle(
                 color: kTextOnSecondary,
@@ -154,7 +154,11 @@ class _AccountViewState extends State<AccountView> {
 
   void onLogoutPressed() async
   {
-    print('Logout clicked');
+    await user.getSharedPreferences().clear();
+    user.clear();
+    Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
+        builder: (context) => WelcomeView()
+    ), (Route<dynamic> route) => false);
     return;
   }
 

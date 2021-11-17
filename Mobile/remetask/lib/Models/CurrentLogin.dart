@@ -32,6 +32,11 @@ class CurrentLogin{
     return _instance!;
   }
 
+  void clear()
+  {
+    _instance = null;
+  }
+
   void setCurrentLogin(User user, String token){
     this.user = user;
     this.token = token;
