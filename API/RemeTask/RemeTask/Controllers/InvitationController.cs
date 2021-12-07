@@ -32,6 +32,7 @@ namespace RemeTask.Controllers
         }
 
         [HttpPost]
+        [Roles(UserRoles.Pro, UserRoles.Admin)]
         public async Task<IActionResult> CreateInvitation(InvitationCreateDto invitationCreateDto)
         {
             var invitationModel = _mapper.Map<Invitation>(invitationCreateDto);
