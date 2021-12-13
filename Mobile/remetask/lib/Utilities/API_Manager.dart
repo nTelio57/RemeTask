@@ -286,7 +286,11 @@ class API_Manager{
 
     if(response.statusCode == 201){
       return API_Response(Invitation.fromJson(jsonDecode(response.body)), response.statusCode, response.reasonPhrase);
-    }else{
+    }else if(response.statusCode == 403)
+      {
+        return API_Response(null, response.statusCode, response.reasonPhrase);
+      }
+    else{
       throw Exception('Failed to post invitation response');
     }
   }
