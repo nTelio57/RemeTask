@@ -14,12 +14,6 @@ import 'package:remetask/Utilities/globals.dart';
 import 'package:remetask/Views/task_create_view.dart';
 
 final API_Manager apiManager = API_Manager();
-CurrentLogin user = CurrentLogin();
-int daysForDeadline = 5;
-Workspace? selectedWorkspace;
-List<Task> allTasks = [];
-List<Task> deadlines = [];
-List<Task> completed = [];
 
 class TaskListView extends StatefulWidget {
   const TaskListView({Key? key}) : super(key: key);
@@ -29,6 +23,13 @@ class TaskListView extends StatefulWidget {
 }
 
 class _TaskListViewState extends State<TaskListView> {
+
+  CurrentLogin user = CurrentLogin();
+  int daysForDeadline = 5;
+  Workspace? selectedWorkspace;
+  List<Task> allTasks = [];
+  List<Task> deadlines = [];
+  List<Task> completed = [];
 
   @override
   Widget build(BuildContext context) {
