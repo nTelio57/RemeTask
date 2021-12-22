@@ -9,9 +9,7 @@ import 'package:remetask/Views/task_list_view.dart';
 
 import 'login_view.dart';
 
-final TextEditingController _emailText = TextEditingController();
-final TextEditingController _passwordText = TextEditingController();
-final TextEditingController _passwordRepeatText = TextEditingController();
+
 
 bool _passwordVisible = false, _passwordRepeatVisible = false;
 
@@ -23,6 +21,10 @@ class RegisterView extends StatefulWidget {
 }
 
 class _RegisterViewState extends State<RegisterView> {
+
+  final TextEditingController _emailText = TextEditingController();
+  final TextEditingController _passwordText = TextEditingController();
+  final TextEditingController _passwordRepeatText = TextEditingController();
 
   @override
   void initState() {

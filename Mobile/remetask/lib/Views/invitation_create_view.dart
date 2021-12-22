@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:remetask/Models/CurrentLogin.dart';
 import 'package:remetask/Models/Invitation.dart';
@@ -9,6 +10,7 @@ import 'package:remetask/Utilities/constants.dart';
 import 'package:remetask/Utilities/globals.dart';
 
 List<User> users = [];
+FToast? _toast;
 
 class InvitationCreateView extends StatefulWidget {
   InvitationCreateView({Key? key, required this.workspace}) : super(key: key);
@@ -22,6 +24,10 @@ class InvitationCreateView extends StatefulWidget {
 class _InvitationCreateViewState extends State<InvitationCreateView> {
   @override
   Widget build(BuildContext context) {
+
+    _toast = FToast();
+    _toast!.init(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Invite member'),
@@ -53,8 +59,91 @@ class _InvitationCreateViewState extends State<InvitationCreateView> {
   {
     print('invitee: ${invitee.email}  inviter: ${inviter.email} workspace: ${workspace.name}');
     var invitation = new Invitation(invitationDate: DateTime.now(), workspaceId: workspace.id!, inviterId: inviter.id, inviteeId: invitee.id);
-    API_Manager.PostInvitation(invitation);
-    //show toast, hide button, remov, setstate, remove users from list currently in workspace
+    print(CurrentLogin().roles);
+    if(!CurrentLogin().isPro())
+      {
+        showDialog(
+            context: context,
+            builder: (BuildContext context){
+              return notProDialog();
+            }
+        );
+      }else
+        {
+          API_Manager.PostInvitation(invitation);
+          showToast(successToast());
+        }
+  }
+
+  Widget notProDialog()
+  {
+    return Container(
+      child: AlertDialog(
+        contentPadding: EdgeInsets.all(0),
+        content: Wrap(
+          children: [
+            Container(
+              child: Column(
+                children: [
+                  Container(
+                    color: kPrimaryColor,
+                    width: double.infinity,
+                    padding: EdgeInsets.fromLTRB(24, 10, 24, 10),
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Upgrade to PRO to invite other users to your worksapce!',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.nunito(
+                          textStyle: TextStyle(
+                            color: kTextOnPrimary,
+                            fontSize: 25,
+                            fontFamily: 'Nunito',
+                            fontWeight: FontWeight.w600,
+                          )
+                      ),
+                    ),
+                  ),
+                  Container(
+                      child: upgradeToProButton(),
+                      color: kPrimaryColor,
+                      padding: EdgeInsets.fromLTRB(24, 10, 24, 24)
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget upgradeToProButton()
+  {
+    return Container(
+      width: double.infinity,
+      height: 50,
+      child: TextButton(
+        onPressed: ()  {
+        } ,
+        style: TextButton.styleFrom(
+            primary: kPrimaryColor,
+            backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0)
+            )
+        ),
+        child: Text(
+          'Upgrade to PRO',
+          style: TextStyle(
+              color: kPrimaryColor,
+              letterSpacing: 1.5,
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'OpenSans'
+          ),
+        ),
+      ),
+    );
   }
 
   Widget listBuilder()
@@ -132,8 +221,36 @@ class _InvitationCreateViewState extends State<InvitationCreateView> {
     );
   }
 
-  Widget userCard(User user)
-  {
+  void showToast(Widget toast) {
+    _toast!.showToast(
+      child: toast,
+      gravity: ToastGravity.TOP_RIGHT,
+      toastDuration: Duration(seconds: 3),
+    );
+  }
+
+
+  Widget successToast(){
+    return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20.0),
+          color: kSuccessToast,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.check, color: Colors.white),
+            SizedBox(
+              width: 12.0,
+            ),
+            Text('Invitation sent', style: kToastStyle)
+          ],
+        )
+    );
+  }
+
+  Widget userCard(User user) {
     double _borderRadius = 4;
 
     return Container(
@@ -184,7 +301,8 @@ class _InvitationCreateViewState extends State<InvitationCreateView> {
                   ),
                   onPressed: () {
                     print('Invite pressed');
-                    _onInviteClick(widget.workspace, user, CurrentLogin().user!);
+                    _onInviteClick(
+                        widget.workspace, user, CurrentLogin().user!);
                   },
                   style: TextButton.styleFrom(
                       primary: Colors.white,
@@ -199,6 +317,7 @@ class _InvitationCreateViewState extends State<InvitationCreateView> {
         ],
       ),
     );
+
 
     return Container(
       child: Card(

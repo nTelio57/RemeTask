@@ -11,8 +11,6 @@ import 'package:remetask/Views/invitation_list_view.dart';
 import 'package:remetask/Views/workspace_read_view.dart';
 
 FToast? _toast;
-List<Workspace> workspaces = [];
-CurrentLogin user = CurrentLogin();
 
 class WorkspaceListView extends StatefulWidget {
   const WorkspaceListView({Key? key}) : super(key: key);
@@ -24,6 +22,8 @@ class WorkspaceListView extends StatefulWidget {
 class _WorkspaceListViewState extends State<WorkspaceListView> {
 
   bool _isProcessingApiCall = false;
+  List<Workspace> workspaces = [];
+  CurrentLogin user = CurrentLogin();
 
   @override
   Widget build(BuildContext context) {

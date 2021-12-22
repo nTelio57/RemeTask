@@ -4,18 +4,19 @@ import 'package:remetask/Models/TaskGroup.dart';
 import 'package:remetask/Models/User.dart';
 import 'package:remetask/Models/Workspace.dart';
 import 'package:remetask/Utilities/API_Manager.dart';
+import 'package:remetask/Utilities/TokenManager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:collection/collection.dart';
 
 final API_Manager apiManager = API_Manager();
-SharedPreferences? prefs;
 
 class CurrentLogin{
   static CurrentLogin? _instance;
-
+  SharedPreferences? prefs;
 
   User? user;
   String? token;
+  List<String> roles = [];
   bool isLoaded = false;
 
   int _selectedWorkspaceId = -1;
@@ -34,12 +35,34 @@ class CurrentLogin{
 
   void clear()
   {
+    user = null;
+    token = null;
+    roles = [];
+    isLoaded = false;
+    _selectedWorkspaceId = -1;
+    _isWorkspacesSet = false;
+    workspaces = [];
+    invitations = [];
     _instance = null;
   }
 
   void setCurrentLogin(User user, String token){
     this.user = user;
     this.token = token;
+
+    var parsedToken = TokenManager.parseJwt(token);
+    var userRoles = parsedToken["userRoles"];
+    if(userRoles is String)
+    {
+      roles.clear();
+      roles.add(userRoles);
+    }
+    else if(userRoles is List)
+    {
+      List<String> temp = userRoles.map((e) => e as String).toList();
+      roles.clear();
+      roles.addAll(temp);
+    }
 
     saveToSharedPreferences();
   }
@@ -66,6 +89,11 @@ class CurrentLogin{
     var email = prefs!.getString("email");
 
     setCurrentLogin(new User(id!, email!), token!);
+  }
+  
+  bool isPro()
+  {
+    return roles.contains("Pro");
   }
 
   int? getSelectedWorkspaceId()

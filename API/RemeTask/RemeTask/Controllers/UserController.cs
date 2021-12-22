@@ -131,5 +131,29 @@ namespace RemeTask.Controllers
             return Ok(_mapper.Map<IEnumerable<UserReadDto>>(invitations));
         }
 
+        [Authorize]
+        [Roles(UserRoles.Basic, UserRoles.Pro, UserRoles.Admin)]
+        [HttpPost("upgrade-to-pro/{id}", Name = "UpgradeToPro")]
+        public async Task<IActionResult> UpgradeToPro(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+                return NotFound();
+
+            var userId = User.FindFirst(CustomClaims.UserId)?.Value;
+            if (id != userId)
+                return Forbid();
+
+            await _userManager.AddToRoleAsync(user, UserRoles.Pro);
+            var accessToken = await _tokenManager.CreateAccessTokenAsync(user);
+
+            return CreatedAtAction(nameof(UpgradeToPro), new AuthResult
+            {
+                Success = true,
+                Token = accessToken,
+                User = _mapper.Map<UserReadDto>(user)
+            });
+        }
+
     }
 }

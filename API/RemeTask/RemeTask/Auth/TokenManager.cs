@@ -43,6 +43,7 @@ namespace RemeTask.Auth
                 new Claim(CustomClaims.UserId, user.Id),
             };
             authClaims.AddRange(userRoles.Select(userRole => new Claim(ClaimTypes.Role, userRole)));
+            authClaims.AddRange(userRoles.Select(userRole => new Claim(CustomClaims.UserRoles, userRole)));
 
             var accessSecurityToken = new JwtSecurityToken(
                 issuer: _issuer,

@@ -14,12 +14,6 @@ import 'package:remetask/Utilities/globals.dart';
 import 'package:remetask/Views/task_create_view.dart';
 
 final API_Manager apiManager = API_Manager();
-CurrentLogin user = CurrentLogin();
-int daysForDeadline = 5;
-Workspace? selectedWorkspace;
-List<Task> allTasks = [];
-List<Task> deadlines = [];
-List<Task> completed = [];
 
 class TaskListView extends StatefulWidget {
   const TaskListView({Key? key}) : super(key: key);
@@ -29,6 +23,13 @@ class TaskListView extends StatefulWidget {
 }
 
 class _TaskListViewState extends State<TaskListView> {
+
+  CurrentLogin user = CurrentLogin();
+  int daysForDeadline = 5;
+  Workspace? selectedWorkspace;
+  List<Task> allTasks = [];
+  List<Task> deadlines = [];
+  List<Task> completed = [];
 
   @override
   Widget build(BuildContext context) {
@@ -355,11 +356,11 @@ class _TaskListViewState extends State<TaskListView> {
                   {
                     if(direction == DismissDirection.endToStart)
                     {
-                      setState(() {
+                      setState(() async {
                         int taskId = tasks[index].id!;
                         int taskGroupId = tasks[index].taskGroupId!;
                         // OLD VERSION CurrentLogin().removeTaskFromList(taskId, taskGroupId);
-                        deleteTask(taskId);
+                        await deleteTask(taskId);
                       });
                     }
                     if(direction == DismissDirection.startToEnd)
@@ -425,7 +426,7 @@ class _TaskListViewState extends State<TaskListView> {
     return false;
   }
 
-  void deleteTask(int taskId) async
+  Future deleteTask(int taskId) async
   {
     await API_Manager.DeleteTask(taskId);
   }
